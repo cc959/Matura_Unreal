@@ -1,0 +1,122 @@
+[
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.Build.cs",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealCharacter.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealCharacter.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealGameMode.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealGameMode.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/MyOpenCVBlueprintFunctionLibrary.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/MyOpenCVBlueprintFunctionLibrary.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/RobotArm.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/RobotArm.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SerialActor.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SerialActor.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingActor.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingActor.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	}
+]

@@ -1,0 +1,121 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch Matura_Unreal (Debug)",
+			"request": "launch",
+			"program": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Binaries/Linux/UnrealGame-Linux-Debug",
+			"preLaunchTask": "Matura_Unreal Linux Debug Build",
+			"args": [
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_Unreal (DebugGame)",
+			"request": "launch",
+			"program": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Binaries/Linux/UnrealGame-Linux-DebugGame",
+			"preLaunchTask": "Matura_Unreal Linux DebugGame Build",
+			"args": [
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_Unreal (Development)",
+			"request": "launch",
+			"program": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Binaries/Linux/UnrealGame",
+			"preLaunchTask": "Matura_Unreal Linux Development Build",
+			"args": [
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_Unreal (Test)",
+			"request": "launch",
+			"program": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Binaries/Linux/UnrealGame-Linux-Test",
+			"preLaunchTask": "Matura_Unreal Linux Test Build",
+			"args": [
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_Unreal (Shipping)",
+			"request": "launch",
+			"program": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Binaries/Linux/UnrealGame-Linux-Shipping",
+			"preLaunchTask": "Matura_Unreal Linux Shipping Build",
+			"args": [
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_UnrealEditor (Debug)",
+			"request": "launch",
+			"program": "/opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor-Linux-Debug",
+			"preLaunchTask": "Matura_UnrealEditor Linux Debug Build",
+			"args": [
+				"/home/elias/Documents/Unreal Projects/Matura_Unreal/Matura_Unreal.uproject"
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_UnrealEditor (DebugGame)",
+			"request": "launch",
+			"program": "/opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor-Linux-DebugGame",
+			"preLaunchTask": "Matura_UnrealEditor Linux DebugGame Build",
+			"args": [
+				"/home/elias/Documents/Unreal Projects/Matura_Unreal/Matura_Unreal.uproject"
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Launch Matura_UnrealEditor (Development)",
+			"request": "launch",
+			"program": "/opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor",
+			"preLaunchTask": "Matura_UnrealEditor Linux Development Build",
+			"args": [
+				"/home/elias/Documents/Unreal Projects/Matura_Unreal/Matura_Unreal.uproject"
+			],
+			"cwd": "/opt/unreal-engine",
+			"type": "cppdbg",
+			"visualizerFile": "/opt/unreal-engine/Engine/Extras/VisualStudioDebugging/Unreal.natvis",
+			"showDisplayString": true
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "/opt/unreal-engine/Engine/Build/BatchFiles/RunUBT.bat",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=/home/elias/Documents/Unreal Projects/Matura_Unreal/Matura_Unreal.uproject",
+				"-game",
+				"-engine"
+			],
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"stopAtEntry": false,
+			"cwd": "/opt/unreal-engine"
+		}
+	]
+}
