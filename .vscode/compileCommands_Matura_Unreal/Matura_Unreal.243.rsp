@@ -470,6 +470,7 @@
 -I "/home/elias/Documents/Unreal Projects/Matura_Unreal/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Inc/Matura_Unreal/UHT" 
 -I "/home/elias/Documents/Unreal Projects/Matura_Unreal/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Inc/Matura_Unreal/VNI" 
 -I "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source" 
+-I "/opt/unreal-engine/Engine/Plugins/Runtime/OpenCV/Source/ThirdParty" 
 -I "/opt/unreal-engine/Engine/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Inc/AugmentedReality/UHT" 
 -I "/opt/unreal-engine/Engine/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Inc/AugmentedReality/VNI" 
 -I "/opt/unreal-engine/Engine/Source/Runtime/AugmentedReality/Public" 
@@ -483,3 +484,4 @@
 -I "/opt/unreal-engine/Engine/Source/ThirdParty/mimalloc/include" 
 -I "/opt/unreal-engine/Engine/Source/ThirdParty/LibTiff/Source/Unix/x86_64-unknown-linux-gnu" 
 -I "/opt/unreal-engine/Engine/Source/ThirdParty/LibTiff/Source" 
+-I "/opt/unreal-engine/Engine/Plugins/Runtime/OpenCV/Source/ThirdParty/OpenCV/include" 
