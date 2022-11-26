@@ -10,6 +10,7 @@
 ATag::ATag()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	tag_size = 1;
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static mesh"));
 	SetRootComponent(mesh);
@@ -30,7 +31,15 @@ void ATag::OnConstruction(const FTransform &transform)
 
 void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 {
+	UpdateTexture();
 
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	mesh->SetRelativeScale3D(FVector(tag_size));
+}
+
+void ATag::UpdateTexture()
+{
 	static const int max_id[] = {29, 34, 127, 37, 127, 127, 127, 127};
 	tag_id = FMath::Clamp(tag_id, 0, max_id[tag_family]);
 
@@ -61,8 +70,6 @@ void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 		dyn_material->SetTextureParameterValue(FName(TEXT("Texture")), tag_texture);
 		mesh->SetMaterial(0, dyn_material);
 	}
-
-	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
 // Called when the game starts or when spawned

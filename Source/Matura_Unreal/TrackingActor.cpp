@@ -4,6 +4,8 @@
 
 #include <string>
 #include <functional>
+#include <set>
+#include <map>
 
 using namespace std;
 
@@ -20,6 +22,8 @@ ATrackingActor::ATrackingActor()
 
 	if (PlaneMesh.Object)
 		mesh->SetStaticMesh(PlaneMesh.Object);
+
+	camera_id = 0;
 }
 
 // Called when the game starts or when spawned
@@ -32,16 +36,21 @@ void ATrackingActor::BeginPlay()
 	at_td->debug = false;		// print debug output
 	at_td->refine_edges = true; // refine tag edges
 
-	function<apriltag_family_t*()> family_functions[] = {tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create, tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create};
+	function<apriltag_family_t *()> family_functions[] = {tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create, tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create};
 
-	apriltag_detector_add_family(at_td, tag36h11_create());
+	set<int> families;
+	for (ATag *tag : april_tags)
+		if (tag)
+			families.insert(tag->tag_family);
 
+	for (int family : families)
+		apriltag_detector_add_family(at_td, family_functions[family]());
 
-	cv_cap.open(0, CAP_ANY);
+	cv_cap.open(camera_id, CAP_ANY);
 
 	if (!cv_cap.isOpened())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not open camera"));
+		UE_LOG(LogTemp, Error, TEXT("Could not open camera"));
 	}
 	else
 	{
@@ -79,23 +88,51 @@ void ATrackingActor::Tick(float DeltaTime)
 		// Draw detection outlines
 		for (int i = 0; i < zarray_size(detections); i++)
 		{
+			map<string, int> family_names = {{"tag16h5", 0}, {"tag25h9", 1}, {"tag36h11", 2}, {"tagCircle21h7", 3}, {"tagCircle49h12", 4}, {"tagStandard41h12", 5}, {"tagStandard52h13", 6}, {"tagCustom48h12", 7}};
+
 			apriltag_detection_t *det;
 			zarray_get(detections, i, &det);
 
-			// apriltag_detection_info_t info;
-			// info.det = det;
-			// info.tagsize = _tagsize;
-			// info.fx = 522.12285297286087;
-			// info.fy = 531.89050725948039;
-			// info.cx = 320;
-			// info.cy = 240;
+			ATag *det_tag = NULL;
+			for (ATag *tag : april_tags)
+			{
+				if (tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
+				{
+					det_tag = tag;
+				}
+			}
 
-			// apriltag_pose_t pose;
-			// estimate_tag_pose(&info, &pose);
+			if (det_tag)
+			{
 
-			// Matrix4 transformationTag = (det->id >= 0 && det->id < _tagTransformations.size()) ? _tagTransformations[det->id] : Matrix4::translation({});
+				apriltag_detection_info_t info;
+				info.det = det;
+				info.tagsize = 100;
+				info.fx = 522.12285297286087;
+				info.fy = 531.89050725948039;
+				info.cx = 320;
+				info.cy = 240;
 
-			//_cameraTransformation = getMatrix(pose).inverted();
+				apriltag_pose_t pose;
+				estimate_tag_pose(&info, &pose);
+
+				// transformation = mesh->GetRelativeTransform().ToMatrixWithScale();
+
+				// UE_LOG(LogTemp, Warning, TEXT("Rows: %d Columns: %d"), pose.t->nrows, pose.t->ncols);
+
+				FMatrix rotation_matrix(FVector(pose.R->data[0], pose.R->data[3], pose.R->data[6]),
+										FVector(pose.R->data[1], pose.R->data[4], pose.R->data[7]),
+										FVector(pose.R->data[2], pose.R->data[5], pose.R->data[8]),
+										FVector(0));
+
+				FMatrix relative_transformation = FQuat::MakeFromEuler(rotation_matrix.ToQuat().Euler() * FVector(-1, -1, 1)).ToMatrix();
+				relative_transformation.SetOrigin(FVector(pose.t->data[0], pose.t->data[1], -pose.t->data[2]));
+
+				FMatrix tag_transformation = det_tag->mesh->GetRelativeTransform().ToMatrixWithScale();
+				FMatrix global_transformation = relative_transformation.Inverse() * tag_transformation;
+
+				mesh->SetRelativeTransform(FTransform(global_transformation));
+			}
 
 			line(cv_frame, Point(det->p[0][0], det->p[0][1]),
 				 Point(det->p[1][0], det->p[1][1]),
@@ -144,6 +181,16 @@ void ATrackingActor::BeginDestroy()
 		{
 			apriltag_family_t *tf;
 			zarray_get(families, i, &tf);
+
+			if (!tf)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Could not destroy tag family"));
+				continue;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("Deleted %s"), *FString(tf->name));
+			}
 
 			if (!strcmp(tf->name, "tag36h11"))
 			{

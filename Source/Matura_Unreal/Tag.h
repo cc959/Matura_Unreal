@@ -33,6 +33,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void UpdateTexture();
 
 public:
 	// Called every frame
@@ -45,6 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Tag)
 	int tag_id;
+
+	UPROPERTY(EditAnywhere, Category = Tag)
+	float tag_size;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *mesh;

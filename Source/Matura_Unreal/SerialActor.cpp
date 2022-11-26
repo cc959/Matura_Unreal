@@ -45,7 +45,7 @@ void ASerialActor::BeginPlay()
 	if (serial_port < 0)
 	{
 		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Warning, TEXT("Error from open: %s"), *errorText);
+		UE_LOG(LogTemp, Error, TEXT("Error from open: %s"), *errorText);
 	}
 
 	struct termios tty;
@@ -53,7 +53,7 @@ void ASerialActor::BeginPlay()
 	if (tcgetattr(serial_port, &tty) != 0)
 	{
 		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Warning, TEXT("Error from tcgetattr: %s"), *errorText);
+		UE_LOG(LogTemp, Error, TEXT("Error from tcgetattr: %s"), *errorText);
 	}
 
 	tty.c_cflag &= ~PARENB;	 // Clear parity bit, disabling parity (most common)
@@ -89,7 +89,7 @@ void ASerialActor::BeginPlay()
 	if (tcsetattr(serial_port, TCSANOW, &tty) != 0)
 	{
 		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Warning, TEXT("Error from tcsetattr: %s"), *errorText);
+		UE_LOG(LogTemp, Display, TEXT("Error from tcsetattr: %s"), *errorText);
 	}
 
 	Super::BeginPlay();
@@ -104,7 +104,7 @@ void ASerialActor::Tick(float DeltaTime)
 	int bytes_available;
 	ioctl(serial_port, FIONREAD, &bytes_available);
 
-	UE_LOG(LogTemp, Warning, TEXT("read %d bytes"), bytes_available);
+	UE_LOG(LogTemp, Display, TEXT("read %d bytes"), bytes_available);
 
 	if (bytes_available > 0)
 	{

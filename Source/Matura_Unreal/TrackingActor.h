@@ -8,9 +8,9 @@
 #include "Tag.h"
 
 #include "PreOpenCVHeaders.h"
-	#include <opencv2/core.hpp>
-	#include <opencv2/imgproc.hpp>
-	#include <opencv2/videoio.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 #include "PostOpenCVHeaders.h"
 
 extern "C"
@@ -59,10 +59,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *mesh;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = WebCam)
 	UTexture2D *camera_texture_2d;
 
-	FArr
+	UPROPERTY(EditAnywhere, Category = WebCam)
+	int camera_id;
+
+	UPROPERTY(EditAnywhere)
+	TArray<ATag *> april_tags;
+
+
+
 
 	apriltag_detector *at_td;
 };
