@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"OpenCVHelper"
+				"OpenCVHelper",
+				"UMG"
 			]
 		}
 	],
@@ -24,6 +25,10 @@
 		},
 		{
 			"Name": "OpenCV",
+			"Enabled": true
+		},
+		{
+			"Name": "ImagePlate",
 			"Enabled": true
 		}
 	]

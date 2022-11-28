@@ -24,6 +24,11 @@ ATag::ATag()
 		mesh->SetMaterial(0, material.Object);
 }
 
+void ATag::Clicked(UPrimitiveComponent *Target, FKey ButtonPressed)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
+}
+
 void ATag::OnConstruction(const FTransform &transform)
 {
 	Super::OnConstruction(transform);
@@ -75,6 +80,8 @@ void ATag::UpdateTexture()
 // Called when the game starts or when spawned
 void ATag::BeginPlay()
 {
+	mesh->OnClicked.AddDynamic(this, &ATag::Clicked);
+
 	Super::BeginPlay();
 }
 

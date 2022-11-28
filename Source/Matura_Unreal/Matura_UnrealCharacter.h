@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+
+#include "MyUserWidget.h"
+
 #include "Matura_UnrealCharacter.generated.h"
 
 
@@ -62,5 +65,11 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMyUserWidget> PlayerHUDClass;
+
+	UPROPERTY()
+	class UMyUserWidget *widget;
 };
 

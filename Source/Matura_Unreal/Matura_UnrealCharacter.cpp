@@ -64,6 +64,9 @@ void AMatura_UnrealCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	widget = CreateWidget<UMyUserWidget>(Cast<APlayerController>(Controller), PlayerHUDClass);
+	widget->AddToViewport();
 }
 
 //////////////////////////////////////////////////////////////////////////

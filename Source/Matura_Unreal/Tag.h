@@ -38,8 +38,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+
+	UFUNCTION()
+	void Clicked(UPrimitiveComponent *Target, FKey ButtonPressed);
 
 	UPROPERTY(EditAnywhere, Category = Tag)
 	TEnumAsByte<TagFamily> tag_family;

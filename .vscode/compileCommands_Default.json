@@ -1,9 +1,25 @@
 [
 	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/CameraControl.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/CameraControl.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.Build.cs",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -11,7 +27,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -19,7 +35,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_Unreal.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -27,7 +43,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealCharacter.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -35,7 +51,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealCharacter.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -43,7 +59,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealGameMode.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -51,7 +67,23 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Matura_UnrealGameMode.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/MyUserWidget.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/MyUserWidget.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -59,7 +91,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/RobotArm.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -67,7 +99,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/RobotArm.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -75,7 +107,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SerialActor.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -83,7 +115,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SerialActor.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -91,7 +123,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Tag.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -99,23 +131,23 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Tag.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
 	{
-		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingActor.cpp",
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingCamera.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
 	{
-		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingActor.h",
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/TrackingCamera.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -123,7 +155,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/FETCH_HEAD",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -131,7 +163,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/HEAD",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -139,7 +171,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/config",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -147,7 +179,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/description",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -155,7 +187,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/applypatch-msg.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -163,7 +195,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/commit-msg.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -171,7 +203,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/fsmonitor-watchman.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -179,7 +211,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/post-update.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -187,7 +219,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-applypatch.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -195,7 +227,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-commit.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -203,7 +235,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-merge-commit.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -211,7 +243,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-push.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -219,7 +251,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-rebase.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -227,7 +259,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/pre-receive.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -235,7 +267,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/prepare-commit-msg.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -243,7 +275,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/push-to-checkout.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -251,7 +283,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/hooks/update.sample",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -259,7 +291,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/index",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -267,7 +299,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/info/exclude",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -275,7 +307,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/logs/HEAD",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -283,7 +315,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/logs/refs/heads/master",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -291,7 +323,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/logs/refs/remotes/origin/HEAD",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -299,7 +331,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/objects/pack/pack-3d50ebc67623f9c8bd7264b0a86a313d57898ab3.idx",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -307,7 +339,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/objects/pack/pack-3d50ebc67623f9c8bd7264b0a86a313d57898ab3.pack",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -315,7 +347,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/packed-refs",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -323,7 +355,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/refs/heads/master",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -331,7 +363,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/.git/refs/remotes/origin/HEAD",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -339,7 +371,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/LICENSE.md",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -347,7 +379,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -355,7 +387,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -363,7 +395,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag_math.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -371,7 +403,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag_pose.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -379,7 +411,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag_pose.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -387,7 +419,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/apriltag_quad_thresh.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -395,7 +427,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/debug_print.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -403,7 +435,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/doubles.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -411,7 +443,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/doubles_floats_impl.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -419,7 +451,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/floats.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -427,7 +459,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/g2d.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -435,7 +467,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/g2d.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -443,7 +475,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/getopt.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -451,7 +483,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/getopt.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -459,7 +491,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/homography.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -467,7 +499,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/homography.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -475,7 +507,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_types.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -483,7 +515,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -491,7 +523,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -499,7 +531,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8x3.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -507,7 +539,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8x3.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -515,7 +547,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8x4.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -523,7 +555,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/image_u8x4.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -531,7 +563,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/matd.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -539,7 +571,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/matd.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -547,7 +579,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/math_util.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -555,7 +587,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pam.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -563,7 +595,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pam.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -571,7 +603,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pjpeg-idct.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -579,7 +611,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pjpeg.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -587,7 +619,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pjpeg.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -595,7 +627,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pnm.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -603,7 +635,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pnm.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -611,7 +643,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/postscript_utils.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -619,7 +651,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pthreads_cross.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -627,7 +659,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/pthreads_cross.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -635,7 +667,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/string_util.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -643,7 +675,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/string_util.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -651,7 +683,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/svd22.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -659,7 +691,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/svd22.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -667,7 +699,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/time_util.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -675,7 +707,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/time_util.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -683,7 +715,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/timeprofile.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -691,7 +723,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/unionfind.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -699,7 +731,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/unionfind.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -707,7 +739,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/workerpool.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -715,7 +747,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/workerpool.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -723,7 +755,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zarray.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -731,7 +763,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zarray.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -739,7 +771,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zhash.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -747,7 +779,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zhash.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -755,7 +787,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zmaxheap.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -763,7 +795,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/common/zmaxheap.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -771,7 +803,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag16h5.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -779,7 +811,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag16h5.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -787,7 +819,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag25h9.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -795,7 +827,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag25h9.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -803,7 +835,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag36h10.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -811,7 +843,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag36h10.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -819,7 +851,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag36h11.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -827,7 +859,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tag36h11.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -835,7 +867,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCircle21h7.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -843,7 +875,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCircle21h7.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -851,7 +883,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCircle49h12.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -859,7 +891,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCircle49h12.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -867,7 +899,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCustom48h12.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -875,7 +907,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagCustom48h12.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -883,7 +915,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagStandard41h12.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -891,7 +923,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagStandard41h12.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -899,7 +931,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagStandard52h13.c",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
@@ -907,7 +939,7 @@
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/apriltags/tagStandard52h13.h",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
-			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.243.rsp"
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Default/Matura_Unreal.245.rsp"
 		],
 		"directory": "/opt/unreal-engine/Engine/Source"
 	}
