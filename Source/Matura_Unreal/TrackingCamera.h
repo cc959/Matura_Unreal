@@ -6,14 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
 #include "ImagePlateComponent.h"
+#include "MyUserWidget.h"
 
 #include "Tag.h"
 
-#include "PreOpenCVHeaders.h"
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/videoio.hpp>
-#include "PostOpenCVHeaders.h"
+#include "CameraManager.h"
+
 
 extern "C"
 {
@@ -46,7 +44,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -54,16 +51,15 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
-	VideoCapture cv_cap;
-	Size cv_size;
-	Mat cv_frame;
-	Mat cv_frame_gray;
-
+	
 	UPROPERTY(EditAnywhere)
 	UCameraComponent *scene_camera;
 
 	UPROPERTY(EditAnywhere)
 	UImagePlateComponent *image_plate;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent *camera_mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = WebCam)
 	UTexture2D *camera_texture_2d;
@@ -71,13 +67,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = WebCam)
 	int camera_id;
 
-	UPROPERTY(EditAnywhere, Category = WebCam)
-	bool debug_plane;
+	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
+	float plate_opacity;
 
 	UPROPERTY(EditAnywhere)
 	TArray<ATag *> april_tags;
 
-	apriltag_detector *at_td;
-
-	FMatrix relative_transformation;
+	CameraManager* camera_manager;
+	
 };
