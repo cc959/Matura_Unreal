@@ -43,8 +43,7 @@ public:
 	VideoCapture cv_cap;
 	Size cv_size;
 	
-	FMatrix relative_transformation;
-	FMatrix world_transformation;
+	FTransform world_transform;
 
 	int camera_id;
 private:

@@ -102,7 +102,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetActorRelativeTransform(FTransform(camera_manager->world_transformation));
+	SetActorRelativeTransform(camera_manager->world_transform);
 	camera_manager->GetTexture(camera_texture_2d);
 	
 	camera_mesh->SetVisibility(!IsPlayerControlled());

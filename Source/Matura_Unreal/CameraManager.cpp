@@ -64,7 +64,7 @@ bool CameraManager::Init()
 	if (cv_cap.isOpened())
 		cv_size = Size(cv_cap.get(CAP_PROP_FRAME_WIDTH), cv_cap.get(CAP_PROP_FRAME_HEIGHT));
 
-	world_transformation = FMatrix::Identity;
+	world_transform = FTransform::Identity;
 
 	return FRunnable::Init();
 }
@@ -183,6 +183,9 @@ void CameraManager::CameraTick()
 
 		zarray_t* detections = apriltag_detector_detect(at_td, &im);
 
+		FTransform average_transform = FTransform::Identity;
+		float total_transformations = 0;
+		
 		// Draw detection outlines
 		for (int i = 0; i < zarray_size(detections); i++)
 		{
@@ -217,18 +220,22 @@ void CameraManager::CameraTick()
 				estimate_tag_pose(&info, &pose);
 
 				FMatrix rotation_matrix(FVector(pose.R->data[0], pose.R->data[3], pose.R->data[6]),
-				                        FVector(pose.R->data[1], pose.R->data[4], pose.R->data[7]),
-				                        FVector(pose.R->data[2], pose.R->data[5], pose.R->data[8]),
-				                        FVector(0));
+										FVector(pose.R->data[1], pose.R->data[4], pose.R->data[7]),
+										FVector(pose.R->data[2], pose.R->data[5], pose.R->data[8]),
+										FVector(0));
 
-				relative_transformation = FQuat::MakeFromEuler(rotation_matrix.ToQuat().Euler() * FVector(-1, -1, 1)).
+				FMatrix relative_transformation = FQuat::MakeFromEuler(rotation_matrix.ToQuat().Euler() * FVector(-1, -1, 1)).
 					ToMatrix();
 				relative_transformation.SetOrigin(FVector(pose.t->data[0], pose.t->data[1], -pose.t->data[2]));
+				
+				FMatrix tag_transformation = det_tag->mesh->GetRelativeTransform().ToMatrixWithScale();
+				FMatrix world_transformation = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() * relative_transformation.Inverse() * tag_transformation;
+
+				average_transform.Blend(average_transform, FTransform(world_transformation), 1 / (total_transformations + 1));
+				total_transformations++;
 			}
 
-			FMatrix tag_transformation = det_tag->mesh->GetRelativeTransform().ToMatrixWithScale();
-			world_transformation = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() * relative_transformation.
-				Inverse() * tag_transformation;
+			world_transform = average_transform;
 
 			line(cv_frame, Point(det->p[0][0], det->p[0][1]),
 			     Point(det->p[1][0], det->p[1][1]),
