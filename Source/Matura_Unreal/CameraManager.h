@@ -10,7 +10,10 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
+#include "opencv2/features2d.hpp"
 #include "PostOpenCVHeaders.h"
+
+#include "TrackingCamera.h"
 
 using namespace cv;
 
@@ -19,7 +22,7 @@ class MATURA_UNREAL_API CameraManager : public FRunnable
 public:
 
 	// Constructor, create the thread by calling this
-	CameraManager(TArray<ATag*> april_tags, int camera_id);
+	CameraManager(TArray<ATag*> april_tags, int camera_id, class ATrackingCamera* camera);
 
 	// Destructor
 	virtual ~CameraManager() override;
@@ -37,9 +40,7 @@ public:
 	void GetTexture(UTexture2D* camera_texture_2d);
 	
 	TArray<ATag *> april_tags;
-
-	apriltag_detector *at_td;
-
+	
 	VideoCapture cv_cap;
 	Size cv_size;
 	
@@ -47,10 +48,12 @@ public:
 
 	int camera_id;
 private:
+	class ATrackingCamera* camera;
+	
+	Mat cv_display;
 
-	Mat cv_frame;
-	Mat cv_frame_gray;
-	Mat cv_frame_display;
+	FTransform DetectTags(const Mat& cv_frame, Mat& cv_frame_display);
+	void DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H, int high_S, int high_V);
 	void CameraTick();
 
 	// Thread handle. Control the thread using this, with operators like Kill and Suspend

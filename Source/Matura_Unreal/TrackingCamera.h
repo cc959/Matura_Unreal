@@ -12,22 +12,6 @@
 
 #include "CameraManager.h"
 
-
-extern "C"
-{
-#include "apriltags/apriltag.h"
-#include "apriltags/apriltag_pose.h"
-#include "apriltags/tag36h11.h"
-#include "apriltags/tag25h9.h"
-#include "apriltags/tag16h5.h"
-#include "apriltags/tagCircle21h7.h"
-#include "apriltags/tagCircle49h12.h"
-#include "apriltags/tagCustom48h12.h"
-#include "apriltags/tagStandard41h12.h"
-#include "apriltags/tagStandard52h13.h"
-#include "apriltags/common/getopt.h"
-}
-
 #include "TrackingCamera.generated.h"
 
 using namespace cv;
@@ -72,7 +56,20 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<ATag *> april_tags;
-
-	CameraManager* camera_manager;
+	
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "180.0"))
+	int low_H = 0;
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "255.0"))
+	int low_S = 0;
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "255.0"))
+	int low_V = 0;
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "180.0"))
+	int high_H = 180;
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "255.0"))
+	int high_S = 255;
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "255.0"))
+	int high_V = 255;
+	
+	class CameraManager* camera_manager;
 	
 };

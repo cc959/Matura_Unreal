@@ -36,11 +36,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SerialInfo)
 	int serial_port;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SerialInfo)
-	int pot_value;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	int base_position;
 
-	UPROPERTY(EditAnywhere)
-	bool led_active;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	int arm_position;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

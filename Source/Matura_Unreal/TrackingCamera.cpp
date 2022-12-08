@@ -55,7 +55,7 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent *PlayerInputComp
 void ATrackingCamera::BeginPlay()
 {
 
-	camera_manager = new CameraManager(april_tags, camera_id);
+	camera_manager = new CameraManager(april_tags, camera_id, this);
 
 	if (!camera_manager->cv_cap.isOpened())
 	{

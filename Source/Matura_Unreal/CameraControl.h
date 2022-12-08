@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TrackingCamera.h"
 #include "GameFramework/PlayerController.h"
 #include "CameraControl.generated.h"
 
@@ -18,4 +19,6 @@ public:
 	ACameraControl();
 
 	virtual void Tick(float DeltaTime) override;
+
+	ATrackingCamera* selected;
 };

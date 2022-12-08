@@ -101,40 +101,40 @@ void ASerialActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// check how many bytes can be read
-	int bytes_available;
-	ioctl(serial_port, FIONREAD, &bytes_available);
+	// int bytes_available;
+	// ioctl(serial_port, FIONREAD, &bytes_available);
+	//
+	// UE_LOG(LogTemp, Display, TEXT("read %d bytes"), bytes_available);
+	//
+	// if (bytes_available > 0)
+	// {
+	//
+	// 	vector<char> read_buf(bytes_available, 0);
+	//
+	// 	// Read bytes. The behaviour of read() (e.g. does it block?,
+	// 	// how long does it block for?) depends on the configuration
+	// 	// settings above, specifically VMIN and VTIME
+	// 	int bytes_read = read(serial_port, &read_buf[0], sizeof(char) * read_buf.size());
+	//
+	// 	int start = 0;
+	// 	while (read_buf[start] != '\n')
+	// 		start++;
+	//
+	// 	stringstream ss;
+	// 	ss << &read_buf[0];
+	//
+	// 	ss >> pot_value;
+	//
+	// 	auto transform = GetTransform();
+	//
+	// 	auto position = transform.GetTranslation();
+	// 	position.X = pot_value;
+	//
+	// 	transform.SetTranslation(position);
+	// 	SetActorTransform(transform);
+	// }
 
-	UE_LOG(LogTemp, Display, TEXT("read %d bytes"), bytes_available);
-
-	if (bytes_available > 0)
-	{
-
-		vector<char> read_buf(bytes_available, 0);
-
-		// Read bytes. The behaviour of read() (e.g. does it block?,
-		// how long does it block for?) depends on the configuration
-		// settings above, specifically VMIN and VTIME
-		int bytes_read = read(serial_port, &read_buf[0], sizeof(char) * read_buf.size());
-
-		int start = 0;
-		while (read_buf[start] != '\n')
-			start++;
-
-		stringstream ss;
-		ss << &read_buf[0];
-
-		ss >> pot_value;
-
-		auto transform = GetTransform();
-
-		auto position = transform.GetTranslation();
-		position.X = pot_value;
-
-		transform.SetTranslation(position);
-		SetActorTransform(transform);
-	}
-
-	string msg = "l " + to_string(led_active) + "\n";
+	string msg = "> " + to_string(arm_position) + " " + to_string(base_position) + "\n";
 	write(serial_port, &msg[0], sizeof(msg[0]) * msg.size());
 
 	tcdrain(serial_port);
