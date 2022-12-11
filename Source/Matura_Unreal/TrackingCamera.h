@@ -69,6 +69,13 @@ public:
 	int high_S = 255;
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "255.0"))
 	int high_V = 255;
+
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "-1.0", UIMax = "1.0"))
+	float learning_rate = -1;
+
+	UPROPERTY(EditAnywhere, Category = BlobParams)
+	bool display_threshold_frame = false;
+	
 	
 	class CameraManager* camera_manager;
 	

@@ -5,12 +5,14 @@
 #include "CoreMinimal.h"
 #include "Tag.h"
 #include "apriltags/apriltag.h"
+#include <vector>
 
 #include "PreOpenCVHeaders.h"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 #include "opencv2/features2d.hpp"
+#include <opencv2/video.hpp>
 #include "PostOpenCVHeaders.h"
 
 #include "TrackingCamera.h"
@@ -51,6 +53,14 @@ private:
 	class ATrackingCamera* camera;
 	
 	Mat cv_display;
+	Ptr<BackgroundSubtractor> cv_bg_subtractor;
+	Ptr<SimpleBlobDetector> cv_blob_detector;
+	apriltag_detector* at_td;
+	TArray<apriltag_family_t*> created_families;
+
+	std::vector<Point2f> prev;
+	int blub = 0;
+
 
 	FTransform DetectTags(const Mat& cv_frame, Mat& cv_frame_display);
 	void DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H, int high_S, int high_V);

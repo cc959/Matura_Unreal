@@ -26,6 +26,55 @@ using namespace std;
 CameraManager::CameraManager(TArray<ATag*> april_tags, int camera_id, class ATrackingCamera* camera) : april_tags(april_tags), camera_id(camera_id), camera(camera)
 {
 	Thread = FRunnableThread::Create(this, TEXT("Camera Thread"));
+	cv_bg_subtractor = createBackgroundSubtractorMOG2();
+
+	SimpleBlobDetector::Params cv_blob_params;
+	memset(&cv_blob_params, 0, sizeof(SimpleBlobDetector::Params));
+
+	cv_blob_params.minThreshold = 250;
+	cv_blob_params.maxThreshold = 256;
+	cv_blob_params.thresholdStep = 1;
+	cv_blob_params.minRepeatability = 1;
+
+	cv_blob_params.filterByArea = true;
+	cv_blob_params.minArea = 100;
+	cv_blob_params.maxArea = 1000000;
+
+	// cv_blob_params.filterByColor = true;
+	// cv_blob_params.blobColor = 1;
+
+	 cv_blob_params.filterByCircularity = true;
+	 cv_blob_params.minCircularity = 0.5;
+	 cv_blob_params.maxCircularity = 1;
+
+	// params.filterByCircularity = true;
+	// params.minCircularity = 0.8f;
+
+	cv_blob_detector = SimpleBlobDetector::create(cv_blob_params);
+
+	at_td = apriltag_detector_create();
+	at_td->quad_decimate = 1.0; // decimate factor
+	at_td->quad_sigma = 0.0; // apply this much low-pass blur to input
+	at_td->nthreads = 1; // use this many cpu threads
+	at_td->debug = false; // print debug output
+	at_td->refine_edges = true; // refine tag edges
+
+	static const function<apriltag_family_t *()> family_functions[] = {
+		tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create,
+		tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create
+	};
+
+	set<int> families;
+	for (ATag* tag : april_tags)
+		if (tag)
+			families.insert(tag->tag_family);
+	
+	for (int family : families)
+	{
+		apriltag_family_t* fam = family_functions[family]();
+		apriltag_detector_add_family(at_td, fam);
+		created_families.Append({fam});
+	}
 }
 
 CameraManager::~CameraManager()
@@ -69,6 +118,56 @@ void CameraManager::Stop()
 
 	cv_cap.release();
 
+	// destroy tag families
+	if (at_td)
+	{
+		apriltag_detector_destroy(at_td);
+	}
+	
+	for (apriltag_family_t* tf : created_families)
+	{
+		if (!tf)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not destroy tag family"));
+			continue;
+		}
+
+		UE_LOG(LogTemp, Display, TEXT("Deleted %s"), *FString(tf->name));
+
+		if (!strcmp(tf->name, "tag36h11"))
+		{
+			tag36h11_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tag25h9"))
+		{
+			tag25h9_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tag16h5"))
+		{
+			tag16h5_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tagCircle21h7"))
+		{
+			tagCircle21h7_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tagCircle49h12"))
+		{
+			tagCircle49h12_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tagStandard41h12"))
+		{
+			tagStandard41h12_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tagStandard52h13"))
+		{
+			tagStandard52h13_destroy(tf);
+		}
+		else if (!strcmp(tf->name, "tagCustom48h12"))
+		{
+			tagCustom48h12_destroy(tf);
+		}
+	}
+
 	FRunnable::Stop();
 }
 
@@ -95,32 +194,6 @@ void CameraManager::GetTexture(UTexture2D* camera_texture_2d)
 
 FTransform CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display)
 {
-	apriltag_detector* at_td;
-	at_td = apriltag_detector_create();
-	at_td->quad_decimate = 1.0; // decimate factor
-	at_td->quad_sigma = 0.0; // apply this much low-pass blur to input
-	at_td->nthreads = 1; // use this many cpu threads
-	at_td->debug = false; // print debug output
-	at_td->refine_edges = true; // refine tag edges
-
-	static const function<apriltag_family_t *()> family_functions[] = {
-		tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create,
-		tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create
-	};
-
-	set<int> families;
-	for (ATag* tag : april_tags)
-		if (tag)
-			families.insert(tag->tag_family);
-
-	vector<apriltag_family_t*> created_families;
-
-	for (int family : families)
-	{
-		apriltag_family_t* fam = family_functions[family]();
-		apriltag_detector_add_family(at_td, fam);
-		created_families.push_back(fam);
-	}
 
 	Mat cv_frame_gray;
 	cvtColor(cv_frame, cv_frame_gray, COLOR_BGR2GRAY);
@@ -211,109 +284,82 @@ FTransform CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display)
 		        fontface, fontscale, Scalar(0xff, 0x99, 0), 2);
 	}
 
-	// destroy tag families
-	if (at_td)
-	{
-		apriltag_detector_destroy(at_td);
-	}
-	
-	for (apriltag_family_t* tf : created_families)
-	{
-		if (!tf)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not destroy tag family"));
-			continue;
-		}
-
-		UE_LOG(LogTemp, Display, TEXT("Deleted %s"), *FString(tf->name));
-
-		if (!strcmp(tf->name, "tag36h11"))
-		{
-			tag36h11_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tag25h9"))
-		{
-			tag25h9_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tag16h5"))
-		{
-			tag16h5_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tagCircle21h7"))
-		{
-			tagCircle21h7_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tagCircle49h12"))
-		{
-			tagCircle49h12_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tagStandard41h12"))
-		{
-			tagStandard41h12_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tagStandard52h13"))
-		{
-			tagStandard52h13_destroy(tf);
-		}
-		else if (!strcmp(tf->name, "tagCustom48h12"))
-		{
-			tagCustom48h12_destroy(tf);
-		}
-	}
-
 	return average_transform;
 }
 
 void CameraManager::DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H, int high_S, int high_V)
 {
-	Mat cv_frame_HSV, cv_frame_threshold;
+	Mat cv_frame_HSV, cv_color_threshold, cv_bg_threshold, cv_threshold;
 	cvtColor(cv_frame, cv_frame_HSV, COLOR_RGB2HSV);
 	
-	inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_frame_threshold);
+	inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_color_threshold);
+	cv_bg_subtractor->apply(cv_frame, cv_bg_threshold, camera->learning_rate);
 
-	SimpleBlobDetector::Params params;
-	memset(&params, 0, sizeof(SimpleBlobDetector::Params));
+	bitwise_and(cv_color_threshold, cv_bg_threshold, cv_threshold);
 
-	params.minThreshold = 250;
-	params.maxThreshold = 256;
-	params.thresholdStep = 1;
-	params.minRepeatability = 1;
+	if (!cv_threshold.empty())
+	{
+		std::vector<KeyPoint> points;
+		cv_blob_detector->detect(cv_threshold, points);
 
-	params.filterByArea = true;
-	params.minArea = 100;
-	params.maxArea = 1000000;
+		if (camera->display_threshold_frame)
+		{
+			cvtColor(cv_threshold,cv_frame_display, COLOR_GRAY2BGR);
+		}
+		
+		for (auto det : points)
+		{
+			const int radius = 50;
+			circle(cv_frame_display, det.pt, radius, Scalar(0, 0, 255), 3);
+			line(cv_frame_display, det.pt - Point2f(radius, 0), det.pt + Point2f(radius, 0), Scalar(0, 0, 255), 3);
+			line(cv_frame_display, det.pt - Point2f( 0, radius), det.pt + Point2f(0, radius), Scalar(0, 0, 255), 3);
+			UE_LOG(LogTemp, Warning, TEXT("Detected!"));
+		
+		}
 
-	params.filterByColor = true;
-	params.blobColor = 255;
+		if (points.size() == 0)
+		{
+			if (blub++ == 5)
+				prev.clear();
+		} else
+		{
+			blub = 0;
+			prev.push_back(points[0].pt);
+		}
+		for (int i = 0; i < static_cast<int>(prev.size())-1; i++)
+		{
+			line(cv_frame_display, prev[i], prev[i+1], Scalar(0, 255, 0), 3);
+		} 
+		//drawKeypoints(cv_frame_threshold, points, cv_frame_threshold, Scalar(255, 0, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+		//drawKeypoints(cv_frame_display, points, cv_frame_display, Scalar(0, 255, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("threshold frame is empty!"));
+	}
 
-	// params.filterByCircularity = true;
-	// params.minCircularity = 0.3;
-	// params.maxCircularity = 1;
-
-	// params.filterByCircularity = true;
-	// params.minCircularity = 0.8f;
-
-	Ptr<SimpleBlobDetector> detector = SimpleBlobDetector::create(params);
-	std::vector<KeyPoint> points;
-	detector->detect(cv_frame_threshold, points);
-
-	cv_frame_display = cv_frame_threshold.clone();
-	//drawKeypoints(cv_frame_threshold, points, cv_frame_threshold, Scalar(255, 0, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-	drawKeypoints(cv_frame_display, points, cv_frame_display, Scalar(255, 0, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	
 }
 
 void CameraManager::CameraTick()
 {
 	if (!cv_cap.isOpened())
 		return;
-
-
+	
+	
 	Mat cv_frame, cv_frame_display;
 	cv_cap >> cv_frame;
+
+	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
+
 	cv_frame_display = cv_frame.clone();
 	
 	world_transform = DetectTags(cv_frame, cv_frame_display);
 	DetectBlob(cv_frame, cv_frame_display, camera->low_H, camera->low_S, camera->low_V, camera->high_H, camera->high_S, camera->high_V);
 
 	cvtColor(cv_frame_display, cv_display, COLOR_BGR2BGRA);
+
+	auto time_end = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+	UE_LOG(LogTemp, Display, TEXT("Time to process frame: %f ms"), double((time_end-time_start).count()) / 1e6);
+
 }
