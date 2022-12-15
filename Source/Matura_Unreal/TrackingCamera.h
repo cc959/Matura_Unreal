@@ -50,12 +50,20 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = WebCam)
 	int camera_id;
+	
 
 	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
 	float plate_opacity;
 
 	UPROPERTY(EditAnywhere)
 	TArray<ATag *> april_tags;
+
+	UPROPERTY(EditAnywhere, Category = CameraParams, meta = (UIMin = "0.0", UIMax = "1500.0"))
+	float exposure = 750;
+	
+	UPROPERTY(EditAnywhere, Category = CameraParams)
+	FVector2D focal_length;
+
 	
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "180.0"))
 	int low_H = 0;

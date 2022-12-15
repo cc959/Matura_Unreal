@@ -1,0 +1,69 @@
+-c
+-pipe
+-I"."
+-I"Runtime"
+-I"Runtime/TraceLog/Public"
+-I"Runtime/Core/Public"
+-I"Runtime/Projects/Public"
+-I"Runtime/Json/Public"
+-I"Runtime/RenderCore/Public"
+-I"Runtime/RHI/Public"
+-I"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Source"
+-isystem"ThirdParty/mimalloc/include"
+-include "/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Development/RiderShaderInfo/Definitions.h"
+-Wall
+-Werror
+-Wdelete-non-virtual-dtor
+-Wenum-conversion
+-Wbitfield-enum-conversion
+-Wno-enum-enum-conversion
+-Wno-enum-float-conversion
+-Wno-unused-but-set-variable
+-Wno-unused-but-set-parameter
+-Wno-ordered-compare-function-pointers
+-Wno-gnu-string-literal-operator-template
+-Wno-inconsistent-missing-override
+-Wno-invalid-offsetof
+-Wno-switch
+-Wno-tautological-compare
+-Wno-unknown-pragmas
+-Wno-unused-function
+-Wno-unused-lambda-capture
+-Wno-unused-local-typedef
+-Wno-unused-private-field
+-Wno-unused-variable
+-Wno-undefined-var-template
+-Wshadow
+-Wundef
+-Wno-float-conversion
+-Wno-implicit-float-conversion
+-Wno-implicit-int-conversion
+-Wno-c++11-narrowing
+-fdiagnostics-absolute-paths
+-fdiagnostics-color
+-Wno-undefined-bool-conversion
+-O3
+-fexceptions
+-DPLATFORM_EXCEPTIONS_DISABLED=0
+-gdwarf-4
+-ggnu-pubnames
+-fvisibility-ms-compat
+-fvisibility-inlines-hidden
+-nostdinc++
+-isystem"ThirdParty/Unix/LibCxx/include"
+-isystem"ThirdParty/Unix/LibCxx/include/c++/v1"
+-fbinutils-version=2.36
+
+-fno-math-errno
+-fno-rtti
+-mssse3
+-fPIC
+-ftls-model=local-dynamic
+-D_LINUX64
+-target x86_64-unknown-linux-gnu
+--sysroot="../Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu"
+-x c++
+-std=c++17
+"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Source/RiderShaderInfo/RiderShaderInfo.cpp"
+-MD -MF"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Development/RiderShaderInfo/RiderShaderInfo.cpp.d"
+-o "/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Development/RiderShaderInfo/RiderShaderInfo.cpp.o"

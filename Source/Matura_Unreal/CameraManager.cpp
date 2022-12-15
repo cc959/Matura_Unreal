@@ -89,7 +89,8 @@ CameraManager::~CameraManager()
 
 bool CameraManager::Init()
 {
-	cv_cap.open(camera_id, CAP_ANY);
+	cv_cap.open(camera_id, CAP_V4L2);
+	cv_cap.set(CAP_PROP_AUTO_EXPOSURE, 1); // this means no auto exposure, ¯\_(ツ)_/¯
 
 	if (cv_cap.isOpened())
 		cv_size = Size(cv_cap.get(CAP_PROP_FRAME_WIDTH), cv_cap.get(CAP_PROP_FRAME_HEIGHT));
@@ -233,11 +234,11 @@ FTransform CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display)
 		{
 			apriltag_detection_info_t info;
 			info.det = det;
-			info.tagsize = 100;
-			info.fx = 522.12285297286087;
-			info.fy = 531.89050725948039;
-			info.cx = 320;
-			info.cy = 240;
+			info.tagsize = 100; // constant 1m (100cm) -> scaling is applied later on with the tag transformation
+			info.fx = camera->focal_length.X;
+			info.fy = camera->focal_length.Y;
+			info.cx = cv_size.width / 2; // using half the resolution for now
+			info.cy = cv_size.height / 2;
 
 			apriltag_pose_t pose;
 			estimate_tag_pose(&info, &pose);
@@ -344,12 +345,14 @@ void CameraManager::CameraTick()
 {
 	if (!cv_cap.isOpened())
 		return;
-	
+
+	cv_cap.set(CAP_PROP_EXPOSURE, camera->exposure);
+	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
+
 	
 	Mat cv_frame, cv_frame_display;
 	cv_cap >> cv_frame;
 
-	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	cv_frame_display = cv_frame.clone();
 	
