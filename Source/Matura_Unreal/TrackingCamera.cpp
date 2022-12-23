@@ -43,7 +43,7 @@ ATrackingCamera::ATrackingCamera()
 
 	camera_mesh->SetupAttachment(scene_camera);
 	
-	camera_id = 0;
+	camera_path = "/dev/video0";
 	plate_opacity = 0.5;
 }
 
@@ -55,7 +55,7 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent *PlayerInputComp
 void ATrackingCamera::BeginPlay()
 {
 
-	camera_manager = new CameraManager(april_tags, camera_id, this);
+	camera_manager = new CameraManager(april_tags, camera_path, this);
 
 	if (!camera_manager->cv_cap.isOpened())
 	{

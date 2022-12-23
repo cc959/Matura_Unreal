@@ -19,14 +19,25 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void SetupSerial();
 
 	void UpdateRotations();
+	void SendRotations();
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool visual_only = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = SerialInfo, meta = (EditCondition = "visual_only == false", EditConditionHides))
+	FString port;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SerialInfo, meta = (EditCondition = "visual_only == false", EditConditionHides))
+	int serial_port;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *base_component;
@@ -37,12 +48,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *upper_arm_component;
 
-	UPROPERTY(EditAnywhere, Category = Rotation)
-	float baseRotation;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent *wrist_component;
 
-	UPROPERTY(EditAnywhere, Category = Rotation)
-	float lowerArmRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	float base_rotation;
 
-	UPROPERTY(EditAnywhere, Category = Rotation)
-	float upperArmRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "127.0"))
+	float lower_arm_rotation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	float upper_arm_rotation;
+    	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	float wrist_rotation;
 };

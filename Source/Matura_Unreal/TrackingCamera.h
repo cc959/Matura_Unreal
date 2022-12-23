@@ -11,10 +11,12 @@
 #include "Tag.h"
 
 #include "CameraManager.h"
+#include "IntVectorTypes.h"
 
 #include "TrackingCamera.generated.h"
 
 using namespace cv;
+using namespace UE::Geometry;
 
 UCLASS()
 class MATURA_UNREAL_API ATrackingCamera : public APawn
@@ -49,7 +51,7 @@ public:
 	UTexture2D *camera_texture_2d;
 
 	UPROPERTY(EditAnywhere, Category = WebCam)
-	int camera_id;
+	FString camera_path;
 	
 
 	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
@@ -58,12 +60,22 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<ATag *> april_tags;
 
+	UPROPERTY(EditAnywhere, Category = CameraParams)
+	FVector2D resolution;
+	
 	UPROPERTY(EditAnywhere, Category = CameraParams, meta = (UIMin = "0.0", UIMax = "1500.0"))
 	float exposure = 750;
 	
 	UPROPERTY(EditAnywhere, Category = CameraParams)
 	FVector2D focal_length;
+	
+	UPROPERTY(EditAnywhere, Category = CameraParams)
+	FVector2D k_twins;
 
+	UPROPERTY(EditAnywhere, Category = CameraParams)
+	FVector2D p_twins;
+
+	
 	
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "0.0", UIMax = "180.0"))
 	int low_H = 0;

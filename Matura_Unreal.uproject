@@ -24,11 +24,15 @@
 			]
 		},
 		{
+			"Name": "ImagePlate",
+			"Enabled": true
+		},
+		{
 			"Name": "OpenCV",
 			"Enabled": true
 		},
 		{
-			"Name": "ImagePlate",
+			"Name": "OpenCVLensDistortion",
 			"Enabled": true
 		}
 	]

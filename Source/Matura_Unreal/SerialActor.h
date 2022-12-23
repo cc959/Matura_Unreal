@@ -22,9 +22,7 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay()
-
-		override;
+	virtual void BeginPlay() override;
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -40,7 +38,13 @@ public:
 	int base_position;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "127.0"))
-	int arm_position;
+	int lower_arm_position;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+    int upper_arm_position;
+    	
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+    int wrist_position;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

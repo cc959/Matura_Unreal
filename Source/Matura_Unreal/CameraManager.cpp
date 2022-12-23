@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CameraManager.h"
 
 #include <map>
@@ -20,10 +19,8 @@
 using namespace std;
 
 #include "apriltags/apriltag_pose.h"
-#include "opencv2/imgproc.hpp"
 
-
-CameraManager::CameraManager(TArray<ATag*> april_tags, int camera_id, class ATrackingCamera* camera) : april_tags(april_tags), camera_id(camera_id), camera(camera)
+CameraManager::CameraManager(TArray<ATag*> april_tags, FString camera_path, class ATrackingCamera* camera) : april_tags(april_tags), camera_path(camera_path), camera(camera)
 {
 	Thread = FRunnableThread::Create(this, TEXT("Camera Thread"));
 	cv_bg_subtractor = createBackgroundSubtractorMOG2();
@@ -53,9 +50,10 @@ CameraManager::CameraManager(TArray<ATag*> april_tags, int camera_id, class ATra
 	cv_blob_detector = SimpleBlobDetector::create(cv_blob_params);
 
 	at_td = apriltag_detector_create();
+	
 	at_td->quad_decimate = 1.0; // decimate factor
 	at_td->quad_sigma = 0.0; // apply this much low-pass blur to input
-	at_td->nthreads = 1; // use this many cpu threads
+	at_td->nthreads = 8; // use this many cpu threads
 	at_td->debug = false; // print debug output
 	at_td->refine_edges = true; // refine tag edges
 
@@ -89,12 +87,45 @@ CameraManager::~CameraManager()
 
 bool CameraManager::Init()
 {
-	cv_cap.open(camera_id, CAP_V4L2);
-	cv_cap.set(CAP_PROP_AUTO_EXPOSURE, 1); // this means no auto exposure, ¯\_(ツ)_/¯
+	cv_cap.open(TCHAR_TO_UTF8(*camera_path));
 
 	if (cv_cap.isOpened())
+	{
+		if (!cv_cap.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M','J','P','G')))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set MJPG format"));
+
+		if (!cv_cap.set(CAP_PROP_CONVERT_RGB, 0))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set raw format"));
+
+		if (!cv_cap.set(CAP_PROP_FRAME_WIDTH, camera->resolution.X) || !cv_cap.set(CAP_PROP_FRAME_HEIGHT, camera->resolution.Y))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set size"));
+
+		if (!cv_cap.set(CAP_PROP_FPS, 60))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set fps"));
+
+		if (!cv_cap.set(CAP_PROP_AUTOFOCUS, 0))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set autofocus"));
+
+		if (!cv_cap.set(CAP_PROP_FOCUS, 0))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set focus"));
+		
+		if (!cv_cap.set(CAP_PROP_AUTO_EXPOSURE, 1)) // this means no auto exposure, ¯\_(ツ)_/¯
+			UE_LOG(LogTemp, Warning, TEXT("Could not turn off auto exposure"));
+
+		if (!cv_cap.set(CAP_PROP_EXPOSURE, camera->exposure))
+			UE_LOG(LogTemp, Warning, TEXT("Could not set exposure to %f"), camera->exposure)
+
+		
 		cv_size = Size(cv_cap.get(CAP_PROP_FRAME_WIDTH), cv_cap.get(CAP_PROP_FRAME_HEIGHT));
 
+		UE_LOG(LogTemp, Warning, TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path, int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)), int(cv_cap.get(CAP_PROP_FPS)));
+	} else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Could not open camera at path: %s"), *camera_path)
+	}
+
+	ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::JPEG);
+	
 	world_transform = FTransform::Identity;
 
 	return FRunnable::Init();
@@ -193,9 +224,9 @@ void CameraManager::GetTexture(UTexture2D* camera_texture_2d)
 	}
 };
 
-FTransform CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display)
+bool CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display, FTransform& transform)
 {
-
+	
 	Mat cv_frame_gray;
 	cvtColor(cv_frame, cv_frame_gray, COLOR_BGR2GRAY);
 
@@ -285,7 +316,9 @@ FTransform CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display)
 		        fontface, fontscale, Scalar(0xff, 0x99, 0), 2);
 	}
 
-	return average_transform;
+	transform = average_transform;
+	
+	return total_transformations > 0;
 }
 
 void CameraManager::DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H, int high_S, int high_V)
@@ -300,6 +333,7 @@ void CameraManager::DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int l
 
 	if (!cv_threshold.empty())
 	{
+		cv::setNumThreads(4);
 		std::vector<KeyPoint> points;
 		cv_blob_detector->detect(cv_threshold, points);
 
@@ -346,23 +380,67 @@ void CameraManager::CameraTick()
 	if (!cv_cap.isOpened())
 		return;
 
-	cv_cap.set(CAP_PROP_EXPOSURE, camera->exposure);
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
+	
+
+	Mat cv_frame_raw, cv_frame;
+	cv_cap >> cv_frame_raw;
 
 	
-	Mat cv_frame, cv_frame_display;
-	cv_cap >> cv_frame;
-
-
-	cv_frame_display = cv_frame.clone();
+	if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(cv_frame_raw.data,
+															  cv_frame_raw.size().area() * cv_frame_raw.elemSize()))
+	{
+		TArray<uint8> UncompressedBGRA;
+		if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA))
+		{
+			cv_frame = Mat(cv_size, CV_8UC3);
+			for (int i = 0; i < UncompressedBGRA.Num() / 4; i++) // copy the data
+			{
+				cv_frame.data[i * 3] = UncompressedBGRA[i * 4];
+				cv_frame.data[i * 3 + 1] = UncompressedBGRA[i * 4 + 1];
+				cv_frame.data[i * 3 + 2] = UncompressedBGRA[i * 4 + 2];
+			} 
+		} else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not decode JPEG"));
+		}
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not set JPEG data"));
+	}
 	
-	world_transform = DetectTags(cv_frame, cv_frame_display);
-	DetectBlob(cv_frame, cv_frame_display, camera->low_H, camera->low_S, camera->low_V, camera->high_H, camera->high_S, camera->high_V);
-
+	if (cv_frame.empty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Frame is empty"))
+		return;
+	}
+	
+	
+	Mat camera_matrix = (cv::Mat_<double>(3,3) <<
+			   camera->focal_length.X, 0, cv_size.width/2,
+			   0, camera->focal_length.Y, cv_size.height/2,
+			   0, 0, 1);
+	
+	// Create a vector of distortion coefficients
+	Mat dist_coeffs = (cv::Mat_<double>(5,1) << camera->k_twins.X, camera->k_twins.Y, camera->p_twins.X, camera->p_twins.Y, 0);
+	
+	
+	Mat cv_frame_undistorted;
+	undistort(cv_frame, cv_frame_undistorted, camera_matrix, dist_coeffs);
+	
+	Mat cv_frame_display = cv_frame_undistorted.clone();
+	
+	FTransform new_transform;
+	if (DetectTags(cv_frame_undistorted, cv_frame_display, new_transform))
+		world_transform = new_transform;
+	
+	
+	DetectBlob(cv_frame_undistorted, cv_frame_display, camera->low_H, camera->low_S, camera->low_V, camera->high_H, camera->high_S, camera->high_V);
+	
 	cvtColor(cv_frame_display, cv_display, COLOR_BGR2BGRA);
 
 	auto time_end = std::chrono::high_resolution_clock::now().time_since_epoch();
 
-	UE_LOG(LogTemp, Display, TEXT("Time to process frame: %f ms"), double((time_end-time_start).count()) / 1e6);
+	UE_LOG(LogTemp, Display, TEXT("Time to process frame: %f ms, %f fps"), double((time_end-time_start).count()) / 1e6, 1e9 / double((time_end-time_start).count()));
 
 }
