@@ -15,42 +15,50 @@
 #include "apriltags/tagCustom48h12.h"
 #include "apriltags/tagStandard41h12.h"
 #include "apriltags/tagStandard52h13.h"
+#include "apriltags/apriltag_pose.h"
+
+
+// https://github.com/nothings/stb (Thanks for the suggestion ChatGPT)
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace std;
 
-#include "apriltags/apriltag_pose.h"
-
-CameraManager::CameraManager(TArray<ATag*> april_tags, FString camera_path, class ATrackingCamera* camera) : april_tags(april_tags), camera_path(camera_path), camera(camera)
+CameraManager::CameraManager(TArray<ATag*> april_tags, FString camera_path, class ATrackingCamera* camera) :
+	april_tags(april_tags), camera_path(camera_path), camera(camera)
 {
 	Thread = FRunnableThread::Create(this, TEXT("Camera Thread"));
+
+	setNumThreads(16); // speed
+
 	cv_bg_subtractor = createBackgroundSubtractorMOG2();
 
 	SimpleBlobDetector::Params cv_blob_params;
 	memset(&cv_blob_params, 0, sizeof(SimpleBlobDetector::Params));
 
-	cv_blob_params.minThreshold = 250;
+	cv_blob_params.minThreshold = 254;
 	cv_blob_params.maxThreshold = 256;
 	cv_blob_params.thresholdStep = 1;
 	cv_blob_params.minRepeatability = 1;
 
+	cv_blob_params.filterByConvexity = true;
+	cv_blob_params.minConvexity = 0.6;
+	cv_blob_params.maxConvexity = 1;
+
 	cv_blob_params.filterByArea = true;
 	cv_blob_params.minArea = 100;
-	cv_blob_params.maxArea = 1000000;
+	cv_blob_params.maxArea = 10000;
 
-	// cv_blob_params.filterByColor = true;
-	// cv_blob_params.blobColor = 1;
 
-	 cv_blob_params.filterByCircularity = true;
-	 cv_blob_params.minCircularity = 0.5;
-	 cv_blob_params.maxCircularity = 1;
+	cv_blob_params.filterByCircularity = false;
+	cv_blob_params.minCircularity = 0.6;
+	cv_blob_params.maxCircularity = 1;
 
-	// params.filterByCircularity = true;
-	// params.minCircularity = 0.8f;
 
 	cv_blob_detector = SimpleBlobDetector::create(cv_blob_params);
 
 	at_td = apriltag_detector_create();
-	
+
 	at_td->quad_decimate = 1.0; // decimate factor
 	at_td->quad_sigma = 0.0; // apply this much low-pass blur to input
 	at_td->nthreads = 8; // use this many cpu threads
@@ -66,7 +74,7 @@ CameraManager::CameraManager(TArray<ATag*> april_tags, FString camera_path, clas
 	for (ATag* tag : april_tags)
 		if (tag)
 			families.insert(tag->tag_family);
-	
+
 	for (int family : families)
 	{
 		apriltag_family_t* fam = family_functions[family]();
@@ -91,13 +99,14 @@ bool CameraManager::Init()
 
 	if (cv_cap.isOpened())
 	{
-		if (!cv_cap.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M','J','P','G')))
+		if (!cv_cap.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G')))
 			UE_LOG(LogTemp, Warning, TEXT("Could not set MJPG format"));
 
 		if (!cv_cap.set(CAP_PROP_CONVERT_RGB, 0))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set raw format"));
+			UE_LOG(LogTemp, Warning, TEXT("Could not set raw format")); // UE OpenCV plugin broken, can't decompress jpeg, must do manually
 
-		if (!cv_cap.set(CAP_PROP_FRAME_WIDTH, camera->resolution.X) || !cv_cap.set(CAP_PROP_FRAME_HEIGHT, camera->resolution.Y))
+		if (!cv_cap.set(CAP_PROP_FRAME_WIDTH, camera->resolution.X) || !cv_cap.set(
+			CAP_PROP_FRAME_HEIGHT, camera->resolution.Y))
 			UE_LOG(LogTemp, Warning, TEXT("Could not set size"));
 
 		if (!cv_cap.set(CAP_PROP_FPS, 60))
@@ -108,24 +117,27 @@ bool CameraManager::Init()
 
 		if (!cv_cap.set(CAP_PROP_FOCUS, 0))
 			UE_LOG(LogTemp, Warning, TEXT("Could not set focus"));
-		
+
 		if (!cv_cap.set(CAP_PROP_AUTO_EXPOSURE, 1)) // this means no auto exposure, ¯\_(ツ)_/¯
 			UE_LOG(LogTemp, Warning, TEXT("Could not turn off auto exposure"));
 
 		if (!cv_cap.set(CAP_PROP_EXPOSURE, camera->exposure))
 			UE_LOG(LogTemp, Warning, TEXT("Could not set exposure to %f"), camera->exposure)
 
-		
+
 		cv_size = Size(cv_cap.get(CAP_PROP_FRAME_WIDTH), cv_cap.get(CAP_PROP_FRAME_HEIGHT));
 
-		UE_LOG(LogTemp, Warning, TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path, int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)), int(cv_cap.get(CAP_PROP_FPS)));
-	} else
+		UE_LOG(LogTemp, Warning, TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path,
+		       int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)),
+		       int(cv_cap.get(CAP_PROP_FPS)));
+	}
+	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Could not open camera at path: %s"), *camera_path)
 	}
 
 	ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::JPEG);
-	
+
 	world_transform = FTransform::Identity;
 
 	return FRunnable::Init();
@@ -155,7 +167,7 @@ void CameraManager::Stop()
 	{
 		apriltag_detector_destroy(at_td);
 	}
-	
+
 	for (apriltag_family_t* tf : created_families)
 	{
 		if (!tf)
@@ -203,7 +215,7 @@ void CameraManager::Stop()
 	FRunnable::Stop();
 }
 
-void CameraManager::GetTexture(UTexture2D* camera_texture_2d)
+void CameraManager::GetTexture(UTexture2D* camera_texture_2d) // thread safety, what's that?
 {
 	if (!camera_texture_2d)
 	{
@@ -226,7 +238,6 @@ void CameraManager::GetTexture(UTexture2D* camera_texture_2d)
 
 bool CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display, FTransform& transform)
 {
-	
 	Mat cv_frame_gray;
 	cvtColor(cv_frame, cv_frame_gray, COLOR_BGR2GRAY);
 
@@ -317,62 +328,67 @@ bool CameraManager::DetectTags(const Mat& cv_frame, Mat& cv_frame_display, FTran
 	}
 
 	transform = average_transform;
-	
+
 	return total_transformations > 0;
 }
 
-void CameraManager::DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H, int high_S, int high_V)
+void CameraManager::DetectBlob(const Mat& cv_frame, Mat& cv_frame_display, int low_H, int low_S, int low_V, int high_H,
+                               int high_S, int high_V)
 {
 	Mat cv_frame_HSV, cv_color_threshold, cv_bg_threshold, cv_threshold;
 	cvtColor(cv_frame, cv_frame_HSV, COLOR_RGB2HSV);
 	
 	inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_color_threshold);
+
+	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
+
 	cv_bg_subtractor->apply(cv_frame, cv_bg_threshold, camera->learning_rate);
+
+	auto time_end = std::chrono::high_resolution_clock::now().time_since_epoch();
+	UE_LOG(LogTemp, Display, TEXT("Time to process background: %f ms, %f fps"),
+	       double((time_end-time_start).count()) / 1e6, 1e9 / double((time_end-time_start).count()));
 
 	bitwise_and(cv_color_threshold, cv_bg_threshold, cv_threshold);
 
 	if (!cv_threshold.empty())
 	{
-		cv::setNumThreads(4);
 		std::vector<KeyPoint> points;
+
 		cv_blob_detector->detect(cv_threshold, points);
 
 		if (camera->display_threshold_frame)
 		{
-			cvtColor(cv_threshold,cv_frame_display, COLOR_GRAY2BGR);
+			cvtColor(cv_threshold, cv_frame_display, COLOR_GRAY2BGR);
 		}
-		
+
 		for (auto det : points)
 		{
 			const int radius = 50;
 			circle(cv_frame_display, det.pt, radius, Scalar(0, 0, 255), 3);
 			line(cv_frame_display, det.pt - Point2f(radius, 0), det.pt + Point2f(radius, 0), Scalar(0, 0, 255), 3);
-			line(cv_frame_display, det.pt - Point2f( 0, radius), det.pt + Point2f(0, radius), Scalar(0, 0, 255), 3);
+			line(cv_frame_display, det.pt - Point2f(0, radius), det.pt + Point2f(0, radius), Scalar(0, 0, 255), 3);
 			UE_LOG(LogTemp, Warning, TEXT("Detected!"));
-		
 		}
 
 		if (points.size() == 0)
 		{
 			if (blub++ == 5)
 				prev.clear();
-		} else
+		}
+		else
 		{
 			blub = 0;
 			prev.push_back(points[0].pt);
 		}
-		for (int i = 0; i < static_cast<int>(prev.size())-1; i++)
+		for (int i = 0; i < static_cast<int>(prev.size()) - 1; i++)
 		{
-			line(cv_frame_display, prev[i], prev[i+1], Scalar(0, 255, 0), 3);
-		} 
-		//drawKeypoints(cv_frame_threshold, points, cv_frame_threshold, Scalar(255, 0, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-		//drawKeypoints(cv_frame_display, points, cv_frame_display, Scalar(0, 255, 0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-	} else
+			line(cv_frame_display, prev[i], prev[i + 1], Scalar(0, 255, 0), 3);
+		}
+	}
+	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("threshold frame is empty!"));
 	}
-
-	
 }
 
 void CameraManager::CameraTick()
@@ -380,67 +396,54 @@ void CameraManager::CameraTick()
 	if (!cv_cap.isOpened())
 		return;
 
-	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
-	
-
 	Mat cv_frame_raw, cv_frame;
 	cv_cap >> cv_frame_raw;
 
-	
-	if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(cv_frame_raw.data,
-															  cv_frame_raw.size().area() * cv_frame_raw.elemSize()))
-	{
-		TArray<uint8> UncompressedBGRA;
-		if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA))
-		{
-			cv_frame = Mat(cv_size, CV_8UC3);
-			for (int i = 0; i < UncompressedBGRA.Num() / 4; i++) // copy the data
-			{
-				cv_frame.data[i * 3] = UncompressedBGRA[i * 4];
-				cv_frame.data[i * 3 + 1] = UncompressedBGRA[i * 4 + 1];
-				cv_frame.data[i * 3 + 2] = UncompressedBGRA[i * 4 + 2];
-			} 
-		} else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not decode JPEG"));
-		}
-	} else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not set JPEG data"));
-	}
-	
+	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+	// uncompress jpeg frame with stb single header library -> OpenCV plugin for UE's uncompression is broken for some reason :(
+	// this is also the reason why getting raw data from webcam instead of uncompressed -> setting CAP_PROP_CONVERT_RGB to false
+	int Width, Height, NumComponents;
+	uint8* UncompressedData = stbi_load_from_memory(cv_frame_raw.data,
+	                                                cv_frame_raw.size().area() * cv_frame_raw.elemSize(),
+	                                                &Width, &Height, &NumComponents, STBI_rgb);
+	assert(Width == cv_size.width), assert(Height == cv_size.height), assert(NumComponents == 3);
+	cv_frame = Mat(cv_size, CV_8UC3, UncompressedData);
+
 	if (cv_frame.empty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Frame is empty"))
 		return;
 	}
-	
-	
-	Mat camera_matrix = (cv::Mat_<double>(3,3) <<
-			   camera->focal_length.X, 0, cv_size.width/2,
-			   0, camera->focal_length.Y, cv_size.height/2,
-			   0, 0, 1);
-	
-	// Create a vector of distortion coefficients
-	Mat dist_coeffs = (cv::Mat_<double>(5,1) << camera->k_twins.X, camera->k_twins.Y, camera->p_twins.X, camera->p_twins.Y, 0);
-	
-	
-	Mat cv_frame_undistorted;
-	undistort(cv_frame, cv_frame_undistorted, camera_matrix, dist_coeffs);
-	
-	Mat cv_frame_display = cv_frame_undistorted.clone();
-	
-	FTransform new_transform;
-	if (DetectTags(cv_frame_undistorted, cv_frame_display, new_transform))
-		world_transform = new_transform;
-	
-	
-	DetectBlob(cv_frame_undistorted, cv_frame_display, camera->low_H, camera->low_S, camera->low_V, camera->high_H, camera->high_S, camera->high_V);
-	
-	cvtColor(cv_frame_display, cv_display, COLOR_BGR2BGRA);
 
 	auto time_end = std::chrono::high_resolution_clock::now().time_since_epoch();
 
-	UE_LOG(LogTemp, Display, TEXT("Time to process frame: %f ms, %f fps"), double((time_end-time_start).count()) / 1e6, 1e9 / double((time_end-time_start).count()));
+	UE_LOG(LogTemp, Display, TEXT("Time to uncompress frame: %f ms, %f fps"),
+	       double((time_end-time_start).count()) / 1e6, 1e9 / double((time_end-time_start).count()));
 
+	Mat camera_matrix = (cv::Mat_<double>(3, 3) <<
+		camera->focal_length.X, 0, cv_size.width / 2,
+		0, camera->focal_length.Y, cv_size.height / 2,
+		0, 0, 1);
+
+	// Create a vector of distortion coefficients
+	Mat dist_coeffs = (cv::Mat_<double>(5, 1) << camera->k_twins.X, camera->k_twins.Y, camera->p_twins.X, camera->
+		p_twins.Y, 0);
+
+	Mat cv_frame_undistorted;
+	undistort(cv_frame, cv_frame_undistorted, camera_matrix, dist_coeffs);
+
+	Mat cv_frame_display = cv_frame_undistorted.clone();
+
+	FTransform new_transform;
+	if (DetectTags(cv_frame_undistorted, cv_frame_display, new_transform))
+		world_transform = new_transform;
+
+
+	DetectBlob(cv_frame_undistorted, cv_frame_display, camera->low_H, camera->low_S, camera->low_V, camera->high_H,
+	           camera->high_S, camera->high_V);
+
+	cvtColor(cv_frame_display, cv_display, COLOR_BGR2BGRA);
+
+	stbi_image_free(UncompressedData); // free allocated data from cv_frame
 }
