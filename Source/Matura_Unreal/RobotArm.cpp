@@ -154,7 +154,7 @@ void ARobotArm::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-#ifdef WITH_EDITOR
+#if WITH_EDITOR
 void ARobotArm::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 {
 	UpdateRotations();

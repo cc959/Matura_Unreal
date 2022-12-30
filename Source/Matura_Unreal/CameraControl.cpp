@@ -33,7 +33,7 @@ void ACameraControl::Tick(float DeltaTime)
 
 					if (auto slot = Cast<UCanvasPanelSlot>(camera_preview->Slot))
 					{
-						slot->SetSize(FVector2D(camera->camera_manager->cv_size.width, camera->camera_manager->cv_size.height));
+						slot->SetSize(FVector2D(camera->cv_size.width, camera->cv_size.height));
 						slot->SetPosition(translation);
 					}
 					

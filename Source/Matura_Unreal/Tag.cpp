@@ -34,6 +34,7 @@ void ATag::OnConstruction(const FTransform &transform)
 	Super::OnConstruction(transform);
 }
 
+#if WITH_EDITOR
 void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 {
 	UpdateTexture();
@@ -42,6 +43,7 @@ void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 
 	mesh->SetRelativeScale3D(FVector(tag_size));
 }
+#endif
 
 void ATag::UpdateTexture()
 {
