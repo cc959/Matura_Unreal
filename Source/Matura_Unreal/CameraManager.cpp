@@ -60,115 +60,99 @@ Mat ConvertToCameraMatrix(FTransform transform)
 	return RT.rowRange(0, 3);
 }
 
-struct Detection
+void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* past_ball_positions)
 {
-	Point2d position;
-	double time;
-};
+	int frame_id = 0;
+	while (run_thread)
+	{
+		if (!camera || !camera->finished_init)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s is not ready yet or null"), *camera->camera_path)
+			usleep(10000); //wait 10 ms
+			continue;
+		}
+
+		double time = camera->SyncFrame();
+		camera->GetFrame();
+
+		Point2d ball_position = camera->FindBall();
+
+		ball_position_mut.lock();
+		while (past_ball_positions->size() && past_ball_positions->front().time < time - 1000)
+			past_ball_positions->pop_front();
+
+		if (ball_position != Point2d{-1, -1})
+			past_ball_positions->push_back({ball_position, time});
+		ball_position_mut.unlock();
+		
+		if (frame_id++ % 10 == 0)
+		{
+			FTransform camera_transform = camera->LocalizeCamera();
+			if (!camera_transform.Equals(FTransform::Identity))
+				camera->april_transform = camera_transform;
+		}
+	}
+}
 
 uint32 CameraManager::Run()
 {
-	int frame_id = 0;
+	TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
 
-	vector<deque<Detection>> past_ball_positions;
-
+	vector<deque<Detection>> past_ball_positions(cameras.Num());
+	
+	for (int i = 0; i < cameras.Num(); i++) 
+		camera_threads.push_back(Async(EAsyncExecution::Thread, [&, i, cameras]
+		{
+			CameraLoop(cameras[i], &past_ball_positions[i]);
+		}));
+	
 	while (run_thread)
 	{
-	start:
-		// make copy of cameras used in case updated in editor while processing
-		TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
+		usleep(10000);
+		vector<Point2d> ball_points;
 
-		for (ATrackingCamera* camera : cameras)
-			if (!camera || !camera->finished_init)
-			{
-				UE_LOG(LogTemp, Error, TEXT("At least one camera is not ready yet or null"))
-				usleep(10000); //wait 10 ms
-				goto start;
-			}
-
-		if (past_ball_positions.size() != cameras.Num())
-			past_ball_positions = vector(cameras.Num(), deque<Detection>());
-
-		auto time_start = chrono::high_resolution_clock::now();
-
-		vector<TFuture<double>> sync_threads;
-		for (ATrackingCamera* camera : cameras)
-			sync_threads.push_back(Async(EAsyncExecution::Thread, [camera] { return camera->SyncFrame(); }));
-
-		vector<double> cap_times;
-
-		for (auto& future : sync_threads)
-			cap_times.push_back(future.Get());
-
-		UE_LOG(LogTemp, Warning, TEXT("Capture times:\n%s: %f\n%s: %f"), *cameras[0]->camera_path, cap_times[0],
-		       *cameras[1]->camera_path, cap_times[1]);
-
-		vector<TFuture<void>> processing_threads;
-
-		// decompress frames in parallel
-		for (ATrackingCamera* camera : cameras)
-			processing_threads.push_back(Async(EAsyncExecution::Thread, [camera] { camera->GetFrame(); }));
-
-		// make sure they are all done
-		for (auto& future : processing_threads)
-			future.Wait();
-
-		vector<TFuture<Point2d>> detection_threads;
-		// decompress frames in parallel
-		for (ATrackingCamera* camera : cameras)
-			detection_threads.push_back(Async(EAsyncExecution::Thread, [camera] { return camera->FindBall(); }));
+		ball_position_mut.lock();
+		auto ball_pos_backup = past_ball_positions;
+		ball_position_mut.unlock();
+		
+		double time = 1e20;
 
 		for (int i = 0; i < cameras.Num(); i++)
-		{
-			auto ball_point = detection_threads[i].Get();
-
-			if (ball_point != Point2d{-1, -1})
-				past_ball_positions[i].push_back({ball_point, cap_times[i]});
-		}
-
-		vector<Point2d> ball_points; // TODO: Implement parabolic predictions instead of linear
-
-		UE_LOG(LogTemp, Error, TEXT("send help %d"), past_ball_positions.size());
-
-
+			if (ball_pos_backup[i].size())
+				UE_LOG(LogTemp, Warning, TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path, ball_pos_backup[i].back().time);
+		
+		for (auto& ball_position : ball_pos_backup)
+			if (ball_position.size())
+				time = min(time, ball_position.back().time);
+		
 		for (int i = 0; i < cameras.Num(); i++)
 		{
-			double time = *max_element(cap_times.begin(), cap_times.end());
-
-
-			while (past_ball_positions[i].size() && past_ball_positions[i].front().time < time - 200.)
-				// discard points that are more than a two tenths of a second old
-				past_ball_positions[i].pop_front();
-
-			if (past_ball_positions[i].size() < 2)
+			if (ball_pos_backup[i].size() < 2)
 				ball_points.push_back({-1, -1});
 			else
 			{
-				Vec2d velocity = past_ball_positions[i].back().position
-					- past_ball_positions[i][past_ball_positions[i].size() - 2].position;
+				int j = 0;
+				while (j < ball_pos_backup[i].size() - 1 && ball_pos_backup[i][j].time < time)
+					j++;
 
-				velocity /= past_ball_positions[i].back().time
-					- past_ball_positions[i][past_ball_positions[i].size() - 2].time;
+				if (j == 0)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Something seems wrong with the cameras, they seem very desyncronized!"));
+					ball_points.push_back({-1, -1});
+					continue;
+				}
+				
+				Vec2d velocity = ball_pos_backup[i][j].position
+					- ball_pos_backup[i][j-1].position;
 
-				Vec2d current_position = Vec2d(past_ball_positions[i].back().position)
-					+ velocity * (time - past_ball_positions[i].back().time);
+				velocity /= past_ball_positions[i][j].time
+					- ball_pos_backup[i][j-1].time;
+
+				Vec2d current_position = Vec2d(ball_pos_backup[i][j-1].position)
+					+ velocity * (time - ball_pos_backup[i][j-1].time);
 				ball_points.push_back(current_position);
 			}
 		}
-
-		if (frame_id++ % 10 == 0) // every 10 frames, look at apriltag
-			for (ATrackingCamera* camera : cameras)
-			{
-				Async(EAsyncExecution::Thread, [camera]()
-				{
-					FTransform transform = camera->LocalizeCamera();
-					if (!transform.Equals(FTransform::Identity))
-					{
-						camera->april_transform = transform;
-					}
-				});
-			}
-
 		// compute triangulation of points
 		vector<Mat> projection_matrices;
 		for (ATrackingCamera* camera : cameras)
@@ -197,12 +181,11 @@ uint32 CameraManager::Run()
 
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
-
-		auto time_end = chrono::high_resolution_clock::now();
-
-		UE_LOG(LogTemp, Warning, TEXT("One tracking run took %f ms -> %f fps"), (time_end - time_start).count() / 1e6,
-		       1e9 / (time_end - time_start).count());
 	}
+
+	for (auto& f : camera_threads) // wait for all threads to stop
+		f.Wait();
+	
 	thread_stopped = true;
 
 	return 0;

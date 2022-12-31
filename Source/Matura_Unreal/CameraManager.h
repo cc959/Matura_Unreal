@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
+#include <deque>
+
 #include "Ball.h"
+#include "TrackingCamera.h"
+
 
 class MATURA_UNREAL_API CameraManager : public FRunnable
 {
@@ -23,6 +27,16 @@ public:
 	virtual void Stop() override;
 
 private:
+
+	struct Detection
+	{
+		Point2d position;
+		double time;
+	};
+
+	std::mutex ball_position_mut;
+	void CameraLoop(ATrackingCamera* camera, std::deque<Detection>* past_ball_positions);
+	std::vector<TFuture<void>> camera_threads;
 
 	// Thread handle. Control the thread using this, with operators like Kill and Suspend
 	FRunnableThread* Thread;
