@@ -74,7 +74,7 @@ public:
 
 	double SyncFrame();
 	void GetFrame();
-	Point2f FindBall();
+	Point2d FindBall();
 	FTransform LocalizeCamera();
 
 	void ReleaseCamera();
@@ -85,6 +85,10 @@ public:
 
 	Mat K() const;
 	Mat p() const;
+	bool finished_init = true;
+
+	Point2d ball;
+	FTransform april_transform = FTransform::Identity;
 
 protected:
 	// Called when the game starts or when spawned
@@ -105,6 +109,7 @@ protected:
 	
 	std::vector<Point2f> ball_path;
 	int ball_steps_skipped = 0;
+
 	
 public:
 	// Called every frame

@@ -32,13 +32,24 @@ void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	manager = new CameraManager(this);
 }
 
 // Called every frame
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+ 	if (!position.ContainsNaN())
+		SetActorLocation(position);
 }
+
+void ABall::BeginDestroy()
+{
+	if (manager)
+		delete manager;
+
+	Super::BeginDestroy();
+}
+
 

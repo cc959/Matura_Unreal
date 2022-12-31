@@ -16,6 +16,7 @@ class MATURA_UNREAL_API ABall : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABall();
+	FVector position = FVector(0, 0, 0);
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,7 +24,7 @@ protected:
 
 	UStaticMeshComponent* ball_mesh;
 
-	CameraManager manager;
+	class CameraManager* manager;
 
 public:	
 	// Called every frame
@@ -32,6 +33,8 @@ public:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+
+	virtual void BeginDestroy() override;
 
 	UPROPERTY(EditAnywhere, DisplayName="Displayed Ball size (m)")
 	float display_size = 0.5;
