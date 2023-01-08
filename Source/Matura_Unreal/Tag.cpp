@@ -22,6 +22,8 @@ ATag::ATag()
 	ConstructorHelpers::FObjectFinder<UMaterial> material(TEXT("/Game/apriltag-imgs/UnlitTag.UnlitTag"));
 	if (material.Object)
 		mesh->SetMaterial(0, material.Object);
+
+	UpdateScale();
 }
 
 void ATag::Clicked(UPrimitiveComponent *Target, FKey ButtonPressed)
@@ -34,14 +36,21 @@ void ATag::OnConstruction(const FTransform &transform)
 	Super::OnConstruction(transform);
 }
 
+void ATag::UpdateScale()
+{
+	static const double scale_factor[] = {8./6., 9./7., 10./8., 9./5., 11./5., 10./6., 9./5., 10./6.};
+	mesh->SetWorldScale3D(FVector(tag_size * scale_factor[tag_family]));
+}
+
 #if WITH_EDITOR
 void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 {
 	UpdateTexture();
 
+	UpdateScale();
+	
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	mesh->SetRelativeScale3D(FVector(tag_size));
 }
 #endif
 
@@ -51,7 +60,7 @@ void ATag::UpdateTexture()
 	tag_id = FMath::Clamp(tag_id, 0, max_id[tag_family]);
 
 	static const std::string family_names[] = {"tag16h5", "tag25h9", "tag36h11", "tagCircle21h7", "tagCircle49h12", "tagCustom48h12", "tagStandard41h12", "tagStandard52h13"};
-	static const std::string tag_pre[] = {"tag16_05_", "tag25_09_", "tag36_11_", "tag21_07_", "tag49_12_", "tag48_12_", "tag41_12_", "tag52_13_"};
+	static const std::string tag_pre[] = {"tag16_05_", "tag25_09_", "tag36_11_", "tag21_07_", "tag49_12_", "tag48_12_", "tag41_12_",  "tag52_13_"};
 
 	std::stringstream ss;
 	ss << std::setw(5) << std::setfill('0') << tag_id;
@@ -84,6 +93,8 @@ void ATag::BeginPlay()
 {
 	mesh->OnClicked.AddDynamic(this, &ATag::Clicked);
 
+	UpdateScale();
+	
 	Super::BeginPlay();
 }
 

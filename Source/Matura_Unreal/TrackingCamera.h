@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <queue>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
@@ -75,6 +77,8 @@ public:
 	double SyncFrame();
 	void GetFrame();
 	Point2d FindBall();
+	void RecalculateAverageTransform();
+	void DrawDetectedTags();
 	FTransform LocalizeCamera();
 
 	void ReleaseCamera();
@@ -88,7 +92,8 @@ public:
 	bool finished_init = true;
 
 	Point2d ball;
-	FTransform april_transform = FTransform::Identity;
+	std::deque<FTransform> april_transforms;
+	FTransform average_april_transform;
 
 protected:
 	// Called when the game starts or when spawned
@@ -109,6 +114,8 @@ protected:
 	
 	std::vector<Point2f> ball_path;
 	int ball_steps_skipped = 0;
+
+	std::vector<apriltag_detection_t> last_tags;
 
 	
 public:
@@ -182,6 +189,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (UIMin = "-1.0", UIMax = "1.0"))
 	float learning_rate = -1;
 
+	UPROPERTY(EditAnywhere, Category = BlobParams, DisplayName = "Minimum Blob Size (px)")
+	int min_blob_size = 300;
+	
 	UPROPERTY(EditAnywhere, Category = BlobParams)
 	bool display_threshold_frame = false;
 

@@ -371,7 +371,7 @@ Point2d ATrackingCamera::FindBall()
 			}
 		}
 
-		if (best_contour != -1 && area > 600 * factor_used * factor_used) // at least 20x20 pixels seems reasonable
+		if (best_contour != -1 && area > min_blob_size * factor_used * factor_used) // at least 20x20 pixels seems reasonable
 		{
 			vector<vector<Point>> contours_to_draw = {{}};
 
@@ -415,6 +415,46 @@ Point2d ATrackingCamera::FindBall()
 	return ball = det;
 }
 
+void ATrackingCamera::RecalculateAverageTransform()
+{
+	FTransform average = FTransform::Identity;
+
+	for (int i = 0; i < april_transforms.size(); i++)
+	{
+		average.Blend(average, april_transforms[i], 1 / double(i + 1));
+	}
+
+	average_april_transform = average;
+}
+
+void ATrackingCamera::DrawDetectedTags()
+{
+	for (auto det : last_tags)
+	{
+		line(cv_debug_frame, Point(det.p[0][0], det.p[0][1]),
+			 Point(det.p[1][0], det.p[1][1]),
+			 Scalar(0xff, 0, 0, 0xff), 2);
+		line(cv_debug_frame, Point(det.p[0][0], det.p[0][1]),
+			 Point(det.p[3][0], det.p[3][1]),
+			 Scalar(0, 0xff, 0, 0xff), 2);
+		line(cv_debug_frame, Point(det.p[1][0], det.p[1][1]),
+			 Point(det.p[2][0], det.p[2][1]),
+			 Scalar(0, 0, 0xff, 0xff), 2);
+		line(cv_debug_frame, Point(det.p[2][0], det.p[2][1]),
+			 Point(det.p[3][0], det.p[3][1]),
+			 Scalar(0, 0, 0xff, 0xff), 2);
+
+		string text = to_string(det.id);
+		int fontface = FONT_HERSHEY_SCRIPT_SIMPLEX;
+		double fontscale = 1.0;
+		int baseline;
+		Size textsize = getTextSize(text, fontface, fontscale, 2,
+									&baseline);
+		putText(cv_debug_frame, text, Point(det.c[0] - textsize.width / 2, det.c[1] + textsize.height / 2),
+				fontface, fontscale, Scalar(0, 0x99, 0xff, 0xff), 2);
+	}
+}
+
 FTransform ATrackingCamera::LocalizeCamera()
 {
 	if (!cv_cap.isOpened() && finished_init)
@@ -450,17 +490,23 @@ FTransform ATrackingCamera::LocalizeCamera()
 	FTransform average_transform = FTransform::Identity;
 	float total_transformations = 0;
 
+	last_tags.clear();
+	
 	// Draw detection outlines
 	for (int i = 0; i < zarray_size(detections); i++)
 	{
 		std::map<string, int> family_names = {
 			{"tag16h5", 0}, {"tag25h9", 1}, {"tag36h11", 2}, {"tagCircle21h7", 3}, {"tagCircle49h12", 4},
-			{"tagStandard41h12", 5}, {"tagStandard52h13", 6}, {"tagCustom48h12", 7}
+			{"tagCustom48h12", 5}, {"tagStandard41h12", 6}, {"tagStandard52h13", 7}
 		};
 
 		apriltag_detection_t* det;
 		zarray_get(detections, i, &det);
 
+		last_tags.push_back(*det);
+		
+		FString name = det->family->name;
+		
 		ATag* det_tag = NULL;
 		for (ATag* tag : april_tags)
 		{
@@ -470,9 +516,10 @@ FTransform ATrackingCamera::LocalizeCamera()
 
 		if (det_tag)
 		{
+
 			apriltag_detection_info_t info;
 			info.det = det;
-			info.tagsize = 100; // constant 1m (100cm) -> scaling is applied later on with the tag transformation
+			info.tagsize = det_tag->tag_size * 100;
 			info.fx = focal_length.X;
 			info.fy = focal_length.Y;
 			info.cx = cv_size.width / 2; // using half the resolution for now
@@ -490,8 +537,8 @@ FTransform ATrackingCamera::LocalizeCamera()
 					rotation_matrix.ToQuat().Euler() * FVector(-1, -1, 1)).
 				ToMatrix();
 			relative_transformation.SetOrigin(FVector(pose.t->data[0], pose.t->data[1], -pose.t->data[2]));
-
-			FMatrix tag_transformation = det_tag->mesh->GetRelativeTransform().ToMatrixWithScale();
+			
+			FMatrix tag_transformation = det_tag->mesh->GetComponentTransform().ToMatrixNoScale();
 			FMatrix world_transformation = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() *
 				relative_transformation.Inverse() * tag_transformation;
 
@@ -499,36 +546,15 @@ FTransform ATrackingCamera::LocalizeCamera()
 			                        1 / (total_transformations + 1));
 			total_transformations++;
 		}
-
-		line(cv_debug_frame, Point(det->p[0][0], det->p[0][1]),
-		     Point(det->p[1][0], det->p[1][1]),
-		     Scalar(0xff, 0, 0), 2);
-		line(cv_debug_frame, Point(det->p[0][0], det->p[0][1]),
-		     Point(det->p[3][0], det->p[3][1]),
-		     Scalar(0, 0xff, 0), 2);
-		line(cv_debug_frame, Point(det->p[1][0], det->p[1][1]),
-		     Point(det->p[2][0], det->p[2][1]),
-		     Scalar(0, 0, 0xff), 2);
-		line(cv_debug_frame, Point(det->p[2][0], det->p[2][1]),
-		     Point(det->p[3][0], det->p[3][1]),
-		     Scalar(0, 0, 0xff), 2);
-
-		string text = to_string(det->id);
-		int fontface = FONT_HERSHEY_SCRIPT_SIMPLEX;
-		double fontscale = 1.0;
-		int baseline;
-		Size textsize = getTextSize(text, fontface, fontscale, 2,
-		                            &baseline);
-		putText(cv_debug_frame, text, Point(det->c[0] - textsize.width / 2, det->c[1] + textsize.height / 2),
-		        fontface, fontscale, Scalar(0, 0x99, 0xff), 2);
 	}
+
+	apriltag_detections_destroy(detections);
 
 	auto time_after = chrono::high_resolution_clock::now();
 
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
-
-
+	
 	return average_transform;
 }
 
@@ -618,7 +644,7 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 // Called when the game starts or when spawned
 void ATrackingCamera::BeginPlay()
 {
-	april_transform = GetActorTransform();
+	april_transforms.push_back(GetActorTransform());
 	InitCamera();
 
 	if (!cv_cap.isOpened())
@@ -689,8 +715,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 		DrawDebugLine(GetWorld(), origin, origin + dir * 1000, FColor::Red, false, -1, 1, 3);
 	}
 
-	if (!april_transform.Equals(FTransform::Identity))
-		SetActorRelativeTransform(april_transform);
+	SetActorRelativeTransform(average_april_transform);
 	
 	camera_mesh->SetVisibility(!IsPlayerControlled());
 	image_plate->SetVisibility(IsPlayerControlled() && cv_cap.isOpened());

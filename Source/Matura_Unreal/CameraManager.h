@@ -26,11 +26,19 @@ public:
 	// Clean up any memory you allocated here
 	virtual void Stop() override;
 
+	void DrawBallHistory();
+	
 private:
 
 	struct Detection
 	{
 		Point2d position;
+		double time;
+	};
+
+	struct Position
+	{
+		FVector position;
 		double time;
 	};
 

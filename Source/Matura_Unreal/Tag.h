@@ -16,8 +16,9 @@ enum TagFamily
 	tag36h11 = 2 UMETA(DisplayName = "36h11"),
 	tagCircle21h7 = 3 UMETA(DisplayName = "Circle21h7"),
 	tagCircle49h12 = 4 UMETA(DisplayName = "Circle49h12"),
-	tagCurtom48h12 = 5 UMETA(DisplayName = "Curtom48h12"),
-	tagStandard52h13 = 6 UMETA(DisplayName = "Standard52h13")
+	tagCustom48h12 = 5 UMETA(DisplayName = "Custom48h12"),
+	tagStandard41h12 = 6 UMETA(DisplayName = "Standard41h12"),
+	tagStandard52h13 = 7 UMETA(DisplayName = "Standard52h13")
 };
 
 UCLASS()
@@ -29,6 +30,7 @@ public:
 	// Sets default values for this actor's properties
 	ATag();
 	virtual void OnConstruction(const FTransform& transform) override;
+	void UpdateScale();
 
 protected:
 	// Called when the game starts or when spawned

@@ -84,13 +84,21 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* past_b
 		if (ball_position != Point2d{-1, -1})
 			past_ball_positions->push_back({ball_position, time});
 		ball_position_mut.unlock();
+
+		camera->DrawDetectedTags();
 		
 		if (frame_id++ % 10 == 0)
 		{
 			FTransform camera_transform = camera->LocalizeCamera();
 			if (!camera_transform.Equals(FTransform::Identity))
-				camera->april_transform = camera_transform;
+			{
+				camera->april_transforms.push_back(camera_transform);
+				while (camera->april_transforms.size() > 10)
+					camera->april_transforms.pop_front();
+				camera->RecalculateAverageTransform();
+			}
 		}
+
 	}
 }
 
@@ -98,12 +106,14 @@ uint32 CameraManager::Run()
 {
 	TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
 
-	vector<deque<Detection>> past_ball_positions(cameras.Num());
+	vector<deque<Detection>> past_ball_2d_detections(cameras.Num());
+
+	deque<Position> past_ball_positions;
 	
 	for (int i = 0; i < cameras.Num(); i++) 
 		camera_threads.push_back(Async(EAsyncExecution::Thread, [&, i, cameras]
 		{
-			CameraLoop(cameras[i], &past_ball_positions[i]);
+			CameraLoop(cameras[i], &past_ball_2d_detections[i]);
 		}));
 	
 	while (run_thread)
@@ -112,13 +122,13 @@ uint32 CameraManager::Run()
 		vector<Point2d> ball_points;
 
 		ball_position_mut.lock();
-		auto ball_pos_backup = past_ball_positions;
+		auto ball_pos_backup = past_ball_2d_detections;
 		ball_position_mut.unlock();
 		
 		double time = 1e20;
 
 		for (int i = 0; i < cameras.Num(); i++)
-			if (ball_pos_backup[i].size())
+			if (ball_pos_backup[i].size() && cameras[i]->debug_output)
 				UE_LOG(LogTemp, Warning, TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path, ball_pos_backup[i].back().time);
 		
 		for (auto& ball_position : ball_pos_backup)
@@ -145,7 +155,7 @@ uint32 CameraManager::Run()
 				Vec2d velocity = ball_pos_backup[i][j].position
 					- ball_pos_backup[i][j-1].position;
 
-				velocity /= past_ball_positions[i][j].time
+				velocity /= past_ball_2d_detections[i][j].time
 					- ball_pos_backup[i][j-1].time;
 
 				Vec2d current_position = Vec2d(ball_pos_backup[i][j-1].position)
@@ -157,7 +167,7 @@ uint32 CameraManager::Run()
 		vector<Mat> projection_matrices;
 		for (ATrackingCamera* camera : cameras)
 		{
-			Mat RT = ConvertToCameraMatrix(camera->april_transform);
+			Mat RT = ConvertToCameraMatrix(camera->average_april_transform);
 			Mat projection = camera->K() * RT;
 			projection_matrices.push_back(projection);
 		}
@@ -181,6 +191,8 @@ uint32 CameraManager::Run()
 
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
+		if (abs(time - past_ball_positions.back().time) > 1e-3)
+			past_ball_positions.push_back({p, time});
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop
@@ -198,4 +210,9 @@ void CameraManager::Stop()
 	while (!thread_stopped) { usleep(1); }
 
 	FRunnable::Stop();
+}
+
+void CameraManager::DrawBallHistory()
+{
+	vector<float> 
 }
