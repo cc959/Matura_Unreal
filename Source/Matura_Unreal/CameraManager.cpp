@@ -2,6 +2,8 @@
 
 #include "CameraManager.h"
 
+#include <filesystem>
+
 using namespace std;
 #include <thread>
 #include <deque>
@@ -60,9 +62,12 @@ Mat ConvertToCameraMatrix(FTransform transform)
 	return RT.rowRange(0, 3);
 }
 
-void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* past_ball_positions)
+void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2d_detections)
 {
+	TFuture<FTransform> transform_future;
+
 	int frame_id = 0;
+	
 	while (run_thread)
 	{
 		if (!camera || !camera->finished_init)
@@ -72,24 +77,24 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* past_b
 			continue;
 		}
 
-		double time = camera->SyncFrame();
+		double time = camera->SyncFrame() / 1000.;
 		camera->GetFrame();
 
 		Point2d ball_position = camera->FindBall();
 
-		ball_position_mut.lock();
-		while (past_ball_positions->size() && past_ball_positions->front().time < time - 1000)
-			past_ball_positions->pop_front();
+		ball_detection_2d_mut.lock();
+		while (ball_2d_detections->size() && ball_2d_detections->front().time < time - 1.)
+			ball_2d_detections->pop_front();
 
 		if (ball_position != Point2d{-1, -1})
-			past_ball_positions->push_back({ball_position, time});
-		ball_position_mut.unlock();
+			ball_2d_detections->push_back({ball_position, time});
+		ball_detection_2d_mut.unlock();
 
 		camera->DrawDetectedTags();
-		
-		if (frame_id++ % 10 == 0)
+
+		if (transform_future.IsReady())
 		{
-			FTransform camera_transform = camera->LocalizeCamera();
+			FTransform camera_transform = transform_future.Get();
 			if (!camera_transform.Equals(FTransform::Identity))
 			{
 				camera->april_transforms.push_back(camera_transform);
@@ -97,69 +102,75 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* past_b
 					camera->april_transforms.pop_front();
 				camera->RecalculateAverageTransform();
 			}
+			transform_future = TFuture<FTransform>();
 		}
 
+		if (!transform_future.IsValid() && frame_id++ % 10 == 0)
+			transform_future = Async(EAsyncExecution::Thread, [camera]{return camera->LocalizeCamera(camera->cv_frame);});
 	}
+	if (transform_future.IsValid())
+		transform_future.Wait();
 }
 
 uint32 CameraManager::Run()
 {
 	TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
 
-	vector<deque<Detection>> past_ball_2d_detections(cameras.Num());
+	vector<deque<Detection>> ball_2d_detections(cameras.Num());
 
-	deque<Position> past_ball_positions;
-	
-	for (int i = 0; i < cameras.Num(); i++) 
+
+	for (int i = 0; i < cameras.Num(); i++)
 		camera_threads.push_back(Async(EAsyncExecution::Thread, [&, i, cameras]
 		{
-			CameraLoop(cameras[i], &past_ball_2d_detections[i]);
+			CameraLoop(cameras[i], &ball_2d_detections[i]);
 		}));
-	
+
 	while (run_thread)
 	{
 		usleep(10000);
 		vector<Point2d> ball_points;
 
-		ball_position_mut.lock();
-		auto ball_pos_backup = past_ball_2d_detections;
-		ball_position_mut.unlock();
-		
+		ball_detection_2d_mut.lock();
+		auto ball_det_backup = ball_2d_detections;
+		ball_detection_2d_mut.unlock();
+
 		double time = 1e20;
 
 		for (int i = 0; i < cameras.Num(); i++)
-			if (ball_pos_backup[i].size() && cameras[i]->debug_output)
-				UE_LOG(LogTemp, Warning, TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path, ball_pos_backup[i].back().time);
-		
-		for (auto& ball_position : ball_pos_backup)
+			if (ball_det_backup[i].size() && cameras[i]->debug_output)
+				UE_LOG(LogTemp, Warning, TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path,
+			       ball_det_backup[i].back().time);
+
+		for (auto& ball_position : ball_det_backup)
 			if (ball_position.size())
 				time = min(time, ball_position.back().time);
-		
+
 		for (int i = 0; i < cameras.Num(); i++)
 		{
-			if (ball_pos_backup[i].size() < 2)
+			if (ball_det_backup[i].size() < 2)
 				ball_points.push_back({-1, -1});
 			else
 			{
 				int j = 0;
-				while (j < ball_pos_backup[i].size() - 1 && ball_pos_backup[i][j].time < time)
+				while (j < ball_det_backup[i].size() - 1 && ball_det_backup[i][j].time < time)
 					j++;
 
 				if (j == 0)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Something seems wrong with the cameras, they seem very desyncronized!"));
+					UE_LOG(LogTemp, Warning,
+					       TEXT("Something seems wrong with the cameras, they seem very desyncronized!"));
 					ball_points.push_back({-1, -1});
 					continue;
 				}
-				
-				Vec2d velocity = ball_pos_backup[i][j].position
-					- ball_pos_backup[i][j-1].position;
 
-				velocity /= past_ball_2d_detections[i][j].time
-					- ball_pos_backup[i][j-1].time;
+				Vec2d velocity = ball_det_backup[i][j].position
+					- ball_det_backup[i][j - 1].position;
 
-				Vec2d current_position = Vec2d(ball_pos_backup[i][j-1].position)
-					+ velocity * (time - ball_pos_backup[i][j-1].time);
+				velocity /= ball_2d_detections[i][j].time
+					- ball_det_backup[i][j - 1].time;
+
+				Vec2d current_position = Vec2d(ball_det_backup[i][j - 1].position)
+					+ velocity * (time - ball_det_backup[i][j - 1].time);
 				ball_points.push_back(current_position);
 			}
 		}
@@ -191,13 +202,21 @@ uint32 CameraManager::Run()
 
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
-		if (abs(time - past_ball_positions.back().time) > 1e-3)
-			past_ball_positions.push_back({p, time});
+
+		ball_position_mut.lock();
+		{
+			if (ball_positions.empty() || abs(time - ball_positions.back().time) > 1e-3)
+				ball_positions.push_back({p, time});
+			while (abs(ball_positions.back().time - ball_positions.front().time) > 1)
+				// no point in recording more than 1 second
+				ball_positions.pop_front();
+		}
+		ball_position_mut.unlock();
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop
 		f.Wait();
-	
+
 	thread_stopped = true;
 
 	return 0;
@@ -214,5 +233,38 @@ void CameraManager::Stop()
 
 void CameraManager::DrawBallHistory()
 {
-	vector<float> 
+	vector<ParabPath> paths;
+	ball_position_mut.lock();
+	auto positions = ball_positions;
+	ball_position_mut.unlock();
+	
+	for (int i = 0; i < int(positions.size()) - 6; i+= 3)
+	{
+		auto path = ParabPath::from3Points(positions[i + 0], positions[i + 3], positions[i + 6]);
+		paths.push_back(path);
+
+		UE_LOG(LogTemp, Warning, TEXT("%f"), path.derivative2());
+
+		if (abs(path.derivative2() - (-9810)) < 400)
+		{
+			DrawDebugLine(ball->GetWorld(), positions[i].position, positions[i + 3].position, FColor::Red, false, -1, 1,10);
+		} else
+		{
+			DrawDebugLine(ball->GetWorld(), positions[i].position, positions[i + 3].position, FColor::Blue, false, -1, 0,10);
+		}
+	}
+
+	// bool color = 0;
+	// for (auto path_group : paths)
+	// {
+	// 	const double time_step = 0.01;
+	// 	
+	// 	for (double t = path_group.t0; t <= path_group.t1; t += time_step) // 50ms
+	// 		{
+	// 			DrawDebugLine(ball->GetWorld(), path_group(t), path_group(t + time_step),
+	// 			              color ? FColor::Red : FColor::Green,
+	// 			              false, -1, 1, 10);
+	// 		}
+	// 		color = !color;
+	// }
 }

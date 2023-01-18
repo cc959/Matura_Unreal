@@ -354,6 +354,9 @@ bool ARobotArm::ShouldTickIfViewportsOnly() const
 	return true;
 }
 
+
+#endif
+
 void ARobotArm::BeginDestroy()
 {
 	Super::BeginDestroy();
@@ -362,4 +365,3 @@ void ARobotArm::BeginDestroy()
 	if (serial_thread.IsValid())
 		serial_thread.Wait();
 }
-#endif

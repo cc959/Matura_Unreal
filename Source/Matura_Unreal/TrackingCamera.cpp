@@ -53,7 +53,7 @@ ATrackingCamera::ATrackingCamera()
 void ATrackingCamera::InitCamera()
 {
 	finished_init = false;
-	setNumThreads(16); // speed
+	//setNumThreads(16); // speed
 
 	cv_cap.open(TCHAR_TO_UTF8(*camera_path));
 
@@ -90,6 +90,24 @@ void ATrackingCamera::InitCamera()
 		UE_LOG(LogTemp, Warning, TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path,
 		       int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)),
 		       int(cv_cap.get(CAP_PROP_FPS)));
+
+		
+		camera_texture_2d = UTexture2D::CreateTransient(cv_size.width, cv_size.height, PF_R8G8B8A8);
+#if WITH_EDITORONLY_DATA
+		camera_texture_2d->MipGenSettings = TMGS_NoMipmaps;
+#endif
+
+		auto plate_config = image_plate->GetPlate();
+		{
+			if (plate_config.Material)
+				plate_config.DynamicMaterial = UMaterialInstanceDynamic::Create(plate_config.Material, this);
+
+			if (plate_config.DynamicMaterial)
+				plate_config.DynamicMaterial->SetScalarParameterValue(FName("Opacity"), plate_opacity);
+
+			plate_config.RenderTexture = camera_texture_2d;
+		}
+		image_plate->SetImagePlate(plate_config);
 	}
 	else
 	{
@@ -429,6 +447,7 @@ void ATrackingCamera::RecalculateAverageTransform()
 
 void ATrackingCamera::DrawDetectedTags()
 {
+	last_tags_mut.lock();
 	for (auto det : last_tags)
 	{
 		line(cv_debug_frame, Point(det.p[0][0], det.p[0][1]),
@@ -453,14 +472,12 @@ void ATrackingCamera::DrawDetectedTags()
 		putText(cv_debug_frame, text, Point(det.c[0] - textsize.width / 2, det.c[1] + textsize.height / 2),
 				fontface, fontscale, Scalar(0, 0x99, 0xff, 0xff), 2);
 	}
+	last_tags_mut.unlock();
 }
 
-FTransform ATrackingCamera::LocalizeCamera()
+FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 {
-	if (!cv_cap.isOpened() && finished_init)
-		return FTransform::Identity;
-
-	if (cv_frame.empty())
+	if (frame.empty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot localize camera"));
 		return FTransform::Identity;
@@ -469,7 +486,7 @@ FTransform ATrackingCamera::LocalizeCamera()
 	auto time_before = chrono::high_resolution_clock::now();
 	
 	Mat cv_frame_gray;
-	cvtColor(cv_frame, cv_frame_gray, COLOR_RGB2GRAY);
+	cvtColor(frame, cv_frame_gray, COLOR_RGB2GRAY);
 
 	// Make an image_u8_t header for the Mat data
 	image_u8_t im = {
@@ -490,6 +507,7 @@ FTransform ATrackingCamera::LocalizeCamera()
 	FTransform average_transform = FTransform::Identity;
 	float total_transformations = 0;
 
+	last_tags_mut.lock();
 	last_tags.clear();
 	
 	// Draw detection outlines
@@ -547,6 +565,7 @@ FTransform ATrackingCamera::LocalizeCamera()
 			total_transformations++;
 		}
 	}
+	last_tags_mut.unlock();
 
 	apriltag_detections_destroy(detections);
 
@@ -644,36 +663,11 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 // Called when the game starts or when spawned
 void ATrackingCamera::BeginPlay()
 {
-	april_transforms.push_back(GetActorTransform());
-	InitCamera();
-
-	if (!cv_cap.isOpened())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Could not open camera"));
-	}
-	else
-	{
-		camera_texture_2d = UTexture2D::CreateTransient(cv_size.width, cv_size.height, PF_R8G8B8A8);
-#if WITH_EDITORONLY_DATA
-		camera_texture_2d->MipGenSettings = TMGS_NoMipmaps;
-#endif
-	}
-
-	auto plate_config = image_plate->GetPlate();
-	{
-		if (plate_config.Material)
-			plate_config.DynamicMaterial = UMaterialInstanceDynamic::Create(plate_config.Material, this);
-
-		if (plate_config.DynamicMaterial)
-			plate_config.DynamicMaterial->SetScalarParameterValue(FName("Opacity"), plate_opacity);
-
-		plate_config.RenderTexture = camera_texture_2d;
-	}
-	image_plate->SetImagePlate(plate_config);
-
-	InitCamera();
-	
 	Super::BeginPlay();
+
+	
+	april_transforms.push_back(GetActorTransform());
+	
 }
 
 #if WITH_EDITOR
@@ -723,6 +717,5 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 void ATrackingCamera::BeginDestroy()
 {
-	ReleaseCamera();
 	Super::BeginDestroy();
 }

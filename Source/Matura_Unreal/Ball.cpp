@@ -32,6 +32,10 @@ void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	for (ATrackingCamera* camera : tracking_cameras)
+		camera->InitCamera();
+	
 	manager = new CameraManager(this);
 }
 
@@ -42,12 +46,17 @@ void ABall::Tick(float DeltaTime)
 	
  	if (!position.ContainsNaN())
 		SetActorLocation(position);
+
+	manager->DrawBallHistory();
 }
 
 void ABall::BeginDestroy()
 {
 	if (manager)
 		delete manager;
+
+	for (ATrackingCamera* camera : tracking_cameras)
+		camera->ReleaseCamera();
 
 	Super::BeginDestroy();
 }

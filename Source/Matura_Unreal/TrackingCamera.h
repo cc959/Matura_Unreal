@@ -79,7 +79,7 @@ public:
 	Point2d FindBall();
 	void RecalculateAverageTransform();
 	void DrawDetectedTags();
-	FTransform LocalizeCamera();
+	FTransform LocalizeCamera(Mat frame);
 
 	void ReleaseCamera();
 
@@ -95,13 +95,15 @@ public:
 	std::deque<FTransform> april_transforms;
 	FTransform average_april_transform;
 
+	Mat cv_frame;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	VideoCapture cv_cap;
 	
-	Mat cv_frame, cv_debug_frame;
+	Mat cv_debug_frame;
 	Ptr<BackgroundSubtractor> cv_bg_subtractor;
 	Ptr<SimpleBlobDetector> cv_blob_detector;
 	apriltag_detector* at_td;
@@ -115,6 +117,7 @@ protected:
 	std::vector<Point2f> ball_path;
 	int ball_steps_skipped = 0;
 
+	Mutex last_tags_mut;
 	std::vector<apriltag_detection_t> last_tags;
 
 	
