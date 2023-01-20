@@ -67,7 +67,7 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 	TFuture<FTransform> transform_future;
 
 	int frame_id = 0;
-	
+
 	while (run_thread)
 	{
 		if (!camera || !camera->finished_init)
@@ -92,21 +92,20 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 
 		camera->DrawDetectedTags();
 
+		int64_t now = chrono::high_resolution_clock::now().time_since_epoch().count();
+
 		if (transform_future.IsReady())
 		{
 			FTransform camera_transform = transform_future.Get();
 			if (!camera_transform.Equals(FTransform::Identity))
 			{
-				camera->april_transforms.push_back(camera_transform);
-				while (camera->april_transforms.size() > 10)
-					camera->april_transforms.pop_front();
-				camera->RecalculateAverageTransform();
+				camera->next_update_time = now + static_cast<int64_t>(camera->UpdateTransform(camera_transform) * 1e9);
 			}
 			transform_future = TFuture<FTransform>();
 		}
 
-		if (!transform_future.IsValid() && frame_id++ % 10 == 0)
-			transform_future = Async(EAsyncExecution::Thread, [camera]{return camera->LocalizeCamera(camera->cv_frame);});
+		if (!transform_future.IsValid() && now >= camera->next_update_time)
+			transform_future = Async(EAsyncExecution::Thread, [camera] { return camera->LocalizeCamera(camera->cv_frame); });
 	}
 	if (transform_future.IsValid())
 		transform_future.Wait();
@@ -205,13 +204,34 @@ uint32 CameraManager::Run()
 
 		ball_position_mut.lock();
 		{
-			if (ball_positions.empty() || abs(time - ball_positions.back().time) > 1e-3)
-				ball_positions.push_back({p, time});
+			ball_positions.push_back({p, time});
 			while (abs(ball_positions.back().time - ball_positions.front().time) > 1)
+			{
 				// no point in recording more than 1 second
 				ball_positions.pop_front();
+				//if (ball_paths.size()) ball_paths.pop_front();
+			}
 		}
 		ball_position_mut.unlock();
+
+		// if (ball_positions.size() >= 6)
+		// 	ball_paths.push_back(ParabPath::fromNPoints({ball_positions.end() - 6, ball_positions.end()}));
+		if (ball_positions.size() >= 10)
+		{
+			auto last = ball_positions.back();
+			double diff = ((tracking_path(last.time) - last.position) / last.position.ComponentMax(tracking_path(last.time))).GetAbsMax();
+			if (abs(tracking_path.derivative2() - -9810) < 1500 && diff < 0.15)
+			{
+				tracking_path = ParabPath::fromNPoints({ball_positions.end() - (++num_points_in_path), ball_positions.end()});
+				UE_LOG(LogTemp, Display, TEXT("%d"), num_points_in_path);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("maaaaaaaan %f, %f"), abs(tracking_path.derivative2() - -9810), diff);
+				tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()});
+				num_points_in_path = 10;
+			}
+		}
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop
@@ -235,36 +255,43 @@ void CameraManager::DrawBallHistory()
 {
 	vector<ParabPath> paths;
 	ball_position_mut.lock();
-	auto positions = ball_positions;
+	auto positions = ball_positions; // make a copy of the data so the camera thread is not held up too much
 	ball_position_mut.unlock();
-	
-	for (int i = 0; i < int(positions.size()) - 6; i+= 3)
+
+	if (positions.size() == 0)
+		return;
+
+
+	for (int i = 0; i < int(positions.size()) - 1; i++)
 	{
-		auto path = ParabPath::from3Points(positions[i + 0], positions[i + 3], positions[i + 6]);
-		paths.push_back(path);
+		DrawDebugLine(ball->GetWorld(), positions[i].position, positions[i + 1].position, FColor::Green, false, -1, 0, 10);
+	}
 
-		UE_LOG(LogTemp, Warning, TEXT("%f"), path.derivative2());
+	if (tracking_path.t0 != -1)
+	{
+		FColor color = FColor::Red;
+		color.R = min(255 * 100 / abs(tracking_path.derivative2() - -9810), 255.);
+		//tracking_path.Draw(ball->GetWorld(), color, 20, 1, -1);
 
-		if (abs(path.derivative2() - (-9810)) < 400)
+		if (abs(tracking_path.derivative2() - -9810) < 1500)
 		{
-			DrawDebugLine(ball->GetWorld(), positions[i].position, positions[i + 3].position, FColor::Red, false, -1, 1,10);
-		} else
-		{
-			DrawDebugLine(ball->GetWorld(), positions[i].position, positions[i + 3].position, FColor::Blue, false, -1, 0,10);
+			tracking_path.Draw(ball->GetWorld(), FColor::Blue, 20, 1, -1);
+
+			auto future_path = tracking_path + (tracking_path.t1 - tracking_path.t0);
+			future_path.t1 = future_path.t0 + 1;
+
+			future_path.Draw(ball->GetWorld(), FColor::Red, 15, 1, -1);
 		}
 	}
 
-	// bool color = 0;
-	// for (auto path_group : paths)
+	//stringstream ss; 
+	// for (int i = 0; i < int(positions.size()); i++)
 	// {
-	// 	const double time_step = 0.01;
-	// 	
-	// 	for (double t = path_group.t0; t <= path_group.t1; t += time_step) // 50ms
-	// 		{
-	// 			DrawDebugLine(ball->GetWorld(), path_group(t), path_group(t + time_step),
-	// 			              color ? FColor::Red : FColor::Green,
-	// 			              false, -1, 1, 10);
-	// 		}
-	// 		color = !color;
+	// 	ss << "{{" << positions[i].position.X << ", " << positions[i].position.Y << ", " << positions[i].position.Z << "}," << positions[i].time-t0 << "},\n";
 	// }
+	// ss << "\n\n\n";
+	//
+	// FString msg = ss.str().c_str();
+	//
+	// UE_LOG(LogTemp, Log, TEXT("%s"), *msg);
 }

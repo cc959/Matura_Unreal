@@ -77,7 +77,7 @@ public:
 	double SyncFrame();
 	void GetFrame();
 	Point2d FindBall();
-	void RecalculateAverageTransform();
+	double UpdateTransform(FTransform update);
 	void DrawDetectedTags();
 	FTransform LocalizeCamera(Mat frame);
 
@@ -92,14 +92,17 @@ public:
 	bool finished_init = true;
 
 	Point2d ball;
-	std::deque<FTransform> april_transforms;
+
 	FTransform average_april_transform;
+	std::deque<FTransform> april_transforms;
+	int64_t next_update_time = 0;
 
 	Mat cv_frame;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void RecalculateAverageTransform();
 
 	VideoCapture cv_cap;
 	
@@ -154,8 +157,12 @@ public:
 	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
 	float plate_opacity;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = AprilTag)
 	TArray<ATag *> april_tags;
+
+	UPROPERTY(EditAnywhere, Category = AprilTag, DisplayName="Minimum Update Rate (s)")
+	double update_rate = 1; // 100ms
+
 
 	UPROPERTY(EditAnywhere, Category = CameraParams)
 	FVector2D resolution;

@@ -445,6 +445,29 @@ void ATrackingCamera::RecalculateAverageTransform()
 	average_april_transform = average;
 }
 
+double ATrackingCamera::UpdateTransform(FTransform update)
+{
+	april_transforms.push_back(update);
+	while (april_transforms.size() > 10)
+		april_transforms.pop_front();
+
+	
+	if (april_transforms.size() < 10)
+	{
+		RecalculateAverageTransform();
+		return 0;
+	}
+
+	auto new_position = update.GetTranslation();
+	auto average_position = average_april_transform.GetTranslation();
+
+	auto relative_difference = ((new_position - average_position).GetAbs() / new_position.ComponentMax(average_position)).GetMax();
+
+	RecalculateAverageTransform();
+	
+	return pow(1. - min(relative_difference, 1.), 2.) * update_rate;
+}
+
 void ATrackingCamera::DrawDetectedTags()
 {
 	last_tags_mut.lock();
@@ -664,10 +687,6 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void ATrackingCamera::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
-	april_transforms.push_back(GetActorTransform());
-	
 }
 
 #if WITH_EDITOR
