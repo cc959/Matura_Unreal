@@ -9,6 +9,8 @@
 
 #include "CameraManager.h"
 
+#include "ParabPath.h"
+
 
 #include "ParabolaTest.generated.h"
 
@@ -26,7 +28,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	CameraManager::ParabPath path;
+	ParabPath path;
 	
 public:	
 	// Called every frame

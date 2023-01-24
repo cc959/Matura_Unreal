@@ -29,23 +29,23 @@ void AParabolaTest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	vector<CameraManager::Position> positions;
+	vector<Position> positions;
 
 	for (int i = 0; i < targets.Num(); i++)
 	{
 		if (targets[i])
-			positions.push_back(CameraManager::Position{targets[i]->GetActorLocation(), double(i)+1});
+			positions.push_back(Position{targets[i]->GetActorLocation(), double(i)+1});
 	}
 
 	if (positions.size() < 3)
 		return;
 	
-	path = CameraManager::ParabPath::fromNPoints(positions);
+	path = ParabPath::fromNPoints(positions);
 	path.Draw(GetWorld(), FColor::Red, 10, 1, -1);
 
 	DrawDebugSphere(GetWorld(), center, radius, 100, FColor::Blue, 0, -1);
 	
-	for (auto t : path.intersectSphere(center, radius))
+	for (auto t : path.IntersectSphere(center, radius))
 	{
 		UE_LOG(LogTemp, Display, TEXT("%f"), t);
 		DrawDebugSphere(GetWorld(), path(t), 20, 10, FColor::Green, 0, -1, 2, 3);

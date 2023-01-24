@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ParabPath.h"
 #include "CameraManager.h"
 #include "TrackingCamera.h"
 #include "GameFramework/Actor.h"
@@ -17,6 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	ABall();
 	FVector position = FVector(0, 0, 0);
+	ParabPath tracking_path = {};
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,11 +38,14 @@ public:
 
 	virtual void BeginDestroy() override;
 
-	UPROPERTY(EditAnywhere, DisplayName="Displayed Ball size (m)")
-	float display_size = 0.5;
+	UPROPERTY(EditAnywhere, DisplayName="Displayed Ball size")
+	double display_size = 0.5;
 	
-	UPROPERTY(EditAnywhere, DisplayName="Ball size (m)")
-	float ball_size = 0;
+	UPROPERTY(EditAnywhere, DisplayName="Ball size")
+	double ball_size = 0;
+
+	UPROPERTY(EditAnywhere, DisplayName="Gravitational Constant g")
+	double g = -9810;
 
 	UPROPERTY(EditAnywhere)
 	TArray<ATrackingCamera*> tracking_cameras;

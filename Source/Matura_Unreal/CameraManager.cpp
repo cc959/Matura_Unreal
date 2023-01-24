@@ -199,6 +199,9 @@ uint32 CameraManager::Run()
 				num++;
 			}
 
+		if (num == 0)
+			continue;
+
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
 
@@ -209,29 +212,33 @@ uint32 CameraManager::Run()
 			{
 				// no point in recording more than 1 second
 				ball_positions.pop_front();
-				//if (ball_paths.size()) ball_paths.pop_front();
 			}
 		}
 		ball_position_mut.unlock();
 
-		// if (ball_positions.size() >= 6)
-		// 	ball_paths.push_back(ParabPath::fromNPoints({ball_positions.end() - 6, ball_positions.end()}));
 		if (ball_positions.size() >= 10)
 		{
 			auto last = ball_positions.back();
 			double diff = ((tracking_path(last.time) - last.position) / last.position.ComponentMax(tracking_path(last.time))).GetAbsMax();
-			if (abs(tracking_path.derivative2() - -9810) < 1500 && diff < 0.15)
-			{
+
+			if (diff < 0.15)
 				tracking_path = ParabPath::fromNPoints({ball_positions.end() - (++num_points_in_path), ball_positions.end()});
-				UE_LOG(LogTemp, Display, TEXT("%d"), num_points_in_path);
-			}
 			else
 			{
-				UE_LOG(LogTemp, Display, TEXT("maaaaaaaan %f, %f"), abs(tracking_path.derivative2() - -9810), diff);
 				tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()});
+
+				if (abs(tracking_path.derivative2() - ball->g) > 1500)
+					tracking_path = {};
+
 				num_points_in_path = 10;
 			}
 		}
+		else
+		{
+			tracking_path = {};
+		}
+
+		ball->tracking_path = tracking_path;
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop
@@ -270,10 +277,10 @@ void CameraManager::DrawBallHistory()
 	if (tracking_path.t0 != -1)
 	{
 		FColor color = FColor::Red;
-		color.R = min(255 * 100 / abs(tracking_path.derivative2() - -9810), 255.);
+		color.R = min(255 * 100 / abs(tracking_path.derivative2() - ball->g), 255.);
 		//tracking_path.Draw(ball->GetWorld(), color, 20, 1, -1);
 
-		if (abs(tracking_path.derivative2() - -9810) < 1500)
+		if (abs(tracking_path.derivative2() - ball->g) < 1500)
 		{
 			tracking_path.Draw(ball->GetWorld(), FColor::Blue, 20, 1, -1);
 
