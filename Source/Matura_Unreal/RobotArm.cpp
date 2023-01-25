@@ -240,21 +240,19 @@ void ARobotArm::SendRotations()
 		interpolate(wrist_rotation, min_rotations[3], max_rotations[3], min_servo[3], max_servo[3]);
 	double hand_servo =
 		interpolate(hand_rotation, min_rotations[4], max_rotations[4], min_servo[4], max_servo[4]);
-
-	// TODO: Implement hand rotation
-
+	
 	std::string msg = "> " + std::to_string(int(base_servo)) + " " + std::to_string(int(lower_arm_servo)) + " " +
 		std::to_string(int(upper_arm_servo)) + " " + std::to_string(int(wrist_servo)) + " " + std::to_string(int(hand_servo)) + "\n";
 
 	if (debug_serial)
 	{
 		FString blub = msg.c_str();
-		UE_LOG(LogTemp, Display, TEXT("Message: \"%s\""), *blub);
+		UE_LOG(LogTemp, Display, TEXT("Serial port: %d Message: %s"), serial_port, *blub);
 	}
 
 	if (serial_port < 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Serial port is not open, can't send data!"));
+		UE_LOG(LogTemp, Warning, TEXT("Serial port is not open, can't send data!")); 
 		return;
 	}
 
@@ -290,8 +288,10 @@ bool ARobotArm::UpdateIK(FVector target)
 		return false;
 
 	FVector relative_position = target - ArmOrigin();
+
+	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
 	
-	double offset = asin(hoop_offset / FVector2d{relative_position.X, relative_position.Y}.Length());
+	double offset = asin(end_offset * 100 * base_component->GetActorScale3D().X / FVector2d{relative_position.X, relative_position.Y}.Length());
 	
 	// UE Coordinate system is sus
 	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset + PI;
@@ -355,9 +355,14 @@ void ARobotArm::TrackBall()
 		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, FColor::Blue, 0, -1);
 	
 	auto intersections = ball->tracking_path.IntersectSphere(ArmOrigin(), intersection_radius);
-	
-	while(intersections.size() && intersections[0] <= ball->tracking_path.t1) // only times in the future are valid - obviously
-		intersections.erase(intersections.begin());
+
+	// only times in the future are valid - obviously
+	remove_if(intersections.begin(), intersections.end(), [&](double p){ return p <= ball->tracking_path.t1 - ball->tracking_path.t0;});
+
+	for (auto x : intersections)
+		UE_LOG(LogTemp, Error, TEXT("%f"), x);
+
+	UE_LOG(LogTemp, Error, TEXT("Now: %f"), ball->tracking_path.t1 - ball->tracking_path.t0);
 	
 	if (intersections.size() == 0)
 		return;
@@ -375,9 +380,13 @@ void ARobotArm::TrackBall()
 		DrawDebugLine(GetWorld(), target, target + impact_velocity * 100, FColor::Red, false, -1, 1);
 	
 	FVector relative_position = target - ArmOrigin();
+	
+	bool fixed = false;
+	double offset = asin(end_offset * 100 * base_component->GetActorScale3D().X / FVector2d{relative_position.X, relative_position.Y}.Length());
+	
+	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset;
 
-	// UE Coordinate system is sus
-	double plane_angle = atan2(relative_position.X, relative_position.Y);
+	again:
 	
 	auto base_rotator = FQuat(FVector::UpVector, -plane_angle).Rotator();
 	impact_velocity = base_rotator.UnrotateVector(impact_velocity);
@@ -393,9 +402,14 @@ void ARobotArm::TrackBall()
 	double roll_angle = atan2(roll_down.X, roll_down.Z);
 
 	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * wrist_component->GetActorScale3D().X);
-	target += base_rotator.RotateVector(arm_offset);
 	
-	bool flipped = UpdateIK(target);
+	bool flipped = UpdateIK(target + base_rotator.RotateVector(arm_offset));
+	if (flipped && !fixed)
+	{
+		plane_angle -= 2 * offset;
+		fixed = true;
+		goto again;
+	}
 	
 	wrist_rotation = (flipped ? PI-pitch_angle : pitch_angle) / PI * 180 - lower_arm_rotation - upper_arm_rotation;
 	hand_rotation = roll_angle / PI * 180 + 90;

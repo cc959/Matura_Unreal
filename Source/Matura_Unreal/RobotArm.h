@@ -125,8 +125,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Hand length (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	double hand_length = 0.08;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Hoop offset (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
-	double hoop_offset = 0.01;
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball", EditConditionHides))
+	double end_offset = 0.01;
 	
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	double arm_range = 0.6;
