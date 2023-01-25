@@ -138,6 +138,7 @@ double CircularClamp(double& val, double low, double high, double step = 360)
 	return val;
 }
 
+
 void ARobotArm::UpdateRotations()
 {
 	if (update_type == Animation)
@@ -290,19 +291,24 @@ bool ARobotArm::UpdateIK(FVector target)
 
 	FVector relative_position = target - ArmOrigin();
 	
+	double offset = asin(hoop_offset / FVector2d{relative_position.X, relative_position.Y}.Length());
+	
 	// UE Coordinate system is sus
-	double plane_angle = atan2(relative_position.X, relative_position.Y) + PI;
+	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset + PI;
 
 	bool must_flip = (plane_angle > max(-min_rotations[0], -max_rotations[0]) / 180 * PI || plane_angle < min(-min_rotations[0], -max_rotations[0]) / 180 * PI);
-	
+
 	CircularClamp(plane_angle, -min_rotations[0] / 180 * PI, -max_rotations[0] / 180 * PI, PI);
+	
+	if (must_flip)
+		plane_angle -= 2 * offset;
+	
 	base_rotation = -plane_angle * 180 / PI;	
 	
 	FVector plane_up = {0, 0, 1};
 	FVector plane_right = {sin(plane_angle), cos(plane_angle), 0};
 
 	FVector2d plane_position = {relative_position.Dot(plane_right), relative_position.Dot(plane_up) };
-	
 
 	double a = lower_arm_length * 100 * lower_arm_component->GetActorScale3D().X;
 	double b = upper_arm_length * 100 * upper_arm_component->GetActorScale3D().X;
@@ -343,11 +349,10 @@ void ARobotArm::TrackBall()
 {
 	if (!ball || !ball->tracking_path.IsValid() || !base_component || !hand_component || !wrist_component)
 		return;
-
+	
 	double intersection_radius = arm_range * 100 * base_component->GetActorScale3D().X;
 	if (draw_debug)
 		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, FColor::Blue, 0, -1);
-	
 	
 	auto intersections = ball->tracking_path.IntersectSphere(ArmOrigin(), intersection_radius);
 	
@@ -374,14 +379,9 @@ void ARobotArm::TrackBall()
 	// UE Coordinate system is sus
 	double plane_angle = atan2(relative_position.X, relative_position.Y);
 	
-	UE_LOG(LogTemp, Error, TEXT("%f"), plane_angle / PI * 180);
-
-	
 	auto base_rotator = FQuat(FVector::UpVector, -plane_angle).Rotator();
 	impact_velocity = base_rotator.UnrotateVector(impact_velocity);
 	relative_position = base_rotator.UnrotateVector(relative_position);
-
-	UE_LOG(LogTemp, Display, TEXT("%f %f %f"), relative_position.X, relative_position.Y, relative_position.Z);
 	
 	FVector pitch_down = impact_velocity * (FVector::UpVector + FVector::RightVector);
 	pitch_down.Normalize();
