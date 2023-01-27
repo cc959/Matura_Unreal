@@ -33,8 +33,8 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	for (ATrackingCamera* camera : tracking_cameras)
-		camera->InitCamera();
+	// for (ATrackingCamera* camera : tracking_cameras)
+	// 	camera->InitCamera();
 	
 	manager = new CameraManager(this);
 }
@@ -52,11 +52,16 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::BeginDestroy()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Ball is being destroyed"));
+
 	if (manager)
 		delete manager;
 
-	for (ATrackingCamera* camera : tracking_cameras)
-		camera->ReleaseCamera();
+	UE_LOG(LogTemp, Warning, TEXT("Ball is done being destroyed"));
+
+	
+	// for (ATrackingCamera* camera : tracking_cameras)
+	// 	camera->ReleaseCamera();
 
 	Super::BeginDestroy();
 }

@@ -89,7 +89,8 @@ public:
 
 	Mat K() const;
 	Mat p() const;
-	bool finished_init = true;
+	Mutex destroy_lock;
+	bool loaded = false;
 
 	Point2d ball;
 
@@ -98,6 +99,8 @@ public:
 	int64_t next_update_time = 0;
 
 	Mat cv_frame;
+
+	double last_frame_time;
 
 protected:
 	// Called when the game starts or when spawned
@@ -147,6 +150,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool debug_output = false;
 
+	UPROPERTY(EditAnywhere)
+	bool update_texture = true;
+	
 	UPROPERTY(VisibleAnywhere, Category = WebCam)
 	UTexture2D *camera_texture_2d;
 

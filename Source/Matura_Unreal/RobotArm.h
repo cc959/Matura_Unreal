@@ -101,6 +101,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	AStaticMeshActor *hand_component;
+
+	UPROPERTY(EditAnywhere)
+	bool show_profiling = false;
 	
 	// UPROPERTY(EditAnywhere)
 	// AStaticMeshActor *hand_component;
@@ -131,7 +134,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	double arm_range = 0.6;
 	
-
 	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	FVector impact;

@@ -52,7 +52,7 @@ ATrackingCamera::ATrackingCamera()
 
 void ATrackingCamera::InitCamera()
 {
-	finished_init = false;
+	loaded = false;
 	//setNumThreads(16); // speed
 
 	cv_cap.open(TCHAR_TO_UTF8(*camera_path));
@@ -171,7 +171,7 @@ void ATrackingCamera::InitCamera()
 		created_families.Append({fam});
 	}
 
-	finished_init = true;
+	loaded = true;
 }
 
 Mat ATrackingCamera::K() const
@@ -190,7 +190,7 @@ Mat ATrackingCamera::p() const
 
 double ATrackingCamera::SyncFrame()
 {
-	if (!cv_cap.isOpened() && finished_init)
+	if (!cv_cap.isOpened() && loaded)
 		return 0;
 	
 	cv_cap.grab();
@@ -204,7 +204,7 @@ double ATrackingCamera::SyncFrame()
 
 void ATrackingCamera::GetFrame()
 {
-	if (!cv_cap.isOpened() && finished_init)
+	if (!cv_cap.isOpened() && loaded)
 		return;
 		
 	Mat cv_frame_raw, cv_frame_distorted;
@@ -298,7 +298,7 @@ void ATrackingCamera::GetFrame()
 
 Point2d ATrackingCamera::FindBall()
 {
-	if (!cv_cap.isOpened() && finished_init)
+	if (!cv_cap.isOpened() && loaded)
 		return {};
 
 	if (cv_frame.empty())
@@ -368,7 +368,7 @@ Point2d ATrackingCamera::FindBall()
 			line(cv_debug_frame_temp, det - Point2f(radius, 0), det + Point2f(radius, 0),
 			     Scalar(255, 0, 0), 3);
 			line(cv_debug_frame_temp, det - Point2f(0, radius), det + Point2f(0, radius),
-			     Scalar(255, 0, 0), 3);
+			     Scalar(255, 0, 0), 3); 
 		}
 	}
 	else if (detection_type == ContourFilter)
@@ -602,6 +602,9 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 
 void ATrackingCamera::ReleaseCamera()
 {
+	loaded = false;
+	destroy_lock.lock();
+	
 	cv_cap.release();
 
 	// destroy tag families
@@ -657,7 +660,10 @@ void ATrackingCamera::ReleaseCamera()
 
 void ATrackingCamera::UpdateDebugTexture()
 {
-	if (!cv_cap.isOpened() && finished_init)
+	if (!update_texture)
+		return;
+	
+	if (!cv_cap.isOpened() && loaded)
 		return;
 	
 	if (!camera_texture_2d)
@@ -687,6 +693,7 @@ void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void ATrackingCamera::BeginPlay()
 {
 	Super::BeginPlay();
+	InitCamera();
 }
 
 #if WITH_EDITOR
@@ -736,5 +743,9 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 void ATrackingCamera::BeginDestroy()
 {
+	UE_LOG(LogTemp, Warning, TEXT("%s is being destroyed"), *camera_path);
+	ReleaseCamera();
 	Super::BeginDestroy();
+	UE_LOG(LogTemp, Warning, TEXT("%s is done being destroyed"), *camera_path);
+
 }

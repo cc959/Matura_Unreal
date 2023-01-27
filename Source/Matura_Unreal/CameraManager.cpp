@@ -66,24 +66,38 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 {
 	TFuture<FTransform> transform_future;
 
-	int frame_id = 0;
+	while (!camera || !camera->loaded)
+	{
+		if (!run_thread)
+			return;
+		UE_LOG(LogTemp, Error, TEXT("%s is not ready yet or null"), *camera->camera_path)
+		usleep(10000); //wait 10 ms
+	}
 
+	camera->destroy_lock.lock(); 
+	
 	while (run_thread)
 	{
-		if (!camera || !camera->finished_init)
+		// camera wants to be released, but is waiting for this thread to finish
+		if (!camera->loaded)
 		{
-			UE_LOG(LogTemp, Error, TEXT("%s is not ready yet or null"), *camera->camera_path)
-			usleep(10000); //wait 10 ms
-			continue;
+			if (transform_future.IsValid())
+				transform_future.Wait();
+			UE_LOG(LogTemp, Error, TEXT("%s is not loaded anymore, exiting thread"), *camera->camera_path);
+			camera->destroy_lock.unlock();
+			return;
 		}
-
+		
 		double time = camera->SyncFrame() / 1000.;
 		camera->GetFrame();
 
 		Point2d ball_position = camera->FindBall();
+		
 
 		ball_detection_2d_mut.lock();
-		while (ball_2d_detections->size() && ball_2d_detections->front().time < time - 1.)
+		camera->last_frame_time = time;
+		
+		while (ball_2d_detections->size() && abs(ball_2d_detections->front().time - time) > 0.1)
 			ball_2d_detections->pop_front();
 
 		if (ball_position != Point2d{-1, -1})
@@ -109,6 +123,8 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 	}
 	if (transform_future.IsValid())
 		transform_future.Wait();
+
+	camera->destroy_lock.unlock();
 }
 
 uint32 CameraManager::Run()
@@ -151,13 +167,13 @@ uint32 CameraManager::Run()
 			else
 			{
 				int j = 0;
-				while (j < ball_det_backup[i].size() - 1 && ball_det_backup[i][j].time < time)
+				while (j < ball_det_backup[i].size() - 1 && ball_det_backup[i][j].time <= time)
 					j++;
 
 				if (j == 0)
 				{
-					UE_LOG(LogTemp, Warning,
-					       TEXT("Something seems wrong with the cameras, they seem very desyncronized!"));
+					UE_LOG(LogTemp, Warning, TEXT("Something seems wrong with the cameras, they seem very desyncronized! %d"), i);
+					
 					ball_points.push_back({-1, -1});
 					continue;
 				}
@@ -165,7 +181,7 @@ uint32 CameraManager::Run()
 				Vec2d velocity = ball_det_backup[i][j].position
 					- ball_det_backup[i][j - 1].position;
 
-				velocity /= ball_2d_detections[i][j].time
+				velocity /= ball_det_backup[i][j].time
 					- ball_det_backup[i][j - 1].time;
 
 				Vec2d current_position = Vec2d(ball_det_backup[i][j - 1].position)
@@ -190,6 +206,7 @@ uint32 CameraManager::Run()
 			{
 				if (ball_points[i] == Point2d{-1, -1} || ball_points[j] == Point2d{-1, -1})
 					continue;
+
 				vector<Point2d> a{ball_points[i]}, b{ball_points[j]};
 				Vec4d position;
 				triangulatePoints(projection_matrices[i], projection_matrices[j], a, b, position);
@@ -198,21 +215,33 @@ uint32 CameraManager::Run()
 				average_position = ((average_position * num) + position) / (num + 1);
 				num++;
 			}
-
+		
+		
+		ball_position_mut.lock();
+		{
+			double last_frame = 0;
+			for (auto camera : cameras)
+				last_frame = max(last_frame, camera->last_frame_time);
+			while (ball_positions.size() && abs(ball_positions.front().time - last_frame) > 1)
+			{
+				// no point in recording more than 1 second
+				ball_positions.pop_front();
+			}
+		}
+		ball_position_mut.unlock();
+		
 		if (num == 0)
+		{
+			ball->tracking_path = {};
 			continue;
-
+		}
+		
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
 
 		ball_position_mut.lock();
 		{
 			ball_positions.push_back({p, time});
-			while (abs(ball_positions.back().time - ball_positions.front().time) > 1)
-			{
-				// no point in recording more than 1 second
-				ball_positions.pop_front();
-			}
 		}
 		ball_position_mut.unlock();
 
@@ -222,7 +251,7 @@ uint32 CameraManager::Run()
 			double diff = ((tracking_path(last.time) - last.position) / last.position.ComponentMax(tracking_path(last.time))).GetAbsMax();
 
 			if (diff < 0.15)
-				tracking_path = ParabPath::fromNPoints({ball_positions.end() - (++num_points_in_path), ball_positions.end()});
+				tracking_path = ParabPath::fromNPoints({ball_positions.end() - min(++num_points_in_path, int(ball_positions.size())), ball_positions.end()});
 			else
 			{
 				tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()});
@@ -237,7 +266,7 @@ uint32 CameraManager::Run()
 		{
 			tracking_path = {};
 		}
-
+		
 		ball->tracking_path = tracking_path;
 	}
 

@@ -354,30 +354,35 @@ void ARobotArm::TrackBall()
 	if (draw_debug)
 		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, FColor::Blue, 0, -1);
 	
-	auto intersections = ball->tracking_path.IntersectSphere(ArmOrigin(), intersection_radius);
-
-	// only times in the future are valid - obviously
-	remove_if(intersections.begin(), intersections.end(), [&](double p){ return p <= ball->tracking_path.t1 - ball->tracking_path.t0;});
-
-	for (auto x : intersections)
-		UE_LOG(LogTemp, Error, TEXT("%f"), x);
-
-	UE_LOG(LogTemp, Error, TEXT("Now: %f"), ball->tracking_path.t1 - ball->tracking_path.t0);
+	if ((ball->tracking_path(ball->tracking_path.t1) - ArmOrigin()).Length() < intersection_radius)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ball is already inside the range of the robot arm"));
+		return;
+	}
+	
+	vector<double> intersections = ball->tracking_path.IntersectSphere(ArmOrigin(), intersection_radius);
+	
+	// only times in the future, not infinity and a valid number and not under the floor are valid - obviously
+	intersections.erase(remove_if(intersections.begin(), intersections.end(),
+		[&](double p)
+		{
+			return p <= ball->tracking_path.t1 || isnan(p) || isinf(p) || (ball->tracking_path(p) - ArmOrigin()).Z < 0;
+		}),intersections.end());
 	
 	if (intersections.size() == 0)
 		return;
 	
 	if (draw_debug)
 		for (auto t : intersections)
-			DrawDebugSphere(GetWorld(), ball->tracking_path(t), intersection_radius / 30, 10, FColor::Green, 0, -1, 0, 3);
+			DrawDebugSphere(GetWorld(), ball->tracking_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
 	
 	double target_time = intersections[0];
 	
 	FVector target = ball->tracking_path(target_time);
 	FVector impact_velocity = {ball->tracking_path.vx, ball->tracking_path.vy, ball->tracking_path.derivative(target_time)};
-
+	
 	if (draw_debug)
-		DrawDebugLine(GetWorld(), target, target + impact_velocity * 100, FColor::Red, false, -1, 1);
+		DrawDebugLine(GetWorld(), target, target + impact_velocity * 100, FColor::Black, false, -1, 1, 4);
 	
 	FVector relative_position = target - ArmOrigin();
 	
@@ -389,15 +394,14 @@ void ARobotArm::TrackBall()
 	again:
 	
 	auto base_rotator = FQuat(FVector::UpVector, -plane_angle).Rotator();
-	impact_velocity = base_rotator.UnrotateVector(impact_velocity);
-	relative_position = base_rotator.UnrotateVector(relative_position);
+	FVector impact_velocity_plane = base_rotator.UnrotateVector(impact_velocity);
 	
-	FVector pitch_down = impact_velocity * (FVector::UpVector + FVector::RightVector);
+	FVector pitch_down = impact_velocity_plane * (FVector::UpVector + FVector::RightVector);
 	pitch_down.Normalize();
 	double pitch_angle = atan2(-pitch_down.Y, pitch_down.Z);
 
 	auto wrist_rotator = FQuat(FVector::ForwardVector, pitch_angle).Rotator();
-	FVector roll_down = wrist_rotator.UnrotateVector(impact_velocity) * (FVector::UpVector + FVector::ForwardVector);
+	FVector roll_down = wrist_rotator.UnrotateVector(impact_velocity_plane) * (FVector::UpVector + FVector::ForwardVector);
 	roll_down.Normalize();
 	double roll_angle = atan2(roll_down.X, roll_down.Z);
 
@@ -418,6 +422,7 @@ void ARobotArm::TrackBall()
 // Called every frame
 void ARobotArm::Tick(float DeltaTime)
 {
+	auto before = chrono::high_resolution_clock::now().time_since_epoch();
 	if (update_rotations)
 	{
 		if (update_type == IK && ik_target)
@@ -428,6 +433,11 @@ void ARobotArm::Tick(float DeltaTime)
 		
 		UpdateRotations();
 	}
+	auto after = chrono::high_resolution_clock::now().time_since_epoch();
+
+	if (show_profiling)
+		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update robot arm"), (after - before).count() / 1e6);
+
 	Super::Tick(DeltaTime);
 }
 
