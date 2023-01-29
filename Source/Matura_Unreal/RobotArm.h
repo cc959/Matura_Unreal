@@ -86,22 +86,16 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	bool debug_serial = false;
+
+	UPROPERTY(EditAnywhere)
+	AActor* robot_arm;
 	
-	UPROPERTY(EditAnywhere)
-	AStaticMeshActor *base_component;
+	UStaticMeshComponent *base_component;
+	UStaticMeshComponent *lower_arm_component;
+	UStaticMeshComponent *upper_arm_component;
+	UStaticMeshComponent *wrist_component;
+	UStaticMeshComponent *hand_component;
 	
-	UPROPERTY(EditAnywhere)
-	AStaticMeshActor *lower_arm_component;
-
-	UPROPERTY(EditAnywhere)
-	AStaticMeshActor *upper_arm_component;
-
-	UPROPERTY(EditAnywhere)
-	AStaticMeshActor *wrist_component;
-
-	UPROPERTY(EditAnywhere)
-	AStaticMeshActor *hand_component;
-
 	UPROPERTY(EditAnywhere)
 	bool show_profiling = false;
 	

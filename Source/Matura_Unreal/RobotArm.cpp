@@ -143,44 +143,39 @@ void ARobotArm::UpdateRotations()
 {
 	if (update_type == Animation)
 	{
-		if (base_component && base_component->GetAttachParentActor())
+		if (base_component && base_component->GetAttachParent())
 		{
-			FRotator ActorRotation = base_component->GetActorRotation();
-			FRotator parentRotation = base_component->GetAttachParentActor()->GetActorRotation();
+			FRotator RelativeRotation = base_component->GetRelativeRotation();
 
-			base_rotation = (ActorRotation - parentRotation).Euler().Z;
+			base_rotation = RelativeRotation.Euler().Z;
 		}
 
-		if (lower_arm_component && lower_arm_component->GetAttachParentActor())
+		if (lower_arm_component && lower_arm_component->GetAttachParent())
 		{
-			FRotator ActorRotation = lower_arm_component->GetActorRotation();
-			FRotator parentRotation = lower_arm_component->GetAttachParentActor()->GetActorRotation();
+			FRotator RelativeRotation = lower_arm_component->GetRelativeRotation();
 
-			lower_arm_rotation = (ActorRotation - parentRotation).Euler().X;
+			lower_arm_rotation = RelativeRotation.Euler().X;
 		}
 
-		if (upper_arm_component && upper_arm_component->GetAttachParentActor())
+		if (upper_arm_component && upper_arm_component->GetAttachParent())
 		{
-			FRotator ActorRotation = upper_arm_component->GetActorRotation();
-			FRotator parentRotation = upper_arm_component->GetAttachParentActor()->GetActorRotation();
+			FRotator RelativeRotation = upper_arm_component->GetRelativeRotation();
 
-			upper_arm_rotation = (ActorRotation - parentRotation).Euler().X;
+			upper_arm_rotation = RelativeRotation.Euler().X;
 		}
 
-		if (wrist_component && wrist_component->GetAttachParentActor())
+		if (wrist_component && wrist_component->GetAttachParent())
 		{
-			FRotator ActorRotation = wrist_component->GetActorRotation();
-			FRotator parentRotation = wrist_component->GetAttachParentActor()->GetActorRotation();
+			FRotator RelativeRotation = wrist_component->GetRelativeRotation();
 
-			wrist_rotation = (ActorRotation - parentRotation).Euler().X;
+			wrist_rotation = RelativeRotation.Euler().X;
 		}
 
-		if (hand_component && hand_component->GetAttachParentActor())
+		if (hand_component && hand_component->GetAttachParent())
 		{
-			FRotator ActorRotation = hand_component->GetActorRotation();
-			FRotator parentRotation = hand_component->GetAttachParentActor()->GetActorRotation();
+			FRotator RelativeRotation = hand_component->GetRelativeRotation();
 
-			hand_rotation = (ActorRotation - parentRotation).Euler().X;
+			hand_rotation = RelativeRotation.Euler().Y;
 		}
 	}
 
@@ -193,28 +188,28 @@ void ARobotArm::UpdateRotations()
 	if (base_component && lower_arm_component && upper_arm_component && wrist_component && hand_component)
 	{
 		int before = NumOverlaps();
-		base_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
-		lower_arm_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
-		upper_arm_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
-		wrist_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(wrist_rotation, 0, 0)));
-		hand_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(0, hand_rotation, 0)));
+		base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
+		lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
+		upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
+		wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(wrist_rotation, 0, 0)));
+		hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, hand_rotation, 0)));
 		int after = NumOverlaps();
 
 		if (after > before && check_collision)
 		{
-			base_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, std::get<0>(last_rotations))));
+			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, std::get<0>(last_rotations))));
 			base_rotation = std::get<0>(last_rotations);
 
-			lower_arm_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<1>(last_rotations), 0, 0)));
+			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<1>(last_rotations), 0, 0)));
 			lower_arm_rotation = std::get<1>(last_rotations);
 			
-			upper_arm_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<2>(last_rotations), 0, 0)));
+			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<2>(last_rotations), 0, 0)));
 			upper_arm_rotation = std::get<2>(last_rotations);
 
-			wrist_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<3>(last_rotations), 0, 0)));
+			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(std::get<3>(last_rotations), 0, 0)));
 			wrist_rotation = std::get<3>(last_rotations);
 
-			hand_component->SetActorRelativeRotation(FQuat::MakeFromEuler(FVector(0, std::get<4>(last_rotations), 0)));
+			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, std::get<4>(last_rotations), 0)));
 			hand_rotation = std::get<4>(last_rotations);
 		}
 	}
@@ -276,9 +271,9 @@ FVector ARobotArm::ArmOrigin() const
 {
 	return FVector 
 	{
-		base_component->GetActorLocation().X,
-		base_component->GetActorLocation().Y,
-		lower_arm_component->GetActorLocation().Z
+		base_component->GetComponentLocation().X,
+		base_component->GetComponentLocation().Y,
+		lower_arm_component->GetComponentLocation().Z
 	};
 }
 
@@ -291,7 +286,7 @@ bool ARobotArm::UpdateIK(FVector target)
 
 	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
 	
-	double offset = asin(end_offset * 100 * base_component->GetActorScale3D().X / FVector2d{relative_position.X, relative_position.Y}.Length());
+	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
 	
 	// UE Coordinate system is sus
 	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset + PI;
@@ -310,8 +305,8 @@ bool ARobotArm::UpdateIK(FVector target)
 
 	FVector2d plane_position = {relative_position.Dot(plane_right), relative_position.Dot(plane_up) };
 
-	double a = lower_arm_length * 100 * lower_arm_component->GetActorScale3D().X;
-	double b = upper_arm_length * 100 * upper_arm_component->GetActorScale3D().X;
+	double a = lower_arm_length * 100 * lower_arm_component->GetComponentScale().X;
+	double b = upper_arm_length * 100 * upper_arm_component->GetComponentScale().X;
 	double c = plane_position.Length();
 
 	double lower_arm_radians;
@@ -350,7 +345,7 @@ void ARobotArm::TrackBall()
 	if (!ball || !ball->tracking_path.IsValid() || !base_component || !hand_component || !wrist_component)
 		return;
 	
-	double intersection_radius = arm_range * 100 * base_component->GetActorScale3D().X;
+	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
 	if (draw_debug)
 		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, FColor::Blue, 0, -1);
 	
@@ -387,7 +382,7 @@ void ARobotArm::TrackBall()
 	FVector relative_position = target - ArmOrigin();
 	
 	bool fixed = false;
-	double offset = asin(end_offset * 100 * base_component->GetActorScale3D().X / FVector2d{relative_position.X, relative_position.Y}.Length());
+	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
 	
 	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset;
 
@@ -405,7 +400,7 @@ void ARobotArm::TrackBall()
 	roll_down.Normalize();
 	double roll_angle = atan2(roll_down.X, roll_down.Z);
 
-	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * wrist_component->GetActorScale3D().X);
+	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * wrist_component->GetComponentScale().X);
 	
 	bool flipped = UpdateIK(target + base_rotator.RotateVector(arm_offset));
 	if (flipped && !fixed)
@@ -419,9 +414,30 @@ void ARobotArm::TrackBall()
 	hand_rotation = roll_angle / PI * 180 + 90;
 }
 
+UActorComponent* FirstWithTag(AActor* actor, FName tag)
+{
+	auto components = actor->GetComponentsByTag(UStaticMeshComponent::StaticClass(), tag);
+	return components.Num() == 0 ? nullptr : components[0];
+}
+
 // Called every frame
 void ARobotArm::Tick(float DeltaTime)
 {
+	if (robot_arm)
+	{
+		base_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Base"));
+		lower_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Lower_Arm"));
+		upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
+		wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
+		hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
+
+		if (!base_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Base\""));
+		if (!lower_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
+		if (!upper_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
+		if (!wrist_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Wrist\""));
+		if (!hand_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Hand\""));
+	}
+	
 	auto before = chrono::high_resolution_clock::now().time_since_epoch();
 	if (update_rotations)
 	{
@@ -430,6 +446,7 @@ void ARobotArm::Tick(float DeltaTime)
 
 		if (update_type == Ball)
 			TrackBall();
+		
 		
 		UpdateRotations();
 	}

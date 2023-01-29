@@ -3,6 +3,9 @@
 
 #include "Ball.h"
 
+#include "Engine/World.h"
+#include "EngineUtils.h"
+
 // Sets default values
 ABall::ABall()
 {
@@ -32,9 +35,18 @@ void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// for (ATrackingCamera* camera : tracking_cameras)
-	// 	camera->InitCamera();
+
+	if (autodetect_cameras)
+	{
+		tracking_cameras.Empty();
+
+		TActorIterator<ATrackingCamera> ActorItr(GetWorld());
+		while (ActorItr)
+		{
+			tracking_cameras.Push(*ActorItr);
+			++ActorItr;
+		}
+	}
 	
 	manager = new CameraManager(this);
 }
@@ -58,10 +70,6 @@ void ABall::BeginDestroy()
 		delete manager;
 
 	UE_LOG(LogTemp, Warning, TEXT("Ball is done being destroyed"));
-
-	
-	// for (ATrackingCamera* camera : tracking_cameras)
-	// 	camera->ReleaseCamera();
 
 	Super::BeginDestroy();
 }

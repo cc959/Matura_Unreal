@@ -48,5 +48,8 @@ public:
 	double g = -9810;
 
 	UPROPERTY(EditAnywhere)
+	bool autodetect_cameras = true;
+	
+	UPROPERTY(EditAnywhere, meta=(EditCondition="!autodetect_cameras", EditConditionHides))
 	TArray<ATrackingCamera*> tracking_cameras;
 };

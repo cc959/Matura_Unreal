@@ -73,6 +73,7 @@ public:
 	ATrackingCamera();
 
 	void InitCamera();
+	void CreateTagDetector();
 
 	double SyncFrame();
 	void GetFrame();
@@ -80,6 +81,8 @@ public:
 	double UpdateTransform(FTransform update);
 	void DrawDetectedTags();
 	FTransform LocalizeCamera(Mat frame);
+	void ReleaseTagDetector();
+	void RefreshTags();
 
 	void ReleaseCamera();
 
@@ -102,6 +105,9 @@ public:
 
 	double last_frame_time;
 
+	// the camera manager want to update tags, can't as is in other thread
+	bool must_update_tags = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -112,7 +118,7 @@ protected:
 	Mat cv_debug_frame;
 	Ptr<BackgroundSubtractor> cv_bg_subtractor;
 	Ptr<SimpleBlobDetector> cv_blob_detector;
-	apriltag_detector* at_td;
+	apriltag_detector* at_td = nullptr;
 	TArray<apriltag_family_t*> created_families;
 
 	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
@@ -125,6 +131,7 @@ protected:
 
 	Mutex last_tags_mut;
 	std::vector<apriltag_detection_t> last_tags;
+
 
 	
 public:
@@ -163,7 +170,10 @@ public:
 	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
 	float plate_opacity;
 
-	UPROPERTY(EditAnywhere, Category = AprilTag)
+	UPROPERTY(EditAnywhere, Category=AprilTag)
+	bool autodetect_tags;
+	
+	UPROPERTY(EditAnywhere, Category = AprilTag, meta=(EditCondition="!autodetect_tags", EditConditionHides))
 	TArray<ATag *> april_tags;
 
 	UPROPERTY(EditAnywhere, Category = AprilTag, DisplayName="Minimum Update Rate (s)")

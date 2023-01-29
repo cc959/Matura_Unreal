@@ -75,6 +75,12 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 	}
 
 	camera->destroy_lock.lock(); 
+
+	camera->must_update_tags = true;
+	while (camera->must_update_tags)
+		usleep(10000); //wait 10 ms
+	
+	UE_LOG(LogTemp, Error, TEXT("%s loop has started"), *camera->camera_path);
 	
 	while (run_thread)
 	{

@@ -2,6 +2,9 @@
 
 #include "TrackingCamera.h"
 
+#include "Engine/World.h"
+#include "EngineUtils.h"
+
 #include <string>
 #include <functional>
 #include <set>
@@ -145,7 +148,15 @@ void ATrackingCamera::InitCamera()
 
 
 	cv_blob_detector = SimpleBlobDetector::create(cv_blob_params);
+	
+	CreateTagDetector();
+}
 
+void ATrackingCamera::CreateTagDetector()
+{
+	if (at_td)
+		return;
+	
 	at_td = apriltag_detector_create();
 
 	at_td->quad_decimate = 1.0; // decimate factor
@@ -153,7 +164,8 @@ void ATrackingCamera::InitCamera()
 	at_td->nthreads = 8; // use this many cpu threads
 	at_td->debug = false; // print debug output
 	at_td->refine_edges = true; // refine tag edges
-
+	
+	
 	static const function<apriltag_family_t *()> family_functions[] = {
 		tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create,
 		tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create
@@ -506,9 +518,16 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 		return FTransform::Identity;
 	}
 
+	if (!at_td)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tag detector is null, cannot detect"));
+		return FTransform::Identity;
+	}
+
 	auto time_before = chrono::high_resolution_clock::now();
 	
 	Mat cv_frame_gray;
+	
 	cvtColor(frame, cv_frame_gray, COLOR_RGB2GRAY);
 
 	// Make an image_u8_t header for the Mat data
@@ -551,7 +570,7 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 		ATag* det_tag = NULL;
 		for (ATag* tag : april_tags)
 		{
-			if (tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
+			if (tag && tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
 				det_tag = tag;
 		}
 
@@ -600,19 +619,14 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 	return average_transform;
 }
 
-void ATrackingCamera::ReleaseCamera()
+void ATrackingCamera::ReleaseTagDetector()
 {
-	loaded = false;
-	destroy_lock.lock();
-	
-	cv_cap.release();
-
-	// destroy tag families
 	if (at_td)
 	{
 		apriltag_detector_destroy(at_td);
 	}
 
+	// destroy tag families
 	for (apriltag_family_t* tf : created_families)
 	{
 		if (!tf)
@@ -656,6 +670,38 @@ void ATrackingCamera::ReleaseCamera()
 			tagCustom48h12_destroy(tf);
 		}
 	}
+
+	created_families.Empty();
+
+	at_td = nullptr;
+}
+
+void ATrackingCamera::RefreshTags()
+{
+	if (autodetect_tags)
+	{
+		april_tags.Empty();
+		
+		TActorIterator<ATag> ActorItr(GetWorld());
+		while (ActorItr)
+		{
+			april_tags.Push(*ActorItr);
+			++ActorItr;
+		}
+	}
+
+	ReleaseTagDetector();
+	CreateTagDetector();
+}
+
+void ATrackingCamera::ReleaseCamera()
+{
+	loaded = false;
+	destroy_lock.lock();
+	
+	cv_cap.release();
+	
+	ReleaseTagDetector();
 }
 
 void ATrackingCamera::UpdateDebugTexture()
@@ -718,6 +764,12 @@ void ATrackingCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (must_update_tags)
+	{
+		RefreshTags();
+		must_update_tags = false;
+	}
+	
 	UpdateDebugTexture();
 
 	if (ball != Point2d{-1, -1})
