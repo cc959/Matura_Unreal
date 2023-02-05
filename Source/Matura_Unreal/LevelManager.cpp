@@ -67,6 +67,7 @@ void ALevelManager::Tick(float DeltaTime)
 			
 		} else
 		{
+			level = level_loaded;
 			UE_LOG(LogTemp, Error, TEXT("Error loading level number %d"), level);
 		}
 	}

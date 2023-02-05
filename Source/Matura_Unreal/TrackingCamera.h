@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <map>
 #include <queue>
 
 #include "CoreMinimal.h"
@@ -80,9 +81,9 @@ public:
 	Point2d FindBall();
 	double UpdateTransform(FTransform update);
 	void DrawDetectedTags();
-	FTransform LocalizeCamera(Mat frame);
+	std::pair<UE::Math::TTransform<double>, std::map<ATag*, UE::Math::TMatrix<double>>> UpdateTags(Mat frame);
 	void ReleaseTagDetector();
-	void RefreshTags();
+	void FindTags();
 
 	void ReleaseCamera();
 
@@ -97,7 +98,7 @@ public:
 
 	Point2d ball;
 
-	FTransform average_april_transform;
+	FTransform camera_transform;
 	std::deque<FTransform> april_transforms;
 	int64_t next_update_time = 0;
 

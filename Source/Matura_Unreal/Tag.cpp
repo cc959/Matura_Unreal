@@ -6,10 +6,12 @@
 #include <sstream>
 #include <iomanip>
 
+#include "apriltags/common/math_util.h"
+
 // Sets default values
 ATag::ATag()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	tag_size = 1;
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static mesh"));
@@ -19,9 +21,11 @@ ATag::ATag()
 	if (PlaneMesh.Object)
 		mesh->SetStaticMesh(PlaneMesh.Object);
 
-	ConstructorHelpers::FObjectFinder<UMaterial> material(TEXT("/Game/apriltag-imgs/UnlitTag.UnlitTag"));
+	ConstructorHelpers::FObjectFinder<UMaterial> material(TEXT("/Script/Engine.Material'/Game/apriltag-imgs/UnlitTag.UnlitTag'"));
 	if (material.Object)
 		mesh->SetMaterial(0, material.Object);
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Could not find material"));
 
 	UpdateScale();
 }
@@ -31,10 +35,6 @@ void ATag::Clicked(UPrimitiveComponent *Target, FKey ButtonPressed)
 	UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
 }
 
-void ATag::OnConstruction(const FTransform &transform)
-{
-	Super::OnConstruction(transform);
-}
 
 void ATag::UpdateScale()
 {
@@ -72,17 +72,9 @@ void ATag::UpdateTexture()
 
 	if (tag_texture)
 	{
-		UMaterialInstanceDynamic *dyn_material;
-		UMaterialInterface *material = mesh->GetMaterial(0);
+		UMaterialInterface *material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Script/Engine.Material'/Game/apriltag-imgs/UnlitTag.UnlitTag'"));
 
-		if (material->IsA(UMaterialInstanceDynamic::StaticClass()))
-		{
-			dyn_material = (UMaterialInstanceDynamic *)material;
-		}
-		else
-		{
-			dyn_material = UMaterialInstanceDynamic::Create(material, this);
-		}
+		UMaterialInstanceDynamic *	dyn_material = UMaterialInstanceDynamic::Create(material, this);
 		dyn_material->SetTextureParameterValue(FName(TEXT("Texture")), tag_texture);
 		mesh->SetMaterial(0, dyn_material);
 	}
@@ -93,13 +85,64 @@ void ATag::BeginPlay()
 {
 	mesh->OnClicked.AddDynamic(this, &ATag::Clicked);
 
+	UpdateTexture();
 	UpdateScale();
 	
 	Super::BeginPlay();
+}
+
+
+double ATag::UpdateTransform(FTransform update)
+{
+	april_transforms.push_back(update);
+	while (april_transforms.size() > 4)
+		april_transforms.pop_front();
+
+	
+	if (april_transforms.size() < 4)
+	{
+		RecalculateAverageTransform();
+		return 0;
+	}
+
+	auto new_position = update.GetTranslation();
+	auto average_position = tag_transform.GetTranslation();
+
+	auto relative_difference = ((new_position - average_position).GetAbs() / new_position.ComponentMax(average_position)).GetMax();
+
+	RecalculateAverageTransform();
+	
+	return pow(1. - min(relative_difference, 1.), 2.);
+}
+
+void ATag::RecalculateAverageTransform()
+{
+	FTransform average = FTransform::Identity;
+
+	for (int i = 0; i < april_transforms.size(); i++)
+	{
+		average.Blend(average, april_transforms[i], 1 / double(i + 1));
+	}
+
+	tag_transform = average;
 }
 
 // Called every frame
 void ATag::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (tag_type == Dynamic)
+	{
+		RecalculateAverageTransform();
+		SetActorTransform(tag_transform);
+	}
+
+	UpdateScale();
+}
+
+void ATag::OnConstruction(const FTransform& Transform)
+{
+	UpdateTexture();
+	Super::OnConstruction(Transform);
 }

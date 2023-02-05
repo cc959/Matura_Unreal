@@ -64,7 +64,9 @@ Mat ConvertToCameraMatrix(FTransform transform)
 
 void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2d_detections)
 {
-	TFuture<FTransform> transform_future;
+	TFuture<pair<FTransform, map<ATag*, FMatrix>>> transform_future;
+	int64_t last_now = chrono::high_resolution_clock::now().time_since_epoch().count();
+
 
 	while (!camera || !camera->loaded)
 	{
@@ -111,21 +113,28 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 		ball_detection_2d_mut.unlock();
 
 		camera->DrawDetectedTags();
-
-		int64_t now = chrono::high_resolution_clock::now().time_since_epoch().count();
-
+		
 		if (transform_future.IsReady())
 		{
-			FTransform camera_transform = transform_future.Get();
+			auto [camera_transform, local_tag_transforms] = transform_future.Get();
 			if (!camera_transform.Equals(FTransform::Identity))
 			{
-				camera->next_update_time = now + static_cast<int64_t>(camera->UpdateTransform(camera_transform) * 1e9);
+				camera->next_update_time = last_now + static_cast<int64_t>(camera->UpdateTransform(camera_transform) * 1e9);
+				for (auto [tag, local_transform] : local_tag_transforms)
+				{
+					FMatrix world_transform = (local_transform * FQuat::MakeFromEuler(FVector(0, 0, 90)).ToMatrix() * FQuat::MakeFromEuler(FVector(0, 90, 0)).ToMatrix()) * camera->camera_transform.ToMatrixNoScale();
+					camera->next_update_time = min(	camera->next_update_time,
+													last_now + static_cast<int64_t>(tag->UpdateTransform(FTransform(world_transform)) * tag->update_rate * 1e9));
+
+				}
+				UE_LOG(LogTemp, Display, TEXT("Next update time: %f"), (camera->next_update_time - last_now) / 1e6);
 			}
-			transform_future = TFuture<FTransform>();
+			transform_future = TFuture<pair<FTransform, map<ATag*, FMatrix>>>();
 		}
 
-		if (!transform_future.IsValid() && now >= camera->next_update_time)
-			transform_future = Async(EAsyncExecution::Thread, [camera] { return camera->LocalizeCamera(camera->cv_frame); });
+		if (!transform_future.IsValid() && last_now >= camera->next_update_time)
+			transform_future = Async(EAsyncExecution::Thread, [camera] { return camera->UpdateTags(camera->cv_frame); });
+		last_now = chrono::high_resolution_clock::now().time_since_epoch().count();
 	}
 	if (transform_future.IsValid())
 		transform_future.Wait();
@@ -199,7 +208,7 @@ uint32 CameraManager::Run()
 		vector<Mat> projection_matrices;
 		for (ATrackingCamera* camera : cameras)
 		{
-			Mat RT = ConvertToCameraMatrix(camera->average_april_transform);
+			Mat RT = ConvertToCameraMatrix(camera->camera_transform);
 			Mat projection = camera->K() * RT;
 			projection_matrices.push_back(projection);
 		}

@@ -3,7 +3,7 @@
 	<SDKVersion>4.24E0</SDKVersion>
 	<Host>Blender</Host>
 	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.4.1"/>
-	<User ID="elias" OS="Linux 6.1.7-1-MANJARO"/>
+	<User ID="elias" OS="Linux 6.1.9-1-MANJARO"/>
 	<ActorMesh name="Base_Plate" layer="Scene Collection">
 		<mesh name="Base_Plate"/>
 		<Transform tx="-0.000000" ty="-0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -12,6 +12,46 @@
 				<mesh name="Lower_Base"/>
 				<Transform tx="0.000000" ty="0.000000" tz="3.400000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 				<children visible="True">
+					<ActorMesh name="Base_Plate_Screw1" layer="Scene Collection">
+						<mesh name="Base_Plate_Screw"/>
+						<Transform tx="-9.350000" ty="0.000000" tz="4.300000" qw="0.000000" qx="1.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+						<children visible="True">
+							<ActorMesh name="Base_Hex_Nut1" layer="Scene Collection">
+								<mesh name="Hex_Nut"/>
+								<Transform tx="-9.350000" ty="0.000029" tz="-0.620000" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+							</ActorMesh>
+						</children>
+					</ActorMesh>
+					<ActorMesh name="Base_Plate_Screw2" layer="Scene Collection">
+						<mesh name="Base_Plate_Screw"/>
+						<Transform tx="0.000001" ty="9.350000" tz="4.300000" qw="0.000000" qx="0.707107" qy="-0.707107" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+						<children visible="True">
+							<ActorMesh name="Base_Hex_Nut2" layer="Scene Collection">
+								<mesh name="Hex_Nut"/>
+								<Transform tx="0.000030" ty="9.350000" tz="-0.620000" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+							</ActorMesh>
+						</children>
+					</ActorMesh>
+					<ActorMesh name="Base_Plate_Screw3" layer="Scene Collection">
+						<mesh name="Base_Plate_Screw"/>
+						<Transform tx="9.350000" ty="-0.000001" tz="4.299999" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+						<children visible="True">
+							<ActorMesh name="Base_Hex_Nut3" layer="Scene Collection">
+								<mesh name="Hex_Nut"/>
+								<Transform tx="9.350000" ty="-0.000028" tz="-0.620000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+							</ActorMesh>
+						</children>
+					</ActorMesh>
+					<ActorMesh name="Base_Plate_Screw4" layer="Scene Collection">
+						<mesh name="Base_Plate_Screw"/>
+						<Transform tx="-0.000002" ty="-9.350000" tz="4.299999" qw="0.000000" qx="0.707107" qy="0.707107" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+						<children visible="True">
+							<ActorMesh name="Base_Hex_Nut4" layer="Scene Collection">
+								<mesh name="Hex_Nut"/>
+								<Transform tx="-0.000028" ty="-9.350000" tz="-0.620000" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+							</ActorMesh>
+						</children>
+					</ActorMesh>
 					<ActorMesh name="Beefy_Base_Servo" layer="Scene Collection">
 						<mesh name="Beefy_Base_Servo"/>
 						<Transform tx="-0.000000" ty="-0.000000" tz="4.699900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -24,9 +64,49 @@
 										<mesh name="Upper_Base"/>
 										<Transform tx="0.000000" ty="0.000000" tz="4.399900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 										<children visible="True">
+											<ActorMesh name="BaseScrew1" layer="Scene Collection">
+												<mesh name="BaseScrew"/>
+												<Transform tx="0.000000" ty="-7.800000" tz="3.400036" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<children visible="True">
+													<ActorMesh name="Hex_Nut1" layer="Scene Collection">
+														<mesh name="Hex_Nut"/>
+														<Transform tx="0.000000" ty="-7.800000" tz="4.960000" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+													</ActorMesh>
+												</children>
+											</ActorMesh>
+											<ActorMesh name="BaseScrew2" layer="Scene Collection">
+												<mesh name="BaseScrew"/>
+												<Transform tx="7.850000" ty="0.050000" tz="3.400036" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<children visible="True">
+													<ActorMesh name="Hex_Nut2" layer="Scene Collection">
+														<mesh name="Hex_Nut"/>
+														<Transform tx="7.850000" ty="0.050000" tz="5.356602" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+													</ActorMesh>
+												</children>
+											</ActorMesh>
+											<ActorMesh name="BaseScrew3" layer="Scene Collection">
+												<mesh name="BaseScrew"/>
+												<Transform tx="-7.850000" ty="0.050000" tz="3.400036" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<children visible="True">
+													<ActorMesh name="Hex_Nut3" layer="Scene Collection">
+														<mesh name="Hex_Nut"/>
+														<Transform tx="-7.850000" ty="0.050000" tz="5.356601" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+													</ActorMesh>
+												</children>
+											</ActorMesh>
+											<ActorMesh name="BaseScrew4" layer="Scene Collection">
+												<mesh name="BaseScrew"/>
+												<Transform tx="0.000000" ty="7.900001" tz="3.400036" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<children visible="True">
+													<ActorMesh name="Hex_Nut4" layer="Scene Collection">
+														<mesh name="Hex_Nut"/>
+														<Transform tx="-0.000000" ty="7.900001" tz="4.960000" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+													</ActorMesh>
+												</children>
+											</ActorMesh>
 											<ActorMesh name="Electronics_Cover" layer="Scene Collection">
 												<mesh name="Electronics_Cover"/>
-												<Transform tx="-6.000000" ty="0.050000" tz="9.700001" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="-6.000000" ty="0.000000" tz="9.700001" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 											</ActorMesh>
 											<ActorMesh name="Lazy_Suzan_Inner" layer="Scene Collection">
 												<mesh name="Lazy_Suzan_Inner"/>
@@ -126,7 +206,7 @@
 											</ActorMesh>
 											<ActorMesh name="Servo_Cover" layer="Scene Collection">
 												<mesh name="Servo_Cover"/>
-												<Transform tx="5.675600" ty="1.419300" tz="9.732500" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="5.675600" ty="1.365000" tz="9.732500" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 											</ActorMesh>
 										</children>
 									</ActorMesh>
@@ -142,6 +222,36 @@
 			</ActorMesh>
 		</children>
 	</ActorMesh>
+	<Light name="Sun" layer="Scene Collection" type="DirectionalLight" enabled="1">
+		<SourceSize value="12.500000"/>
+		<Intensity value="1.000000"/>
+		<AttenuationRadius value="100.000000"/>
+		<IntensityUnits value="Lumens"/>
+		<Color usetemp="0" temperature="6500.0" R="1.000000" G="1.000000" B="1.000000"/>
+		<Transform tx="0.950000" ty="30.249981" tz="69.912247" qw="0.667045" qx="0.508350" qy="0.297508" qz="-0.456203" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</Light>
+	<ActorMesh name="Servo_Screw" layer="Scene Collection">
+		<mesh name="Servo_Screw"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<StaticMesh label="Hex_Nut" name="Hex_Nut">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Hex_Nut.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a3c158785ee38cfd41fc57ed8fcfbb58"/>
+	</StaticMesh>
+	<StaticMesh label="Base_Plate_Screw" name="Base_Plate_Screw">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Base_Plate_Screw.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="ade31d91e7c11ffbb8280313c0052984"/>
+	</StaticMesh>
+	<StaticMesh label="BaseScrew" name="BaseScrew">
+		<Material id="0" name="Paint___Metallic__Black_"/>
+		<file path="Robot Arm_Assets/BaseScrew.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="dca14777a51e3ad4e124baf84175a3a1"/>
+	</StaticMesh>
 	<StaticMesh label="Electronics_Cover" name="Electronics_Cover">
 		<Material id="0" name="Plastic___Matte__Black_"/>
 		<file path="Robot Arm_Assets/Electronics_Cover.udsmesh"/>
@@ -173,7 +283,7 @@
 		<Hash value="1c3f782dc7a1425a37dd4aa0ca530895"/>
 	</StaticMesh>
 	<StaticMesh label="Hoop_Holder_001" name="Hoop_Holder_001">
-		<Material id="0" name="Polymide__Kapton__001"/>
+		<Material id="0" name="Polymide__Kapton_"/>
 		<file path="Robot Arm_Assets/Hoop_Holder_001.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="ca8bdf354fac115ebaffd427b99100e7"/>
@@ -185,13 +295,13 @@
 		<Hash value="7728bec783fa973b684c3ecda1db22fb"/>
 	</StaticMesh>
 	<StaticMesh label="Micro_Servo_Arm" name="Micro_Servo_Arm">
-		<Material id="0" name="Plastic___Glossy__White_"/>
+		<Material id="0" name="Polymide__Kapton_"/>
 		<file path="Robot Arm_Assets/Micro_Servo_Arm.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="e8e63add08c8f4856004e36c2ffa9fd0"/>
 	</StaticMesh>
 	<StaticMesh label="Wrist_Servo_2" name="Wrist_Servo_2">
-		<Material id="0" name="Aluminum___Satin__1_"/>
+		<Material id="0" name="Blue_Metal"/>
 		<file path="Robot Arm_Assets/Wrist_Servo_2.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="58158f2a6a4c73bcd2a8151acaecdb94"/>
@@ -203,7 +313,7 @@
 		<Hash value="c7a0cb3ee7a04f5173ec0e067da989c0"/>
 	</StaticMesh>
 	<StaticMesh label="Servo_Arm__1_" name="Servo_Arm__1_">
-		<Material id="0" name="Aluminum___Satin__1_"/>
+		<Material id="0" name="Blue_Metal"/>
 		<file path="Robot Arm_Assets/Servo_Arm__1_.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="0891b001cfc76797e3a54a4f0f30f08d"/>
@@ -300,6 +410,36 @@
 		<LightmapUV value="-1"/>
 		<Hash value="a3d7f0ae41d19a24b99dfce783d98b24"/>
 	</StaticMesh>
+	<StaticMesh label="Servo_Screw" name="Servo_Screw">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Servo_Screw.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="829df0bc8035b713fe993dc45127a388"/>
+	</StaticMesh>
+	<UEPbrMaterial name="Aluminum___Satin">
+		<Expressions>
+			<Color constant="(R=0.960784,G=0.960784,B=0.964706,A=1.000000)"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.323325"/>
+			<Scalar constant="1.000000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Paint___Metallic__Black_">
+		<Expressions>
+			<Color constant="(R=0.098039,G=0.098039,B=0.098039,A=1.000000)"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.552786"/>
+			<Scalar constant="1.000000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
 	<UEPbrMaterial name="Plastic___Matte__Black_">
 		<Expressions>
 			<Color constant="(R=0.098039,G=0.098039,B=0.098039,A=1.000000)"/>
@@ -336,33 +476,7 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<UEPbrMaterial name="Polymide__Kapton__001">
-		<Expressions>
-			<Color constant="(R=0.784314,G=0.141176,B=0.027451,A=1.000000)"/>
-			<Scalar constant="0.215297"/>
-			<Scalar constant="0.552786"/>
-			<Scalar constant="1.000000"/>
-		</Expressions>
-		<BaseColor expression="0" OutputIndex="0"/>
-		<Metallic expression="1" OutputIndex="0"/>
-		<Roughness expression="2" OutputIndex="0"/>
-		<Specular expression="3" OutputIndex="0"/>
-	</UEPbrMaterial>
-	<UEPbrMaterial name="Plastic___Glossy__White_">
-		<Expressions>
-			<Color constant="(R=0.964706,G=0.964706,B=0.952941,A=1.000000)"/>
-			<Scalar constant="1.000000"/>
-			<Scalar constant="0.552786"/>
-			<Scalar constant="1.000000"/>
-			<Color constant="(R=0.500000,G=0.500000,B=1.000000,A=1.000000)"/>
-		</Expressions>
-		<BaseColor expression="0" OutputIndex="0"/>
-		<Metallic expression="1" OutputIndex="0"/>
-		<Roughness expression="2" OutputIndex="0"/>
-		<Specular expression="3" OutputIndex="0"/>
-		<Normal expression="4" OutputIndex="0"/>
-	</UEPbrMaterial>
-	<UEPbrMaterial name="Aluminum___Satin__1_">
+	<UEPbrMaterial name="Blue_Metal">
 		<Expressions>
 			<Color constant="(R=0.133333,G=0.509804,B=0.886275,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
@@ -398,5 +512,5 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<Export Duration="0.11967765700137534"/>
+	<Export Duration="0.2353676809998433"/>
 </DatasmithUnrealScene>

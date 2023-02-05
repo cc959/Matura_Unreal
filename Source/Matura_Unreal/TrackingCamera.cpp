@@ -56,7 +56,6 @@ ATrackingCamera::ATrackingCamera()
 void ATrackingCamera::InitCamera()
 {
 	loaded = false;
-	//setNumThreads(16); // speed
 
 	cv_cap.open(TCHAR_TO_UTF8(*camera_path));
 
@@ -454,7 +453,7 @@ void ATrackingCamera::RecalculateAverageTransform()
 		average.Blend(average, april_transforms[i], 1 / double(i + 1));
 	}
 
-	average_april_transform = average;
+	camera_transform = average;
 }
 
 double ATrackingCamera::UpdateTransform(FTransform update)
@@ -471,7 +470,7 @@ double ATrackingCamera::UpdateTransform(FTransform update)
 	}
 
 	auto new_position = update.GetTranslation();
-	auto average_position = average_april_transform.GetTranslation();
+	auto average_position = camera_transform.GetTranslation();
 
 	auto relative_difference = ((new_position - average_position).GetAbs() / new_position.ComponentMax(average_position)).GetMax();
 
@@ -510,18 +509,18 @@ void ATrackingCamera::DrawDetectedTags()
 	last_tags_mut.unlock();
 }
 
-FTransform ATrackingCamera::LocalizeCamera(Mat frame)
+pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 {
 	if (frame.empty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot localize camera"));
-		return FTransform::Identity;
+		return {FTransform::Identity, {}};
 	}
 
 	if (!at_td)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Tag detector is null, cannot detect"));
-		return FTransform::Identity;
+		return {FTransform::Identity, {}};
 	}
 
 	auto time_before = chrono::high_resolution_clock::now();
@@ -541,7 +540,7 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 	if (cv_frame_gray.empty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot localize camera"));
-		return FTransform::Identity;
+		return {FTransform::Identity, {}};
 	}
 
 	zarray_t* detections = apriltag_detector_detect(at_td, &im);
@@ -551,6 +550,8 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 
 	last_tags_mut.lock();
 	last_tags.clear();
+
+	map<ATag*, FMatrix> local_tag_transforms;
 	
 	// Draw detection outlines
 	for (int i = 0; i < zarray_size(detections); i++)
@@ -573,7 +574,7 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 			if (tag && tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
 				det_tag = tag;
 		}
-
+		
 		if (det_tag)
 		{
 
@@ -593,18 +594,25 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 			                        FVector(pose.R->data[2], pose.R->data[5], pose.R->data[8]),
 			                        FVector(0));
 
-			FMatrix relative_transformation = FQuat::MakeFromEuler(
+			FMatrix local_tag_transform = FQuat::MakeFromEuler(
 					rotation_matrix.ToQuat().Euler() * FVector(-1, -1, 1)).
 				ToMatrix();
-			relative_transformation.SetOrigin(FVector(pose.t->data[0], pose.t->data[1], -pose.t->data[2]));
-			
-			FMatrix tag_transformation = det_tag->mesh->GetComponentTransform().ToMatrixNoScale();
-			FMatrix world_transformation = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() *
-				relative_transformation.Inverse() * tag_transformation;
+			local_tag_transform.SetOrigin(FVector(pose.t->data[0], pose.t->data[1], -pose.t->data[2]));
 
-			average_transform.Blend(average_transform, FTransform(world_transformation),
-			                        1 / (total_transformations + 1));
-			total_transformations++;
+			if (det_tag->tag_type == TagType::Static)
+			{
+				FMatrix tag_transform = det_tag->mesh->GetComponentTransform().ToMatrixNoScale();
+				
+				FMatrix camera_world_transform = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() *
+					local_tag_transform.Inverse() * tag_transform;
+
+				average_transform.Blend(average_transform, FTransform(camera_world_transform),
+										1 / (total_transformations + 1));
+				total_transformations++;
+			} else
+			{
+				local_tag_transforms[det_tag] = local_tag_transform;
+			}
 		}
 	}
 	last_tags_mut.unlock();
@@ -616,7 +624,7 @@ FTransform ATrackingCamera::LocalizeCamera(Mat frame)
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
 	
-	return average_transform;
+	return {average_transform, local_tag_transforms};
 }
 
 void ATrackingCamera::ReleaseTagDetector()
@@ -676,7 +684,7 @@ void ATrackingCamera::ReleaseTagDetector()
 	at_td = nullptr;
 }
 
-void ATrackingCamera::RefreshTags()
+void ATrackingCamera::FindTags()
 {
 	if (autodetect_tags)
 	{
@@ -766,7 +774,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 	if (must_update_tags)
 	{
-		RefreshTags();
+		FindTags();
 		must_update_tags = false;
 	}
 	
@@ -787,7 +795,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 		DrawDebugLine(GetWorld(), origin, origin + dir * 1000, FColor::Red, false, -1, 1, 3);
 	}
 
-	SetActorRelativeTransform(average_april_transform);
+	SetActorRelativeTransform(camera_transform);
 	
 	camera_mesh->SetVisibility(!IsPlayerControlled());
 	image_plate->SetVisibility(IsPlayerControlled() && cv_cap.isOpened());

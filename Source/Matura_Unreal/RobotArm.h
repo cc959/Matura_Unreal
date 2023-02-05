@@ -74,9 +74,6 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	bool update_rotations = false;
-
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "check_collision == true", EditConditionHides))
-	TArray<AStaticMeshActor*> colliders;
 	
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	FString port;

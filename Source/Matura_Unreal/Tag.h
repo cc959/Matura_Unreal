@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include <deque>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Math/UnrealMathUtility.h"
 
 #include "Tag.generated.h"
 
@@ -21,6 +22,13 @@ enum TagFamily
 	tagStandard52h13 = 7 UMETA(DisplayName = "Standard52h13")
 };
 
+UENUM()
+enum TagType
+{
+	Static = 0,
+	Dynamic = 1,
+};
+
 UCLASS()
 class MATURA_UNREAL_API ATag : public AActor
 {
@@ -29,17 +37,26 @@ class MATURA_UNREAL_API ATag : public AActor
 public:
 	// Sets default values for this actor's properties
 	ATag();
-	virtual void OnConstruction(const FTransform& transform) override;
 	void UpdateScale();
+
+	FTransform tag_transform;
+	std::deque<FTransform> april_transforms;
+	std::mutex transform_lock;
+
+	double UpdateTransform(FTransform update);
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void RecalculateAverageTransform();
 	void UpdateTexture();
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
 #endif
@@ -53,11 +70,18 @@ public:
 	int tag_id;
 
 	UPROPERTY(EditAnywhere, Category = Tag)
-	float tag_size;
+	TEnumAsByte<TagType> tag_type = TagType::Static;
+
+	UPROPERTY(EditAnywhere, Category = Tag, DisplayName="Minimum Update Rate (s)", meta=(EditCondition="tag_type == TagType::Dynamic", EditConditionHides))
+	double update_rate = 1;
+	
+	UPROPERTY(EditAnywhere, Category = Tag)
+	double tag_size;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *mesh;
 	
 	UPROPERTY(EditAnywhere)
 	UTexture2D *tag_texture;
+	
 };

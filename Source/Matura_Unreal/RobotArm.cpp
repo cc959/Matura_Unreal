@@ -99,14 +99,18 @@ void ARobotArm::SetupSerial()
 
 int ARobotArm::NumOverlaps()
 {
+	if (!robot_arm)
+		return 0;
+	
 	int cnt = 0;
 
+	TArray colliders = robot_arm->GetComponentsByTag(UStaticMeshComponent::StaticClass(), "Collider");
 	for (auto collider : colliders)
 	{
-		if (collider)
+		if (collider && Cast<UStaticMeshComponent>(collider))
 		{
-			TArray<AActor*> overlaps;
-			collider->GetOverlappingActors(overlaps);
+			TArray<UPrimitiveComponent*> overlaps;
+			Cast<UStaticMeshComponent>(collider)->GetOverlappingComponents(overlaps);
 			cnt += overlaps.Num();
 		}
 	}
