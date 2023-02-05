@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere, DisplayName="Gravitational Constant g")
 	double g = -9810;
 
+	UPROPERTY(EditAnywhere, DisplayName="Save paths to file")
+	bool save_paths = false;
+	
 	UPROPERTY(EditAnywhere)
 	bool autodetect_cameras = true;
 	

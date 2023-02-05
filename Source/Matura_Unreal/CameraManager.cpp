@@ -3,6 +3,7 @@
 #include "CameraManager.h"
 
 #include <filesystem>
+#include <fstream>
 
 using namespace std;
 #include <thread>
@@ -127,7 +128,6 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 													last_now + static_cast<int64_t>(tag->UpdateTransform(FTransform(world_transform)) * tag->update_rate * 1e9));
 
 				}
-				UE_LOG(LogTemp, Display, TEXT("Next update time: %f"), (camera->next_update_time - last_now) / 1e6);
 			}
 			transform_future = TFuture<pair<FTransform, map<ATag*, FMatrix>>>();
 		}
@@ -259,7 +259,7 @@ uint32 CameraManager::Run()
 			ball_positions.push_back({p, time});
 		}
 		ball_position_mut.unlock();
-
+		
 		if (ball_positions.size() >= 10)
 		{
 			auto last = ball_positions.back();
@@ -269,6 +269,48 @@ uint32 CameraManager::Run()
 				tracking_path = ParabPath::fromNPoints({ball_positions.end() - min(++num_points_in_path, int(ball_positions.size())), ball_positions.end()});
 			else
 			{
+				if (ball->save_paths && num_points_in_path >= 30 && ball_positions.size() >= 30)
+				{
+					auto now = std::chrono::system_clock::now();
+					auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+					std::stringstream ss;
+					ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+
+					string path = "/home/elias/Documents/ParabPaths/"+ ss.str() + ".txt";
+					
+					ofstream parab_file(path);
+
+					if (parab_file.is_open())
+					{
+						parab_file << "t, x = " + to_string(tracking_path.vx / 1e3) + " * t + " + to_string(tracking_path.px / 1e3) + "\n";
+						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						{
+							auto [position, t] = *i;
+							parab_file << t-tracking_path.t0 << " " << position.X / 1e3 << "\n";
+						}
+						parab_file << "t, y = " + to_string(tracking_path.vy / 1e3) + " * t + " + to_string(tracking_path.py / 1e3) + "\n";
+						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						{
+							auto [position, t] = *i;
+							parab_file << t-tracking_path.t0 << " " << position.Y / 1e3 << "\n";
+						}
+						parab_file << "t, z = " + to_string(tracking_path.a / 1e3) + " * t^2 + " + to_string(tracking_path.b / 1e3) + " * t + " + to_string(tracking_path.c / 1e3) + "\n";
+						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						{
+							auto [position, t] = *i;
+							parab_file << t-tracking_path.t0 << " " << position.Z / 1e3 << "\n";
+						}
+						parab_file.close();
+
+						UE_LOG(LogTemp, Display, TEXT("Saved path to file: %s"), *FString(path.c_str()));
+					} else
+					{
+						UE_LOG(LogTemp, Display, TEXT("Could not open file: %s"), *FString(path.c_str()));
+					}
+				}
+
+				
 				tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()});
 
 				if (abs(tracking_path.derivative2() - ball->g) > 1500)
