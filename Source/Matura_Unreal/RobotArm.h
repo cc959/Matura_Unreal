@@ -28,11 +28,11 @@ public:
 	ARobotArm();
 
 protected:
-	static constexpr double min_rotations[5] = {-242, -90, -217.5, -90, 0};
-	static constexpr double max_rotations[5] = {0, 90, 37.5, 90, 180};
+	static constexpr double min_rotations[5] = {-244, -90, -225, -75, 0};
+	static constexpr double max_rotations[5] = {6, 90, 33, 95, 180};
 
 	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
-	static constexpr double max_servo[5] = {4, 3, 180, 0, 180};
+	static constexpr double max_servo[5] = {0, 3, 180, 0, 180};
 
 	
 	// Called when the game starts or when spawned
@@ -130,16 +130,16 @@ public:
 	FVector impact;
 	
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-242.0", UIMax = "0.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0", EditCondition = "update_type == UpdateType::User"))
 	double base_rotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
 	double lower_arm_rotation;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-217.5", UIMax = "37.5", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-225", UIMax = "33", EditCondition = "update_type == UpdateType::User"))
 	double upper_arm_rotation;
     	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0", EditCondition = "update_type == UpdateType::User"))
 	double wrist_rotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0", EditCondition = "update_type == UpdateType::User"))

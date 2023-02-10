@@ -1,7 +1,0 @@
-"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Intermediate/Build/Linux/B4D820EA/UnrealEditor/DebugGame/RiderGameControl/RiderGameControl.cpp.o"
- -soname="libUnrealEditor-RiderGameControl-Linux-DebugGame.so"
- -rpath-link="/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Binaries/Linux"
- -L"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Binaries/Linux"
- -L"/opt/unreal-engine/Engine/Binaries/Linux"
- --start-group
- --end-group

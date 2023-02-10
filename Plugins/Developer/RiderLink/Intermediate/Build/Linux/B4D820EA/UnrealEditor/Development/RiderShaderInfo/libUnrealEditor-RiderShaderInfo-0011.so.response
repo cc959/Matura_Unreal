@@ -1,0 +1,6 @@
+"/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Intermediate/Build/Linux/B4D820EA/UnrealEditor/Development/RiderShaderInfo/RiderShaderInfo.cpp.o"
+ -soname="libUnrealEditor-RiderShaderInfo-0011.so"
+ -rpath-link="/home/elias/Documents/Unreal Projects/Matura_Unreal/Plugins/Developer/RiderLink/Binaries/Linux"
+ -L"/opt/unreal-engine/Engine/Binaries/Linux"
+ --start-group
+ --end-group
