@@ -67,7 +67,7 @@ void ATag::UpdateTexture()
 	std::string tag_id_string = ss.str();
 
 	std::string path = "/Game/apriltag-imgs/" + family_names[tag_family] + "/" + tag_pre[tag_family] + tag_id_string + "." + tag_pre[tag_family] + tag_id_string;
-
+	
 	tag_texture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), this, *FString(path.c_str())));
 
 	if (tag_texture)

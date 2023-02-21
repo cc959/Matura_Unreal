@@ -45,6 +45,8 @@ void AFlyCharacter::InitGUI()
 		{
 			hud_instance = CreateWidget<UMyUserWidget>(player_controller, hud_class);
 			hud_instance->AddToViewport();
+			hud_instance->GetWidgetFromName("camera_preview")->SetVisibility(ESlateVisibility::Hidden);
+			hud_instance->GetWidgetFromName("slide")->SetVisibility(ESlateVisibility::Hidden);
 		} else {
 			UE_LOG(LogTemp, Warning, TEXT("Is not controlled by a player, can't add UI: Fly Character"));
 		}

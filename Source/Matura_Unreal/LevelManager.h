@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LevelManager.generated.h"
@@ -22,7 +24,9 @@ protected:
 	bool key_pressed = false;
 
 	FName current_level;
+	std::vector<UTexture2D*> slide_textures;
 
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -30,7 +34,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<FName> sublevels;
 
-	
+	FVector2d viewport_size;
+
 	int level = 0;
 	int level_loaded = -1;
 
