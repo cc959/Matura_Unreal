@@ -64,6 +64,15 @@ enum Decompressor
 	Unreal = 2 UMETA(DisplayNAme = "Unreal Engine")
 };
 
+UENUM()
+enum DebugFrameType
+{
+	Threshold = 0 UMETA(DisplayName = "Threshold"),
+	HueOnly = 1 UMETA(DisplayName = "Hue Only"),
+	SatOnly = 2 UMETA(DisplayName = "Saturation Only"),
+	ValOnly = 3 UMETA(DisplayName = "Value Only"),
+};
+
 UCLASS()
 class MATURA_UNREAL_API ATrackingCamera : public APawn
 {
@@ -220,8 +229,14 @@ public:
 	int min_blob_size = 300;
 	
 	UPROPERTY(EditAnywhere, Category = BlobParams)
-	bool display_threshold_frame = false;
+	bool display_debug_frame = false;
 
+	UPROPERTY(EditAnywhere, Category = BlobParams)
+	TEnumAsByte<DebugFrameType> debug_frame_type = Threshold;
+
+	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (EditCondition = "debug_frame_type != 0", EditConditionHides))
+	bool apply_threshold_to_debug_frame = false;
+	
 	UPROPERTY(EditAnywhere, Category = BlobParams)
 	TEnumAsByte<DetectionType> detection_type = DetectionType::BlobDetector;
 	

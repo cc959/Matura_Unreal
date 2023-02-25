@@ -3328,6 +3328,22 @@
 		"directory": "/opt/unreal-engine/Engine/Source"
 	},
 	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SlideShower.cpp",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Matura_Unreal/Matura_Unreal.291.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
+		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/SlideShower.h",
+		"arguments": [
+			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"@/home/elias/Documents/Unreal Projects/Matura_Unreal/.vscode/compileCommands_Matura_Unreal/Matura_Unreal.291.rsp"
+		],
+		"directory": "/opt/unreal-engine/Engine/Source"
+	},
+	{
 		"file": "/home/elias/Documents/Unreal Projects/Matura_Unreal/Source/Matura_Unreal/Tag.cpp",
 		"arguments": [
 			"/opt/unreal-engine/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v20_clang-13.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++",

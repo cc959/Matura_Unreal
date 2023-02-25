@@ -266,10 +266,12 @@ uint32 CameraManager::Run()
 			double diff = ((tracking_path(last.time) - last.position) / last.position.ComponentMax(tracking_path(last.time))).GetAbsMax();
 
 			if (diff < 0.15)
-				tracking_path = ParabPath::fromNPoints({ball_positions.end() - min(++num_points_in_path, int(ball_positions.size())), ball_positions.end()});
+			{
+				ball_paths.push_back(tracking_path = ParabPath::fromNPoints({ball_positions.end() - min(++num_points_in_path, int(ball_positions.size())), ball_positions.end()}));
+			}
 			else
 			{
-				if (ball->save_paths && num_points_in_path >= 30 && ball_positions.size() >= 30)
+				if (ball->save_paths && num_points_in_path >= 30 && ball_positions.size() >= 30) // save the path to file
 				{
 					auto now = std::chrono::system_clock::now();
 					auto in_time_t = std::chrono::system_clock::to_time_t(now);
@@ -283,20 +285,26 @@ uint32 CameraManager::Run()
 
 					if (parab_file.is_open())
 					{
-						parab_file << "t, x = " + to_string(tracking_path.vx / 1e3) + " * t + " + to_string(tracking_path.px / 1e3) + "\n";
-						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						parab_file << "t, x = " + to_string(tracking_path.vx / 1e3) + " * x + " + to_string(tracking_path.px / 1e3) + "\n";
+						for (ParabPath output_path : ball_paths)
+							parab_file << to_string(output_path.vx / 1e3) + " * x + " + to_string(output_path.px / 1e3) + "\n";
+						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
 							parab_file << t-tracking_path.t0 << " " << position.X / 1e3 << "\n";
 						}
 						parab_file << "t, y = " + to_string(tracking_path.vy / 1e3) + " * t + " + to_string(tracking_path.py / 1e3) + "\n";
-						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						for (ParabPath output_path : ball_paths)
+							parab_file << to_string(output_path.vy / 1e3) + " * x + " + to_string(output_path.py / 1e3) + "\n";
+						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
 							parab_file << t-tracking_path.t0 << " " << position.Y / 1e3 << "\n";
 						}
 						parab_file << "t, z = " + to_string(tracking_path.a / 1e3) + " * t^2 + " + to_string(tracking_path.b / 1e3) + " * t + " + to_string(tracking_path.c / 1e3) + "\n";
-						for (auto i = ball_positions.end() - num_points_in_path; i < ball_positions.end(); ++i)
+						for (ParabPath output_path : ball_paths)
+							parab_file << to_string(output_path.a / 1e3) + " * x * x + " + to_string(output_path.b / 1e3) + " * x + " + to_string(output_path.c / 1e3) + "\n";
+						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
 							parab_file << t-tracking_path.t0 << " " << position.Z / 1e3 << "\n";
@@ -310,8 +318,8 @@ uint32 CameraManager::Run()
 					}
 				}
 
-				
-				tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()});
+				ball_paths.clear();
+				ball_paths.push_back(tracking_path = ParabPath::fromNPoints({ball_positions.end() - 10, ball_positions.end()}));
 
 				if (abs(tracking_path.derivative2() - ball->g) > 1500)
 					tracking_path = {};

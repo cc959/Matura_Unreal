@@ -73,7 +73,7 @@ void SetSlideTexture(ALevelManager* you, UTexture2D* slide_texture)
 						slot->SetPosition({(you->viewport_size.X - (slide_size.X * ratio)) / 2, 0});
 					}
 				}
-
+				slide_texture->SRGB = false;
 				slide->Brush.SetResourceObject(slide_texture);
 				slide->SetVisibility(ESlateVisibility::Visible);
 			}

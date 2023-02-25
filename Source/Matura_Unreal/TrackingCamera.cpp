@@ -93,7 +93,7 @@ void ATrackingCamera::InitCamera()
 		       int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)),
 		       int(cv_cap.get(CAP_PROP_FPS)));
 
-		
+
 		camera_texture_2d = UTexture2D::CreateTransient(cv_size.width, cv_size.height, PF_R8G8B8A8);
 #if WITH_EDITORONLY_DATA
 		camera_texture_2d->MipGenSettings = TMGS_NoMipmaps;
@@ -121,7 +121,7 @@ void ATrackingCamera::InitCamera()
 
 	initUndistortRectifyMap(K(), p(), {}, {}, cv_size, CV_32FC1, cv_undistort_map1,
 	                        cv_undistort_map2);
-	
+
 	cv_bg_subtractor = createBackgroundSubtractorMOG2();
 
 	SimpleBlobDetector::Params cv_blob_params;
@@ -147,7 +147,7 @@ void ATrackingCamera::InitCamera()
 
 
 	cv_blob_detector = SimpleBlobDetector::create(cv_blob_params);
-	
+
 	CreateTagDetector();
 }
 
@@ -155,7 +155,7 @@ void ATrackingCamera::CreateTagDetector()
 {
 	if (at_td)
 		return;
-	
+
 	at_td = apriltag_detector_create();
 
 	at_td->quad_decimate = 1.0; // decimate factor
@@ -163,8 +163,8 @@ void ATrackingCamera::CreateTagDetector()
 	at_td->nthreads = 8; // use this many cpu threads
 	at_td->debug = false; // print debug output
 	at_td->refine_edges = true; // refine tag edges
-	
-	
+
+
 	static const function<apriltag_family_t *()> family_functions[] = {
 		tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create,
 		tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create
@@ -203,12 +203,12 @@ double ATrackingCamera::SyncFrame()
 {
 	if (!cv_cap.isOpened() && loaded)
 		return 0;
-	
+
 	cv_cap.grab();
 	double time_captured = cv_cap.get(CAP_PROP_POS_MSEC);
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display,TEXT("Camera %s grabbed frame at %f ms"), *camera_path, time_captured);
+		UE_LOG(LogTemp, Display, TEXT("Camera %s grabbed frame at %f ms"), *camera_path, time_captured);
 
 	return time_captured;
 }
@@ -217,13 +217,13 @@ void ATrackingCamera::GetFrame()
 {
 	if (!cv_cap.isOpened() && loaded)
 		return;
-		
+
 	Mat cv_frame_raw, cv_frame_distorted;
 	cv_cap.retrieve(cv_frame_raw);
 
 
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
-	
+
 	uint8* UncompressedData = nullptr;
 	TEnumAsByte<Decompressor> decompressor_used = decompressor;
 	if (decompressor_used == STB)
@@ -293,8 +293,9 @@ void ATrackingCamera::GetFrame()
 	auto time_end_uncompress = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path, (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
-	
+		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path,
+	       (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
+
 	remap(cv_frame_distorted, cv_frame, cv_undistort_map1, cv_undistort_map2, INTER_LINEAR);
 
 	free(UncompressedData); // in case stb or ujpeg was used free the memory allocated by the library
@@ -304,7 +305,6 @@ void ATrackingCamera::GetFrame()
 		UE_LOG(LogTemp, Warning, TEXT("Frame is empty after decompression"))
 		return;
 	}
-	
 }
 
 Point2d ATrackingCamera::FindBall()
@@ -319,7 +319,7 @@ Point2d ATrackingCamera::FindBall()
 	}
 
 	auto time_before = chrono::high_resolution_clock::now();
-	
+
 	Mat cv_frame_scaled;
 	float factor_used = processing_resolution_factor;
 	resize(cv_frame, cv_frame_scaled, Size(), factor_used, factor_used, INTER_AREA);
@@ -328,7 +328,19 @@ Point2d ATrackingCamera::FindBall()
 	Mat cv_frame_HSV, cv_color_threshold, cv_bg_threshold, cv_threshold;
 	cvtColor(cv_frame_scaled, cv_frame_HSV, COLOR_RGB2HSV);
 
-	inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_color_threshold);
+	if (display_debug_frame && debug_frame_type != Threshold && apply_threshold_to_debug_frame)
+	{
+		if (debug_frame_type == HueOnly)
+			inRange(cv_frame_HSV, Scalar(low_H, 0, 0), Scalar(high_H, 255, 255), cv_color_threshold);
+		if (debug_frame_type == SatOnly)
+			inRange(cv_frame_HSV, Scalar(0, low_S, 0), Scalar(180, high_S, 255), cv_color_threshold);
+		if (debug_frame_type == ValOnly)
+			inRange(cv_frame_HSV, Scalar(0, 0, low_V), Scalar(180, 255, high_V), cv_color_threshold);
+
+	} else
+	{
+		inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_color_threshold);
+	}
 
 	if (learning_rate != 1) // used to "deactivate" the background subtraction
 	{
@@ -349,12 +361,71 @@ Point2d ATrackingCamera::FindBall()
 	Point2f det = {-1, -1};
 
 	Mat cv_debug_frame_temp;
-	
-	if (display_threshold_frame)
+
+	if (display_debug_frame)
 	{
-		resize(cv_threshold, cv_debug_frame_temp, {}, 1 / factor_used, 1 / factor_used);
-		cvtColor(cv_debug_frame_temp, cv_debug_frame_temp, COLOR_GRAY2RGB);
-	} else
+		if (debug_frame_type == Threshold)
+		{
+			resize(cv_threshold, cv_debug_frame_temp, {}, 1 / factor_used, 1 / factor_used);
+			cvtColor(cv_debug_frame_temp, cv_debug_frame_temp, COLOR_GRAY2RGB);
+		}
+		else
+		{
+			auto setChannel = [](Mat& mat, unsigned int channel, unsigned char value)
+				// https://stackoverflow.com/questions/23510571/how-to-set-given-channel-of-a-cvmat-to-a-given-value-efficiently-without-chang
+			{
+				// make sure have enough channels
+				if (mat.channels() < channel + 1)
+					return;
+
+				const int cols = mat.cols;
+				const int step = mat.channels();
+				const int rows = mat.rows;
+				for (int y = 0; y < rows; y++)
+				{
+					// get pointer to the first byte to be changed in this row
+					unsigned char* p_row = mat.ptr(y) + channel;
+					unsigned char* row_end = p_row + cols * step;
+					for (; p_row != row_end; p_row += step)
+						*p_row = value;
+				}
+			};
+
+			Mat cv_frame_HSV_resized;
+			resize(cv_frame_HSV, cv_frame_HSV_resized, {}, 1 / factor_used, 1 / factor_used);
+
+			Mat sv_channels(cv_frame_HSV_resized.size(), cv_frame_HSV_resized.type(), Scalar(255));
+			
+			if (debug_frame_type == HueOnly)
+			{
+				setChannel(cv_frame_HSV_resized, 1, 255);
+				setChannel(cv_frame_HSV_resized, 2, 255);
+			}
+			if (debug_frame_type == SatOnly)
+			{
+				setChannel(cv_frame_HSV_resized, 2, 255);
+				setChannel(cv_frame_HSV_resized, 0, 255);
+			}
+			if (debug_frame_type == ValOnly)
+			{
+				setChannel(cv_frame_HSV_resized, 0, 255);
+				setChannel(cv_frame_HSV_resized, 1, 255);
+			}
+
+			cvtColor(cv_frame_HSV_resized, cv_frame_HSV_resized, COLOR_HSV2RGB);
+
+			if (apply_threshold_to_debug_frame)
+			{
+				Mat cv_resized_threshold;
+				resize(cv_threshold, cv_resized_threshold, {}, 1 / factor_used, 1 / factor_used);
+				cv_frame_HSV_resized.copyTo(cv_debug_frame_temp, cv_resized_threshold);
+			} else
+			{
+				cv_debug_frame_temp = cv_frame_HSV_resized;
+			}
+		}
+	}
+	else
 	{
 		cv_debug_frame_temp = cv_frame;
 	}
@@ -379,7 +450,7 @@ Point2d ATrackingCamera::FindBall()
 			line(cv_debug_frame_temp, det - Point2f(radius, 0), det + Point2f(radius, 0),
 			     Scalar(255, 0, 0), 3);
 			line(cv_debug_frame_temp, det - Point2f(0, radius), det + Point2f(0, radius),
-			     Scalar(255, 0, 0), 3); 
+			     Scalar(255, 0, 0), 3);
 		}
 	}
 	else if (detection_type == ContourFilter)
@@ -440,7 +511,7 @@ Point2d ATrackingCamera::FindBall()
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find ball"), *camera_path, (time_after - time_before).count() / 1e6);
 
 	cvtColor(cv_debug_frame_temp, cv_debug_frame, COLOR_RGB2RGBA);
-	
+
 	return ball = det;
 }
 
@@ -462,7 +533,7 @@ double ATrackingCamera::UpdateTransform(FTransform update)
 	while (april_transforms.size() > 10)
 		april_transforms.pop_front();
 
-	
+
 	if (april_transforms.size() < 10)
 	{
 		RecalculateAverageTransform();
@@ -475,7 +546,7 @@ double ATrackingCamera::UpdateTransform(FTransform update)
 	auto relative_difference = ((new_position - average_position).GetAbs() / new_position.ComponentMax(average_position)).GetMax();
 
 	RecalculateAverageTransform();
-	
+
 	return pow(1. - min(relative_difference, 1.), 2.) * update_rate;
 }
 
@@ -485,26 +556,26 @@ void ATrackingCamera::DrawDetectedTags()
 	for (auto det : last_tags)
 	{
 		line(cv_debug_frame, Point(det.p[0][0], det.p[0][1]),
-			 Point(det.p[1][0], det.p[1][1]),
-			 Scalar(0xff, 0, 0, 0xff), 2);
+		     Point(det.p[1][0], det.p[1][1]),
+		     Scalar(0xff, 0, 0, 0xff), 2);
 		line(cv_debug_frame, Point(det.p[0][0], det.p[0][1]),
-			 Point(det.p[3][0], det.p[3][1]),
-			 Scalar(0, 0xff, 0, 0xff), 2);
+		     Point(det.p[3][0], det.p[3][1]),
+		     Scalar(0, 0xff, 0, 0xff), 2);
 		line(cv_debug_frame, Point(det.p[1][0], det.p[1][1]),
-			 Point(det.p[2][0], det.p[2][1]),
-			 Scalar(0, 0, 0xff, 0xff), 2);
+		     Point(det.p[2][0], det.p[2][1]),
+		     Scalar(0, 0, 0xff, 0xff), 2);
 		line(cv_debug_frame, Point(det.p[2][0], det.p[2][1]),
-			 Point(det.p[3][0], det.p[3][1]),
-			 Scalar(0, 0, 0xff, 0xff), 2);
+		     Point(det.p[3][0], det.p[3][1]),
+		     Scalar(0, 0, 0xff, 0xff), 2);
 
 		string text = to_string(det.id);
 		int fontface = FONT_HERSHEY_SCRIPT_SIMPLEX;
 		double fontscale = 1.0;
 		int baseline;
 		Size textsize = getTextSize(text, fontface, fontscale, 2,
-									&baseline);
+		                            &baseline);
 		putText(cv_debug_frame, text, Point(det.c[0] - textsize.width / 2, det.c[1] + textsize.height / 2),
-				fontface, fontscale, Scalar(0, 0x99, 0xff, 0xff), 2);
+		        fontface, fontscale, Scalar(0, 0x99, 0xff, 0xff), 2);
 	}
 	last_tags_mut.unlock();
 }
@@ -524,9 +595,9 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 	}
 
 	auto time_before = chrono::high_resolution_clock::now();
-	
+
 	Mat cv_frame_gray;
-	
+
 	cvtColor(frame, cv_frame_gray, COLOR_RGB2GRAY);
 
 	// Make an image_u8_t header for the Mat data
@@ -552,7 +623,7 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 	last_tags.clear();
 
 	map<ATag*, FMatrix> local_tag_transforms;
-	
+
 	// Draw detection outlines
 	for (int i = 0; i < zarray_size(detections); i++)
 	{
@@ -565,19 +636,18 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 		zarray_get(detections, i, &det);
 
 		last_tags.push_back(*det);
-		
+
 		FString name = det->family->name;
-		
+
 		ATag* det_tag = NULL;
 		for (ATag* tag : april_tags)
 		{
 			if (tag && tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
 				det_tag = tag;
 		}
-		
+
 		if (det_tag)
 		{
-
 			apriltag_detection_info_t info;
 			info.det = det;
 			info.tagsize = det_tag->tag_size * 100;
@@ -602,14 +672,15 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 			if (det_tag->tag_type == TagType::Static)
 			{
 				FMatrix tag_transform = det_tag->mesh->GetComponentTransform().ToMatrixNoScale();
-				
+
 				FMatrix camera_world_transform = FQuat::MakeFromEuler(FVector(0, -90, -90)).ToMatrix() *
 					local_tag_transform.Inverse() * tag_transform;
 
 				average_transform.Blend(average_transform, FTransform(camera_world_transform),
-										1 / (total_transformations + 1));
+				                        1 / (total_transformations + 1));
 				total_transformations++;
-			} else
+			}
+			else
 			{
 				local_tag_transforms[det_tag] = local_tag_transform;
 			}
@@ -623,7 +694,7 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
-	
+
 	return {average_transform, local_tag_transforms};
 }
 
@@ -689,7 +760,7 @@ void ATrackingCamera::FindTags()
 	if (autodetect_tags)
 	{
 		april_tags.Empty();
-		
+
 		TActorIterator<ATag> ActorItr(GetWorld());
 		while (ActorItr)
 		{
@@ -706,9 +777,9 @@ void ATrackingCamera::ReleaseCamera()
 {
 	loaded = false;
 	destroy_lock.lock();
-	
+
 	cv_cap.release();
-	
+
 	ReleaseTagDetector();
 }
 
@@ -716,10 +787,10 @@ void ATrackingCamera::UpdateDebugTexture()
 {
 	if (!update_texture)
 		return;
-	
+
 	if (!cv_cap.isOpened() && loaded)
 		return;
-	
+
 	if (!camera_texture_2d)
 	{
 		UE_LOG(LogTemp, Error, TEXT("camera texture pointer is null"));
@@ -751,9 +822,8 @@ void ATrackingCamera::BeginPlay()
 }
 
 #if WITH_EDITOR
-void ATrackingCamera::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+void ATrackingCamera::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-
 	auto plate_config = image_plate->GetPlate();
 	{
 		if (plate_config.DynamicMaterial)
@@ -777,7 +847,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 		FindTags();
 		must_update_tags = false;
 	}
-	
+
 	UpdateDebugTexture();
 
 	if (ball != Point2d{-1, -1})
@@ -786,17 +856,16 @@ void ATrackingCamera::Tick(float DeltaTime)
 		vector<Point2d> output_points;
 		undistortPoints(ball_point, output_points, K(), {});
 		FVector homo_ball = {1, output_points[0].x, -output_points[0].y};
-		
-	
-		 
+
+
 		FVector origin = GetActorTransform().TransformPosition({0, 0, 0});
 		FVector dir = GetActorTransform().TransformVector(homo_ball / homo_ball.Length());
 
-		DrawDebugLine(GetWorld(), origin, origin + dir * 1000, FColor::Red, false, -1, 1, 3);
+		DrawDebugLine(GetWorld(), origin, origin + dir * 100000, FColor::Red, false, -1, 1, 3);
 	}
 
 	SetActorRelativeTransform(camera_transform);
-	
+
 	camera_mesh->SetVisibility(!IsPlayerControlled());
 	image_plate->SetVisibility(IsPlayerControlled() && cv_cap.isOpened());
 }
@@ -807,5 +876,4 @@ void ATrackingCamera::BeginDestroy()
 	ReleaseCamera();
 	Super::BeginDestroy();
 	UE_LOG(LogTemp, Warning, TEXT("%s is done being destroyed"), *camera_path);
-
 }

@@ -38,18 +38,14 @@ public:
 		double time;
 	};
 
-
-	
 private:
-
 
 	std::mutex ball_position_mut;
 	std::deque<Position> ball_positions;
 	std::deque<ParabPath> ball_paths;
 	ParabPath tracking_path = {};
 	int num_points_in_path;
-
-
+	
 	std::mutex ball_detection_2d_mut;
 	void CameraLoop(ATrackingCamera* camera, std::deque<Detection>* ball_2d_detections);
 	std::vector<TFuture<void>> camera_threads;

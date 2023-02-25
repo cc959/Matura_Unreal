@@ -18,6 +18,9 @@ enum UpdateType
 	Ball = 3,
 };
 
+// the relevant ones all managed about 180 deg/s
+const double motor_speed = 180;
+
 UCLASS()
 class MATURA_UNREAL_API ARobotArm : public AActor
 {
@@ -34,24 +37,58 @@ protected:
 	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
 	static constexpr double max_servo[5] = {0, 3, 180, 0, 180};
 
+	struct Position
+	{
+		double base_rotation;
+		double lower_arm_rotation;
+		double upper_arm_rotation;
+		double wrist_rotation;
+		double hand_rotation;
+
+		Position()
+		{
+			base_rotation = lower_arm_rotation = upper_arm_rotation = wrist_rotation = hand_rotation = nan("");
+		}
+
+		double diff(Position other)
+		{
+			return max({
+				abs(base_rotation - other.base_rotation), 
+				abs(lower_arm_rotation - other.lower_arm_rotation), 
+				abs(upper_arm_rotation - other.upper_arm_rotation),
+			});
+		}
+
+		Position(double base_rotation, double lower_arm_rotation, double upper_arm_rotation, double wrist_rotation, double hand_rotation) :
+		base_rotation(base_rotation),
+		lower_arm_rotation(lower_arm_rotation),
+		upper_arm_rotation(upper_arm_rotation),
+		wrist_rotation(wrist_rotation),
+		hand_rotation(hand_rotation)
+		{}
+	};
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SetupSerial();
 	int NumOverlaps();
-
-	void UpdateRotations();
+	void GetAnimation(Position position);
 	void SendRotations();
 
-	bool UpdateIK(FVector target);
-	void TrackBall();
+	bool InverseKinematics(FVector target, Position& position);
+	void TrackParabola(Position& position);
+	void TrackBall(FVector target, FVector impact_velocity, Position& position);
+
+	void ApplyPosition(Position position);
 
 	void SerialLoop();
 	FVector ArmOrigin() const;
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
-	
-	std::tuple<double, double, double, double, double> last_rotations;
+	int64_t last_flight_time = 0;
+
+	Position GetPosition();
+	Position GetActualPosition();
 
 public:
 	// Called every frame
@@ -129,7 +166,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	FVector impact;
 	
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0", EditCondition = "update_type == UpdateType::User"))
 	double base_rotation;
 
@@ -144,5 +180,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0", EditCondition = "update_type == UpdateType::User"))
 	double hand_rotation;
+
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0"))
+	double actual_base_rotation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0"))
+	double actual_lower_arm_rotation;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-225", UIMax = "33"))
+	double actual_upper_arm_rotation;
+    	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0"))
+	double actual_wrist_rotation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
+	double actual_hand_rotation;
 
 };
