@@ -267,7 +267,7 @@ uint32 CameraManager::Run()
 
 			if (diff < 0.15)
 			{
-				ball_paths.push_back(tracking_path = ParabPath::fromNPoints({ball_positions.end() - min(++num_points_in_path, int(ball_positions.size())), ball_positions.end()}));
+				ball_paths.push_back(tracking_path = ParabPath::fromNPoints({ball_positions.end() - min({++num_points_in_path, int(ball_positions.size()), 30}), ball_positions.end()}));
 			}
 			else
 			{
@@ -283,31 +283,42 @@ uint32 CameraManager::Run()
 					
 					ofstream parab_file(path);
 
+					auto t0 = ball_paths.begin()->t0;
+					
 					if (parab_file.is_open())
 					{
 						parab_file << "t, x = " + to_string(tracking_path.vx / 1e3) + " * x + " + to_string(tracking_path.px / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
+						{
+							output_path += (t0 - output_path.t0);
 							parab_file << to_string(output_path.vx / 1e3) + " * x + " + to_string(output_path.px / 1e3) + "\n";
-						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
+						}
+						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-tracking_path.t0 << " " << position.X / 1e3 << "\n";
+							parab_file << t-t0 << " " << position.X / 1e3 << "\n";
 						}
 						parab_file << "t, y = " + to_string(tracking_path.vy / 1e3) + " * t + " + to_string(tracking_path.py / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
+						{
+							output_path += (t0 - output_path.t0);
 							parab_file << to_string(output_path.vy / 1e3) + " * x + " + to_string(output_path.py / 1e3) + "\n";
-						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
+						}
+						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-tracking_path.t0 << " " << position.Y / 1e3 << "\n";
+							parab_file << t-t0 << " " << position.Y / 1e3 << "\n";
 						}
 						parab_file << "t, z = " + to_string(tracking_path.a / 1e3) + " * t^2 + " + to_string(tracking_path.b / 1e3) + " * t + " + to_string(tracking_path.c / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
+						{
+							output_path += (t0 - output_path.t0);
 							parab_file << to_string(output_path.a / 1e3) + " * x * x + " + to_string(output_path.b / 1e3) + " * x + " + to_string(output_path.c / 1e3) + "\n";
-						for (auto i = ball_positions.end() - min(num_points_in_path, 20); i < ball_positions.end(); ++i)
+						}
+						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-tracking_path.t0 << " " << position.Z / 1e3 << "\n";
+							parab_file << t-t0 << " " << position.Z / 1e3 << "\n";
 						}
 						parab_file.close();
 
