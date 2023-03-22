@@ -42,12 +42,12 @@ protected:
 		double base_rotation;
 		double lower_arm_rotation;
 		double upper_arm_rotation;
-		double wrist_rotation;
 		double hand_rotation;
+		double wrist_rotation;
 
 		Position()
 		{
-			base_rotation = lower_arm_rotation = upper_arm_rotation = wrist_rotation = hand_rotation = nan("");
+			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = nan("");
 		}
 
 		double diff(Position other)
@@ -59,12 +59,12 @@ protected:
 			});
 		}
 
-		Position(double base_rotation, double lower_arm_rotation, double upper_arm_rotation, double wrist_rotation, double hand_rotation) :
+		Position(double base_rotation, double lower_arm_rotation, double upper_arm_rotation, double hand_rotation, double wrist_rotation) :
 		base_rotation(base_rotation),
 		lower_arm_rotation(lower_arm_rotation),
 		upper_arm_rotation(upper_arm_rotation),
-		wrist_rotation(wrist_rotation),
-		hand_rotation(hand_rotation)
+		hand_rotation(hand_rotation),
+		wrist_rotation(wrist_rotation)
 		{}
 	};
 	
@@ -86,6 +86,7 @@ protected:
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
 	int64_t last_flight_time = 0;
+	double back_up_time = -1;
 
 	Position GetPosition();
 	Position GetActualPosition();
@@ -127,14 +128,14 @@ public:
 	UStaticMeshComponent *base_component;
 	UStaticMeshComponent *lower_arm_component;
 	UStaticMeshComponent *upper_arm_component;
-	UStaticMeshComponent *wrist_component;
 	UStaticMeshComponent *hand_component;
+	UStaticMeshComponent *wrist_component;
 	
 	UPROPERTY(EditAnywhere)
 	bool show_profiling = false;
 	
 	// UPROPERTY(EditAnywhere)
-	// AStaticMeshActor *hand_component;
+	// AStaticMeshActor *wrist_component;
 	
 	UPROPERTY(EditAnywhere, Category = Motors)
 	TEnumAsByte<UpdateType> update_type;
@@ -176,10 +177,10 @@ public:
 	double upper_arm_rotation;
     	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0", EditCondition = "update_type == UpdateType::User"))
-	double wrist_rotation;
+	double hand_rotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0", EditCondition = "update_type == UpdateType::User"))
-	double hand_rotation;
+	double wrist_rotation;
 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0"))
@@ -192,9 +193,9 @@ public:
 	double actual_upper_arm_rotation;
     	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0"))
-	double actual_wrist_rotation;
+	double actual_hand_rotation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
-	double actual_hand_rotation;
+	double actual_wrist_rotation;
 
 };

@@ -3,10 +3,13 @@
 #pragma once
 
 #include <vector>
+#include <Engine/StreamableManager.h>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/ObjectLibrary.h"
 #include "LevelManager.generated.h"
+
 
 UCLASS()
 class MATURA_UNREAL_API ALevelManager : public AActor
@@ -24,10 +27,12 @@ protected:
 	bool key_pressed = false;
 
 	FName current_level;
-	std::vector<UTexture2D*> slide_textures;
-
 	
-public:	
+public:
+
+	UObjectLibrary* object_library;
+	FStreamableManager manager;
+	TSharedPtr<FStreamableHandle> blubpointer;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
