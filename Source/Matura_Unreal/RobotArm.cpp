@@ -311,117 +311,231 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 	return must_flip;
 }
 
+// generate a path of positions for linear movement
+vector<ARobotArm::Position> ARobotArm::LinearMove(FVector current, FVector target, FVector impact_velocity, Position start_position, Position end_position, float delay_extra_position, float delay_at_end)
+{
+	Position start,end;
+	TrackBall(current, impact_velocity, start);
+	TrackBall(target, impact_velocity, end);
+
+	double movement_time = start.diff(end);
+
+	int steps = movement_time / (1./60.);
+	int extra_steps = delay_extra_position / (1./60.);
+
+	UE_LOG(LogTemp, Warning, TEXT("%f %d"), movement_time, steps);
+	
+	vector<Position> path;
+	
+	for (int step = 0; step < steps; step++)
+	{
+		double t = double(step) / double(steps);
+		
+		Position now;
+		TrackBall(Lerp(current, target, t), impact_velocity, now);
+		
+		path.push_back(now);
+
+		if (path.size() < extra_steps)
+			path.back() = path.back() + start_position;
+		else
+			path.back() = path.back() + end_position;
+
+	}
+
+	for (int extra = 0; extra < delay_at_end / (1./60.); extra++)
+	{
+		if (path.size())
+		{
+			path.push_back(path.back());
+
+			if (path.size() == extra_steps)
+				path.back() = path.back() + end_position - start_position;
+		}
+	}
+
+	reverse(path.begin(), path.end());
+	return path;
+}
+
+// angle for the ball to fly to minimize the starting velocity but still reach the point (length,height)
+pair<double, double> best_angle(double length, double height, double g)
+{
+	double delta = 0.001;
+	double learning_rate = 0.01;
+	int max_iterations = 1000;
+
+	double l = atan2(height, length), r = M_PI / 2;
+
+	double x = (l + r) / 2;
+	double prev_x = x - 2 * delta;
+
+	auto v = [&](double angle)
+	{
+		return sqrt(g / 2 * length * length / (cos(angle) * cos(angle) * (height - tan(angle) * length)));
+	};
+
+	int i = 0;
+	for (; i < max_iterations && std::abs(x - prev_x) > delta; i++)
+	{
+		prev_x = x;
+
+		double right = v(x + delta);
+		double left = v(x - delta);
+
+		double gradient = (right - left) / (2 * delta);
+		x -= learning_rate * gradient;
+	}
+
+	return {x, v(x)};
+}
+
+pair<FVector, FVector> best_impact(FVector v0, FVector v1)
+{
+	FVector normal = -(v0 - v1);
+	double mag = normal.Length();
+	normal /= mag;
+
+	FVector v_bat = 0.5 * mag * normal + v0;
+
+	FVector v1_check = v0 - 2. * (v0-v_bat).Dot(normal) * normal;
+	
+	bool check = abs(v1_check.Dot(v1) - 1) < 1e-6;
+	assert(check);
+
+	return {normal, v_bat};
+}
+
 void ARobotArm::TrackParabola(Position& position)
 {
 	if (!ball || !ball->tracking_path.IsValid() || !base_component || !wrist_component || !hand_component)
 	{
-		int64_t now = chrono::high_resolution_clock::now().time_since_epoch().count();
-		
-		if (now - last_flight_time > 2e9) // if last flight was more than 2000000000 ns = 2s ago, go back to base position
-			//position = Position{-90, -30, -180, 0, 90};
+		if (path_age > 0.25)
+		{
+			// if last flight was more than 2s ago, go back to home position
 			position = Position{-90, -30, -200, 0, 90};
-
-		back_up_time = -1;
-		return;
+			return;
+		}
+		path_age += GetWorld()->GetDeltaSeconds();
 	}
-
-	last_flight_time = chrono::high_resolution_clock::now().time_since_epoch().count();
-
-	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-	if (draw_debug)
-		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, FColor::Blue, 0, -1);
-
-	if ((ball->tracking_path(ball->tracking_path.t1) - ArmOrigin()).Length() < intersection_radius)
+	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Ball is already inside the range of the robot arm"));
-		back_up_time = -1;
-		return;
+		path_age = 0;
+		last_path = ball->tracking_path;
 	}
-
-	vector<double> intersections = ball->tracking_path.IntersectSphere(ArmOrigin(), intersection_radius);
-
+	
+	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
+	
+	
+	vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
+	
 	// only times in the future, not infinity and a number are valid - obviously
 	intersections.erase(remove_if(intersections.begin(), intersections.end(),
 								  [&](double p)
 								  {
-									  return p <= ball->tracking_path.t1 || isnan(p) || isinf(p);
+									  return p <= last_path.t1 + path_age || isnan(p) || isinf(p);
 								  }), intersections.end());
-
+	
 	if (intersections.size() == 0)
 	{
-		back_up_time = -1;
 		return;
 	}
-
+	
 	if (draw_debug)
 		for (auto t : intersections)
-			DrawDebugSphere(GetWorld(), ball->tracking_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
-
-	if (back_up_time == -1)
-	{
-		double intercept_time = intersections[0];
-
-		double best_score = 1e69; // infinity
+		{
+			DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
+			UE_LOG(LogTemp, Display, TEXT("Intersection at %f"), t);
+		}
+	UE_LOG(LogTemp, Display, TEXT("Now at %f"), last_path.t1+path_age);
 	
-		if(intersections.size() >= 2)
-		{
-			for (double target_time = intersections[0]; target_time < intersections[1]; target_time += (intersections[1]-intersections[0]) / 20.)
-			{
-				FVector target = ball->tracking_path(target_time);
-				FVector impact_velocity = {ball->tracking_path.vx, ball->tracking_path.vy, ball->tracking_path.derivative(target_time)};
+	
+	double intercept_time = intersections[0];
 
-				if ((target - ArmOrigin()).Z < 0)
-					continue;
-			
-				Position candidate;
-				TrackBall(target, impact_velocity, candidate);
+	double best_score = 1e69; // infinity
+	
+	 if (intersections.size() >= 2)
+	 {
+	 	for (double target_time = intersections[0]; target_time < intersections[1]; target_time += (intersections[1] - intersections[0]) / 20.)
+	 	{
+	 		FVector target = last_path(target_time); 
+	 		FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
+	
+	 		if ((target - ArmOrigin()).Z < 0)
+	 			continue;
 
-				if (candidate.diff(GetActualPosition()) - target_time + intersections[0] < best_score)
-				{
-					intercept_time = target_time;
-					best_score = candidate.diff(GetActualPosition()) - target_time + intersections[0];
-				}
-			}
-		}
+			if ((target - ArmOrigin()).Length() < arm_range / 2.)
+				continue;
+	 		
+	 		Position candidate;
+	 		TrackBall(target, impact_velocity, candidate);
+	
+	 		if (candidate.diff(GetActualPosition()) - target_time + intersections[0] < best_score)
+	 		{
+	 			intercept_time = target_time;
+	 			best_score = candidate.diff(GetActualPosition()) - target_time + intersections[0];
+	 		}
+	 	}
+	 }
 
+	if (draw_debug)
+		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
+
+	// if (!ik_target)
+	// 	return;
+	
+	FVector aim_at(-1400, 0, 800);	
+	
+	FVector target = last_path(intercept_time);
+	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
+	impact_velocity.Normalize();
+
+	FVector aim = aim_at - target;
+	double yaw_angle = atan2(aim.Y, -aim.X);
+
+	auto [pitch_angle, v] = best_angle(sqrt(aim.X * aim.X + aim.Y * aim.Y), aim.Z, -9810);
+
+	FVector dir = FVector(-v, 0, 0);
+
+	dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
+	dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
+
+	for (double t = 0; t < 1; t += 0.01)
+	{
+		DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t, target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
+	}
+	DrawDebugLine(GetWorld(), target, target - impact_velocity, FColor::Red, false, -1, 1, 10);
+	
+	auto [normal, v_bat] = best_impact(impact_velocity, dir);
+
+	UE_LOG(LogTemp, Warning, TEXT("%f"), v_bat.Length());
+	
+	DrawDebugLine(GetWorld(), target, target + v_bat, FColor::Green, false, -1, 2, 10);
+	
+	TrackBall(target, -normal, position, {0, 0});
+
+	if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
+	{
+		Position start{0, 0, 0, -25, 0};
+		Position end{0, 0, 0, 15, 0};
 		
-		FVector target = ball->tracking_path(intercept_time);
-		FVector impact_velocity = {ball->tracking_path.vx, ball->tracking_path.vy, ball->tracking_path.derivative(intercept_time)};
-
-		UE_LOG(LogTemp, Warning, TEXT("Dist from origin: %f"), (target-ArmOrigin()).Length());
-    
-		TrackBall(target, impact_velocity, position);
+		path_to_follow = LinearMove(last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), impact_velocity, start, end, 0.1, 0.2);
 		
-		if (abs(intercept_time - ball->tracking_path.t0) < 0.6)
-		{
-			position.upper_arm_rotation += 10;
-			position.hand_rotation += 0;
-		} else
-		{
-			position.upper_arm_rotation -= 20;
-			position.hand_rotation -= 30;
-		}
+		// auto path_add = path_to_follow;
+		// reverse(path_add.begin(), path_add.end());
+		// path_to_follow.insert(path_to_follow.begin(), path_add.begin(), path_add.end());
 
+		//position.hand_rotation += 15;
 
-		UE_LOG(LogTemp, Warning, TEXT("Diff! %f"), abs(intercept_time - ball->tracking_path.t0));
-		
-		// if (position.diff(GetActualPosition()) < 5)
-		// 	back_up_time = intercept_time;
+		path_age += path_to_follow.size() / 60.;
 	} else
 	{
-		FVector target = ball->tracking_path(back_up_time);
-		FVector impact_velocity = {ball->tracking_path.vx, ball->tracking_path.vy, ball->tracking_path.derivative(back_up_time)};
-
-		UE_LOG(LogTemp, Warning, TEXT("Backing Up"));
-    
-		TrackBall(target, impact_velocity, position);
-		
-		if (back_up_time > 0 && position.diff(GetActualPosition()) < 5)
-			back_up_time -= 0.1;	
+		position.hand_rotation -= 30;
 	}
+	
 }
 
-void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position)
+void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset)
 {
 	FVector relative_position = target - ArmOrigin();
 
@@ -446,6 +560,16 @@ again:
 
 	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * hand_component->GetComponentScale().X);
 
+	FVector paddle_y = base_rotator.RotateVector(arm_offset) / arm_offset.Length();
+	FVector paddle_x = paddle_y.Cross(impact_velocity / impact_velocity.Length());
+
+	if (!paddle_offset.IsNearlyZero())
+	{
+		FVector ball_offset = -(paddle_offset.X * paddle_x + paddle_offset.Y * paddle_y);
+		TrackBall(target + ball_offset, impact_velocity, position);
+		return;
+	}
+	
 	bool flipped = InverseKinematics(target + base_rotator.RotateVector(arm_offset), position);
 	if (flipped && !fixed)
 	{
@@ -542,23 +666,45 @@ void ARobotArm::Tick(float DeltaTime)
 	{
 		Position new_position;
 
-		if (update_type == Animation)
-			GetAnimation(new_position);
+		if (path_to_follow.size())
+		{
+			new_position = path_to_follow.back();
+			path_to_follow.pop_back();
+		} else
+		{
+			if (update_type == Animation)
+				GetAnimation(new_position);
 
-		if (update_type == IK && ik_target)
-			InverseKinematics(ik_target->GetActorLocation(), new_position);
+			if (update_type == IK && ik_target)
+				InverseKinematics(ik_target->GetActorLocation(), new_position);
 
-		if (update_type == Ball)
-			TrackParabola(new_position);
+			if (update_type == Ball)
+				TrackParabola(new_position);
 
+			if (update_type == LinearPath)
+			{
+				if (path_target1 && path_target2)
+				{
+					TrackBall(path_target1->GetActorLocation(), impact, new_position);
+
+					if (switch_target)
+					{
+						if (move_linearly)
+							path_to_follow = LinearMove(path_target1->GetActorLocation(), path_target2->GetActorLocation(), impact);
+						swap(path_target1, path_target2);
+						switch_target = false;
+					}
+				}
+			}
+		}
 		ApplyPosition(new_position);
-		
+
 		actual_base_rotation = actual_base_rotation
-		+ clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			+ clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_lower_arm_rotation = actual_lower_arm_rotation
-		+ clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime,motor_speed * DeltaTime);
+			+ clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_upper_arm_rotation = actual_upper_arm_rotation
-		+ clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime,motor_speed * DeltaTime);
+			+ clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 

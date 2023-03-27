@@ -16,6 +16,7 @@ enum UpdateType
 	Animation = 1,
 	IK = 2,
 	Ball = 3,
+	LinearPath = 4,
 };
 
 // the relevant ones all managed about 180 deg/s
@@ -45,17 +46,17 @@ protected:
 		double hand_rotation;
 		double wrist_rotation;
 
-		Position()
+		Position(double v = nan(""))
 		{
-			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = nan("");
+			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = v;
 		}
 
 		double diff(Position other)
 		{
 			return max({
-				abs(base_rotation - other.base_rotation), 
-				abs(lower_arm_rotation - other.lower_arm_rotation), 
-				abs(upper_arm_rotation - other.upper_arm_rotation),
+				abs(base_rotation - other.base_rotation) / 225, 
+				abs(lower_arm_rotation - other.lower_arm_rotation) / 225, 
+				abs(upper_arm_rotation - other.upper_arm_rotation) / 225,
 			});
 		}
 
@@ -66,6 +67,43 @@ protected:
 		hand_rotation(hand_rotation),
 		wrist_rotation(wrist_rotation)
 		{}
+
+		static Position Lerp(Position a, Position b, double t)
+		{
+			#define lrp(a,b,t) (a * (1-t) + b * t)
+			Position out;
+			out.base_rotation = lrp(a.base_rotation, b.base_rotation, t);
+			out.lower_arm_rotation = lrp(a.lower_arm_rotation, b.lower_arm_rotation, t);
+			out.upper_arm_rotation = lrp(a.upper_arm_rotation, b.upper_arm_rotation, t);
+			out.hand_rotation = lrp(a.hand_rotation, b.hand_rotation, t);
+			out.wrist_rotation = lrp(a.wrist_rotation, b.wrist_rotation, t);
+
+			return out;
+		}
+
+		Position operator+(Position other)
+		{
+			Position copy = *this;
+			copy.base_rotation += other.base_rotation;
+			copy.lower_arm_rotation += other.lower_arm_rotation;
+			copy.upper_arm_rotation += other.upper_arm_rotation;
+			copy.hand_rotation += other.hand_rotation;
+			copy.wrist_rotation += other.wrist_rotation;
+
+			return copy;
+		}
+
+		Position operator-(Position other)
+		{
+			Position copy = *this;
+			copy.base_rotation -= other.base_rotation;
+			copy.lower_arm_rotation -= other.lower_arm_rotation;
+			copy.upper_arm_rotation -= other.upper_arm_rotation;
+			copy.hand_rotation -= other.hand_rotation;
+			copy.wrist_rotation -= other.wrist_rotation;
+
+			return copy;
+		}
 	};
 	
 	// Called when the game starts or when spawned
@@ -76,8 +114,9 @@ protected:
 	void SendRotations();
 
 	bool InverseKinematics(FVector target, Position& position);
+	vector<Position> LinearMove(FVector current, FVector target, FVector impact_velocity, Position start_position = {0}, Position end_position = {0}, float delay_extra_position = 0, float delay_at_end = 0);
 	void TrackParabola(Position& position);
-	void TrackBall(FVector target, FVector impact_velocity, Position& position);
+	void TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset = {0,0});
 
 	void ApplyPosition(Position position);
 
@@ -85,8 +124,9 @@ protected:
 	FVector ArmOrigin() const;
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
-	int64_t last_flight_time = 0;
-	double back_up_time = -1;
+	double path_age = 10000000;
+	ParabPath last_path;
+	vector<Position> path_to_follow;
 
 	Position GetPosition();
 	Position GetActualPosition();
@@ -143,28 +183,39 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="IK Target", meta=(EditCondition = "update_type == UpdateType::IK", EditConditionHides))
 	AActor* ik_target;
 
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Path Target 1", meta=(EditCondition = "update_type == UpdateType::LinearPath", EditConditionHides))
+	AActor* path_target1;
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Path Target 2", meta=(EditCondition = "update_type == UpdateType::LinearPath", EditConditionHides))
+	AActor* path_target2;
+	
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::LinearPath", EditConditionHides))
+	bool switch_target = false;
+
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::LinearPath", EditConditionHides))
+	bool move_linearly = false;
+	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	ABall* ball;
 
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	bool draw_debug = false;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Lower arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Lower arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double lower_arm_length = 0.35;
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Upper arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Upper arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double upper_arm_length = 0.265;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Hand length (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Hand length (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double hand_length = 0.08;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double end_offset = 0.01;
 	
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;
 	
 	
-	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	FVector impact;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0", EditCondition = "update_type == UpdateType::User"))
