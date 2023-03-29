@@ -8,6 +8,7 @@
 #include <unistd.h>	 // write(), read(), close()
 #include <string>
 #include <vector>
+#include "Core/Public/Misc/AssertionMacros.h"
 
 // Sets default values
 ARobotArm::ARobotArm()
@@ -311,52 +312,6 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 	return must_flip;
 }
 
-// generate a path of positions for linear movement
-vector<ARobotArm::Position> ARobotArm::LinearMove(FVector current, FVector target, FVector impact_velocity, Position start_position, Position end_position, float delay_extra_position, float delay_at_end)
-{
-	Position start,end;
-	TrackBall(current, impact_velocity, start);
-	TrackBall(target, impact_velocity, end);
-
-	double movement_time = start.diff(end);
-
-	int steps = movement_time / (1./60.);
-	int extra_steps = delay_extra_position / (1./60.);
-
-	UE_LOG(LogTemp, Warning, TEXT("%f %d"), movement_time, steps);
-	
-	vector<Position> path;
-	
-	for (int step = 0; step < steps; step++)
-	{
-		double t = double(step) / double(steps);
-		
-		Position now;
-		TrackBall(Lerp(current, target, t), impact_velocity, now);
-		
-		path.push_back(now);
-
-		if (path.size() < extra_steps)
-			path.back() = path.back() + start_position;
-		else
-			path.back() = path.back() + end_position;
-
-	}
-
-	for (int extra = 0; extra < delay_at_end / (1./60.); extra++)
-	{
-		if (path.size())
-		{
-			path.push_back(path.back());
-
-			if (path.size() == extra_steps)
-				path.back() = path.back() + end_position - start_position;
-		}
-	}
-
-	reverse(path.begin(), path.end());
-	return path;
-}
 
 // angle for the ball to fly to minimize the starting velocity but still reach the point (length,height)
 pair<double, double> best_angle(double length, double height, double g)
@@ -398,11 +353,13 @@ pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 
 	FVector v_bat = 0.5 * mag * normal + v0;
 
-	FVector v1_check = v0 - 2. * (v0-v_bat).Dot(normal) * normal;
-	
-	bool check = abs(v1_check.Dot(v1) - 1) < 1e-6;
-	assert(check);
+	FVector v1_check = v0 - 2. * (v0 - v_bat).Dot(normal) * normal;
 
+	double dot = abs(v1_check.Dot(v1) / v1_check.Length() / v1.Length() - 1);
+
+	if (dot > 1e-6)
+		UE_LOG(LogTemp, Error, TEXT("Something seems wrong with the best impact function: %f %f %f * %f %f %f = %f"), v1.X, v1.Y, v1.Z, v1_check.X, v1_check.Y, v1_check.Z, dot);
+	
 	return {normal, v_bat};
 }
 
@@ -431,10 +388,10 @@ void ARobotArm::TrackParabola(Position& position)
 	
 	// only times in the future, not infinity and a number are valid - obviously
 	intersections.erase(remove_if(intersections.begin(), intersections.end(),
-								  [&](double p)
-								  {
-									  return p <= last_path.t1 + path_age || isnan(p) || isinf(p);
-								  }), intersections.end());
+	                              [&](double p)
+	                              {
+		                              return p <= last_path.t1 + path_age || isnan(p) || isinf(p);
+	                              }), intersections.end());
 	
 	if (intersections.size() == 0)
 	{
@@ -451,41 +408,49 @@ void ARobotArm::TrackParabola(Position& position)
 	
 	
 	double intercept_time = intersections[0];
-
+	
 	double best_score = 1e69; // infinity
 	
-	 if (intersections.size() >= 2)
-	 {
-	 	for (double target_time = intersections[0]; target_time < intersections[1]; target_time += (intersections[1] - intersections[0]) / 20.)
-	 	{
-	 		FVector target = last_path(target_time); 
-	 		FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
+	if (intersections.size() >= 2)
+	{
+		for (double target_time = intersections[0]; target_time < intersections[1]; target_time += (intersections[1] - intersections[0]) / 20.)
+		{
+			FVector target = last_path(target_time);
+			FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
 	
-	 		if ((target - ArmOrigin()).Z < 0)
-	 			continue;
-
-			if ((target - ArmOrigin()).Length() < arm_range / 2.)
+			if ((target - ArmOrigin()).Z < 0)
 				continue;
-	 		
-	 		Position candidate;
-	 		TrackBall(target, impact_velocity, candidate);
 	
-	 		if (candidate.diff(GetActualPosition()) - target_time + intersections[0] < best_score)
-	 		{
-	 			intercept_time = target_time;
-	 			best_score = candidate.diff(GetActualPosition()) - target_time + intersections[0];
-	 		}
-	 	}
-	 }
-
+			if ((target - ArmOrigin()).Length() < arm_range * 0.5)
+				// don't want to intercept too close, otherwise not enough freedom to play the ball back
+				continue;
+	
+			Position candidate;
+			TrackBall(target, impact_velocity, candidate);
+	
+			double est_move_time = candidate.diff(GetActualPosition());
+	
+			if (est_move_time * 1.5 > abs(target_time - (last_path.t1 + path_age)))
+				// discard paths that would take too long, mostly these are false detections
+				continue;
+	
+			if (est_move_time - target_time < best_score) // move time should be small and should intercept rather late in the path
+			{
+				intercept_time = target_time;
+				best_score = est_move_time - target_time;
+			}
+		}
+	}
+	
 	if (draw_debug)
-		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100, (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
-
+		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100,
+		                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
+	
 	// if (!ik_target)
 	// 	return;
-	
-	FVector aim_at(-1400, 0, 800);	
-	
+
+	FVector aim_at(-1400, 0, 800);
+
 	FVector target = last_path(intercept_time);
 	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
 	impact_velocity.Normalize();
@@ -502,37 +467,29 @@ void ARobotArm::TrackParabola(Position& position)
 
 	for (double t = 0; t < 1; t += 0.01)
 	{
-		DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t, target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
+		DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
+		              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
 	}
 	DrawDebugLine(GetWorld(), target, target - impact_velocity, FColor::Red, false, -1, 1, 10);
-	
+
 	auto [normal, v_bat] = best_impact(impact_velocity, dir);
 
-	UE_LOG(LogTemp, Warning, TEXT("%f"), v_bat.Length());
-	
 	DrawDebugLine(GetWorld(), target, target + v_bat, FColor::Green, false, -1, 2, 10);
-	
+
 	TrackBall(target, -normal, position, {0, 0});
 
 	if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
 	{
 		Position start{0, 0, 0, -25, 0};
 		Position end{0, 0, 0, 15, 0};
-		
-		path_to_follow = LinearMove(last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), impact_velocity, start, end, 0.1, 0.2);
-		
-		// auto path_add = path_to_follow;
-		// reverse(path_add.begin(), path_add.end());
-		// path_to_follow.insert(path_to_follow.begin(), path_add.begin(), path_add.end());
-
-		//position.hand_rotation += 15;
-
-		path_age += path_to_follow.size() / 60.;
-	} else
+	
+		path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,  start, end, 0.1);
+		path_age += path_to_follow.Length();
+	}
+	else
 	{
 		position.hand_rotation -= 30;
 	}
-	
 }
 
 void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset)
@@ -569,7 +526,7 @@ again:
 		TrackBall(target + ball_offset, impact_velocity, position);
 		return;
 	}
-	
+
 	bool flipped = InverseKinematics(target + base_rotator.RotateVector(arm_offset), position);
 	if (flipped && !fixed)
 	{
@@ -666,11 +623,9 @@ void ARobotArm::Tick(float DeltaTime)
 	{
 		Position new_position;
 
-		if (path_to_follow.size())
-		{
-			new_position = path_to_follow.back();
-			path_to_follow.pop_back();
-		} else
+		double now = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+		
+		if (!path_to_follow(now, new_position))
 		{
 			if (update_type == Animation)
 				GetAnimation(new_position);
@@ -690,7 +645,7 @@ void ARobotArm::Tick(float DeltaTime)
 					if (switch_target)
 					{
 						if (move_linearly)
-							path_to_follow = LinearMove(path_target1->GetActorLocation(), path_target2->GetActorLocation(), impact);
+							path_to_follow = LinearMove(this, path_target1->GetActorLocation(), path_target2->GetActorLocation(), impact);
 						swap(path_target1, path_target2);
 						switch_target = false;
 					}

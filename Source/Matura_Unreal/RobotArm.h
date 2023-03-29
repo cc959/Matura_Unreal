@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "CoreMinimal.h"
 #include "Ball.h"
 #include "Engine/StaticMeshActor.h"
@@ -19,9 +21,6 @@ enum UpdateType
 	LinearPath = 4,
 };
 
-// the relevant ones all managed about 180 deg/s
-const double motor_speed = 180;
-
 UCLASS()
 class MATURA_UNREAL_API ARobotArm : public AActor
 {
@@ -32,6 +31,8 @@ public:
 	ARobotArm();
 
 protected:
+	static constexpr double motor_speed = 220; // degrees per second
+	
 	static constexpr double min_rotations[5] = {-244, -90, -225, -75, 0};
 	static constexpr double max_rotations[5] = {6, 90, 33, 95, 180};
 
@@ -54,9 +55,9 @@ protected:
 		double diff(Position other)
 		{
 			return max({
-				abs(base_rotation - other.base_rotation) / 225, 
-				abs(lower_arm_rotation - other.lower_arm_rotation) / 225, 
-				abs(upper_arm_rotation - other.upper_arm_rotation) / 225,
+				abs(base_rotation - other.base_rotation) / motor_speed, 
+				abs(lower_arm_rotation - other.lower_arm_rotation) / motor_speed, 
+				abs(upper_arm_rotation - other.upper_arm_rotation) / motor_speed,
 			});
 		}
 
@@ -105,6 +106,75 @@ protected:
 			return copy;
 		}
 	};
+
+	struct LinearMove
+	{
+		ARobotArm* robot_arm = nullptr;
+
+		FVector start, target;
+		FVector impact_velocity;
+
+		double min_duration = 0;
+		
+		Position extra_rotation_before, extra_rotation_after;
+		double extra_rotation_time = 0;
+
+	private:
+		double movement_time = 0;
+		double start_time = -1;
+
+	public:
+
+		LinearMove() {}
+		
+		LinearMove(ARobotArm* robot_arm, FVector start, FVector target, FVector impact_velocity, double min_duration = 0, Position extra_rotation_before = {0}, Position extra_rotation_after = {0}, double extra_rotation_time = 0)
+			: robot_arm(robot_arm), start(start), target(target), impact_velocity(impact_velocity), min_duration(min_duration), extra_rotation_before(extra_rotation_before), extra_rotation_after(extra_rotation_after), extra_rotation_time(extra_rotation_time)
+		{
+			if (!robot_arm)
+				return;
+			
+			Position start_rotation, target_rotation;
+			
+			robot_arm->TrackBall(start, impact_velocity, start_rotation);
+			robot_arm->TrackBall(target, impact_velocity,  target_rotation);
+			
+			movement_time = start_rotation.diff(target_rotation);
+		}
+		
+		bool operator()(double time, Position& position) {
+			if (!robot_arm)
+				return false;
+			
+			if (start_time == -1)
+				start_time = time;
+
+			time -= start_time;
+			
+			if (time > Length())
+				return false;
+			
+			double t = min(time / movement_time, 1.);
+
+			robot_arm->TrackBall(Lerp(start, target, t), impact_velocity, position);
+			
+			if (time >= extra_rotation_time)
+				position = position + extra_rotation_after;
+			else
+				position = position + extra_rotation_before;
+
+			return true;
+		}
+
+		void reset()
+		{
+			start_time = -1;
+		}
+
+		double Length() const
+		{
+			return max(min_duration, movement_time);
+		}
+	};
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -114,7 +184,6 @@ protected:
 	void SendRotations();
 
 	bool InverseKinematics(FVector target, Position& position);
-	vector<Position> LinearMove(FVector current, FVector target, FVector impact_velocity, Position start_position = {0}, Position end_position = {0}, float delay_extra_position = 0, float delay_at_end = 0);
 	void TrackParabola(Position& position);
 	void TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset = {0,0});
 
@@ -126,7 +195,7 @@ protected:
 	TFuture<void> serial_thread;
 	double path_age = 10000000;
 	ParabPath last_path;
-	vector<Position> path_to_follow;
+	LinearMove path_to_follow;
 
 	Position GetPosition();
 	Position GetActualPosition();
