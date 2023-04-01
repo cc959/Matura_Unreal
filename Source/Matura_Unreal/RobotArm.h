@@ -21,6 +21,13 @@ enum UpdateType
 	LinearPath = 4,
 };
 
+UENUM()
+enum Tool
+{
+	Hoop = 0,
+	Bat = 1,
+};
+
 UCLASS()
 class MATURA_UNREAL_API ARobotArm : public AActor
 {
@@ -221,6 +228,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	bool update_rotations = false;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<Tool> tool;
 	
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	FString port;
@@ -239,6 +249,8 @@ public:
 	UStaticMeshComponent *upper_arm_component;
 	UStaticMeshComponent *hand_component;
 	UStaticMeshComponent *wrist_component;
+	UStaticMeshComponent *hoop_component;
+	UStaticMeshComponent *bat_component;
 	
 	UPROPERTY(EditAnywhere)
 	bool show_profiling = false;

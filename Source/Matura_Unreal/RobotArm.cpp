@@ -610,12 +610,32 @@ void ARobotArm::Tick(float DeltaTime)
 		upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
 		hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
 		wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
+		hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
+		bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
 
 		if (!base_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Base\""));
 		if (!lower_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
 		if (!upper_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
 		if (!hand_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Hand\""));
 		if (!wrist_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Wrist\""));
+		if (!hoop_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Hoop\""));
+		if (!bat_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Bat\""));
+
+		if (hoop_component)
+		{
+			if (tool == Hoop)
+				hoop_component->SetRelativeScale3D(FVector(1));
+			else
+				hoop_component->SetRelativeScale3D(FVector(0));
+		}
+
+		if (bat_component)
+		{
+			if (tool == Bat)
+				bat_component->SetRelativeScale3D(FVector(1));
+			else
+				bat_component->SetRelativeScale3D(FVector(0));
+		}
 	}
 
 	auto before = chrono::high_resolution_clock::now().time_since_epoch();
