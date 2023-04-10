@@ -104,8 +104,9 @@ public:
 	Mat p() const;
 	Mutex destroy_lock;
 	bool loaded = false;
+	bool in_use = false;
 
-	Point2d ball;
+	Point2d ball = {-1, -1};
 
 	FTransform camera_transform;
 	std::deque<FTransform> april_transforms;

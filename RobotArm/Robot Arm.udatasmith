@@ -145,31 +145,31 @@
 																		<Transform tx="-2.748300" ty="0.050000" tz="7.998205" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_1" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="44.001549" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_2" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="40.505661" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_3" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_4" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="0.064334" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_5" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_6" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="40.505661" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Arm_Screw_7" layer="Scene Collection">
-																		<mesh name="Wrist_Screw"/>
+																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="44.001549" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
 																	<ActorMesh name="Lower_Joint_Screw_1" layer="Scene Collection">
@@ -312,6 +312,14 @@
 																												<mesh name="Beefy_Hand"/>
 																												<Transform tx="2.000000" ty="26.549997" tz="42.999886" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																												<children visible="True">
+																													<ActorMesh name="Hand_Servo_Screw_2" layer="Scene Collection">
+																														<mesh name="Hand_Servo_Screw"/>
+																														<Transform tx="1.100719" ty="26.549458" tz="41.749996" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																													</ActorMesh>
+																													<ActorMesh name="Hand_Servo_Screw_3" layer="Scene Collection">
+																														<mesh name="Hand_Servo_Screw"/>
+																														<Transform tx="1.100719" ty="26.548943" tz="40.972065" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																													</ActorMesh>
 																													<ActorMesh name="Wrist_Servo_2" layer="Scene Collection">
 																														<mesh name="Wrist_Servo_2"/>
 																														<Transform tx="0.050000" ty="28.049997" tz="42.999985" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -372,14 +380,6 @@
 																																		<mesh name="Hand_Holder"/>
 																																		<Transform tx="0.050000" ty="28.599998" tz="43.274986" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																																	</ActorMesh>
-																																	<ActorMesh name="Hand_Servo_Screw_1" layer="Scene Collection">
-																																		<mesh name="Hand_Servo_Screw"/>
-																																		<Transform tx="1.100719" ty="26.549458" tz="41.749996" qw="0.000234" qx="0.707107" qy="0.000234" qz="0.707107" sx="1.367446" sy="1.367446" sz="1.367446"/>
-																																	</ActorMesh>
-																																	<ActorMesh name="Hand_Servo_Screw_2" layer="Scene Collection">
-																																		<mesh name="Hand_Servo_Screw"/>
-																																		<Transform tx="1.100719" ty="26.548943" tz="40.972065" qw="0.000234" qx="0.707107" qy="0.000234" qz="0.707107" sx="1.367446" sy="1.367446" sz="1.367446"/>
-																																	</ActorMesh>
 																																	<ActorMesh name="Hoop" layer="Scene Collection">
 																																		<mesh name="Hoop"/>
 																																		<Transform tx="0.050000" ty="28.599995" tz="42.999989" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -412,41 +412,41 @@
 																																	</ActorMesh>
 																																	<ActorMesh name="Wrist_Screw_1" layer="Scene Collection">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.209173" tz="44.597218" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.209173" tz="44.597218" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
 																																			<ActorMesh name="Wrist_Hex_Nut_1" layer="Scene Collection">
 																																				<mesh name="Hex_Nut"/>
-																																				<Transform tx="0.049962" ty="28.259441" tz="44.595856" qw="0.500165" qx="0.499834" qy="-0.499835" qz="0.500166" sx="0.481071" sy="0.481071" sz="0.481071"/>
+																																				<Transform tx="0.049962" ty="28.259438" tz="44.595852" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
 																																	<ActorMesh name="Wrist_Screw_2" layer="Scene Collection">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.208778" tz="44.002956" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.208778" tz="44.002956" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
 																																			<ActorMesh name="Wrist_Hex_Nut_2" layer="Scene Collection">
 																																				<mesh name="Hex_Nut"/>
-																																				<Transform tx="0.049962" ty="28.259048" tz="44.001591" qw="0.500165" qx="0.499834" qy="-0.499835" qz="0.500166" sx="0.481071" sy="0.481071" sz="0.481071"/>
+																																				<Transform tx="0.049962" ty="28.259045" tz="44.001591" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
 																																	<ActorMesh name="Wrist_Screw_3" layer="Scene Collection">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.207438" tz="41.981541" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.207438" tz="41.981541" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
 																																			<ActorMesh name="Wrist_Hex_Nut_3" layer="Scene Collection">
 																																				<mesh name="Hex_Nut"/>
-																																				<Transform tx="0.049962" ty="28.257708" tz="41.980179" qw="0.500165" qx="0.499834" qy="-0.499835" qz="0.500166" sx="0.481071" sy="0.481071" sz="0.481071"/>
+																																				<Transform tx="0.049962" ty="28.257700" tz="41.980179" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
 																																	<ActorMesh name="Wrist_Screw_4" layer="Scene Collection">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.207062" tz="41.409878" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.207062" tz="41.409878" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
 																																			<ActorMesh name="Wrist_Hex_Nut_4" layer="Scene Collection">
 																																				<mesh name="Hex_Nut"/>
-																																				<Transform tx="0.049962" ty="28.257332" tz="41.408516" qw="0.500165" qx="0.499834" qy="-0.499835" qz="0.500166" sx="0.481071" sy="0.481071" sz="0.481071"/>
+																																				<Transform tx="0.049962" ty="28.257328" tz="41.408512" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
@@ -459,6 +459,10 @@
 																														</children>
 																													</ActorMesh>
 																												</children>
+																											</ActorMesh>
+																											<ActorMesh name="Hand_Servo_Screw_1" layer="Scene Collection">
+																												<mesh name="Wrist_Servo_Arm_Screw"/>
+																												<Transform tx="1.534052" ty="26.550365" tz="43.012283" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																											</ActorMesh>
 																										</children>
 																									</ActorMesh>
@@ -540,11 +544,11 @@
 		<LightmapUV value="-1"/>
 		<Hash value="2113a2016a447b74985d61c3f555a7cf"/>
 	</StaticMesh>
-	<StaticMesh label="Wrist_Screw" name="Wrist_Screw">
+	<StaticMesh label="Servo_Screw_Long" name="Servo_Screw_Long">
 		<Material id="0" name="Aluminum___Satin"/>
-		<file path="Robot Arm_Assets/Wrist_Screw.udsmesh"/>
+		<file path="Robot Arm_Assets/Servo_Screw_Long.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="c094a442ca2bb84fce858dc2a68d16ed"/>
+		<Hash value="7a4a96b896f660ad8b6a1001f51da616"/>
 	</StaticMesh>
 	<StaticMesh label="Upper_Arm_Screw" name="Upper_Arm_Screw">
 		<Material id="0" name="Aluminum___Satin"/>
@@ -558,6 +562,12 @@
 		<LightmapUV value="-1"/>
 		<Hash value="aef3665dec93963e09871234996317dc"/>
 	</StaticMesh>
+	<StaticMesh label="Hand_Servo_Screw" name="Hand_Servo_Screw">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Hand_Servo_Screw.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="689b3dc950acc8466af783b9ecaaf3a1"/>
+	</StaticMesh>
 	<StaticMesh label="Hand_Screw" name="Hand_Screw">
 		<Material id="0" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Hand_Screw.udsmesh"/>
@@ -570,7 +580,7 @@
 		<Material id="2" name="Paint___Metallic__Black_"/>
 		<file path="Robot Arm_Assets/Circle.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="c0011920a5a2377227183e3dd664e5e2"/>
+		<Hash value="2e722bc191fda6d04981bfc0b0a79830"/>
 	</StaticMesh>
 	<StaticMesh label="Hand_Holder" name="Hand_Holder">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -578,17 +588,11 @@
 		<LightmapUV value="-1"/>
 		<Hash value="95db507c22131e59d9aeb1821236e17a"/>
 	</StaticMesh>
-	<StaticMesh label="Hand_Servo_Screw" name="Hand_Servo_Screw">
-		<Material id="0" name="Aluminum___Satin"/>
-		<file path="Robot Arm_Assets/Hand_Servo_Screw.udsmesh"/>
-		<LightmapUV value="-1"/>
-		<Hash value="e28a797f0885c158c5174506d936434f"/>
-	</StaticMesh>
 	<StaticMesh label="Net__Net" name="Net__Net">
 		<Material id="0" name="Net_Material"/>
 		<file path="Robot Arm_Assets/Net__Net.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="5e49f6bdf263f5429520f2ede46b5ba3"/>
+		<Hash value="e7efe796e661c936b27b2c156d487b99"/>
 	</StaticMesh>
 	<StaticMesh label="Hoop" name="Hoop">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -602,6 +606,12 @@
 		<LightmapUV value="-1"/>
 		<Hash value="d8e9c304d74f928f389b1954600a6c0b"/>
 	</StaticMesh>
+	<StaticMesh label="Wrist_Screw" name="Wrist_Screw">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Wrist_Screw.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="2a428db033e3d5fc5daaef502c1ac5e4"/>
+	</StaticMesh>
 	<StaticMesh label="Hand_Servo_Arm" name="Hand_Servo_Arm">
 		<Material id="0" name="Plastic___Matte__Black_"/>
 		<file path="Robot Arm_Assets/Hand_Servo_Arm.udsmesh"/>
@@ -610,15 +620,22 @@
 	</StaticMesh>
 	<StaticMesh label="Wrist_Servo_2" name="Wrist_Servo_2">
 		<Material id="0" name="Plastic___Matte__Black_"/>
+		<Material id="1" name="Aluminum___Polished"/>
 		<file path="Robot Arm_Assets/Wrist_Servo_2.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="5ce2a6bd363ee76678e6becdc022bc03"/>
+		<Hash value="f1a0acc61599d4cabf31ac84d519db76"/>
 	</StaticMesh>
 	<StaticMesh label="Beefy_Hand" name="Beefy_Hand">
 		<Material id="0" name="Polymide__Kapton_"/>
 		<file path="Robot Arm_Assets/Beefy_Hand.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="cf8426ed38247cfb15153c088deddb80"/>
+	</StaticMesh>
+	<StaticMesh label="Wrist_Servo_Arm_Screw" name="Wrist_Servo_Arm_Screw">
+		<Material id="0" name="Aluminum___Satin"/>
+		<file path="Robot Arm_Assets/Wrist_Servo_Arm_Screw.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="e189f04497ab9c102f65f5cec977ec58"/>
 	</StaticMesh>
 	<StaticMesh label="Servo_Arm" name="Servo_Arm">
 		<Material id="0" name="Blue_Metal"/>
@@ -628,9 +645,10 @@
 	</StaticMesh>
 	<StaticMesh label="Wrist_Servo_1" name="Wrist_Servo_1">
 		<Material id="0" name="Plastic___Matte__Black_"/>
+		<Material id="1" name="Aluminum___Polished"/>
 		<file path="Robot Arm_Assets/Wrist_Servo_1.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="917ea555503d4383570d41143539a3fc"/>
+		<Hash value="803a22be5ea54224395a2eb8f85a8f4a"/>
 	</StaticMesh>
 	<StaticMesh label="Upper_Arm" name="Upper_Arm">
 		<Material id="0" name="Aluminum___Polished"/>
@@ -811,11 +829,11 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<UEPbrMaterial name="Blue_Metal">
+	<UEPbrMaterial name="Aluminum___Polished">
 		<Expressions>
-			<Color constant="(R=0.133333,G=0.509804,B=0.886275,A=1.000000)"/>
+			<Color constant="(R=0.960784,G=0.960784,B=0.964706,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
-			<Scalar constant="0.552786"/>
+			<Scalar constant="0.258169"/>
 			<Scalar constant="1.000000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
@@ -823,11 +841,11 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<UEPbrMaterial name="Aluminum___Polished">
+	<UEPbrMaterial name="Blue_Metal">
 		<Expressions>
-			<Color constant="(R=0.960784,G=0.960784,B=0.964706,A=1.000000)"/>
+			<Color constant="(R=0.133333,G=0.509804,B=0.886275,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
-			<Scalar constant="0.258169"/>
+			<Scalar constant="0.552786"/>
 			<Scalar constant="1.000000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
@@ -856,5 +874,5 @@
 	<Texture name="Wood09_4K_Normal_png" file="Robot Arm_Assets/Wood09_4K_Normal_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
 		<Hash value="ef56a7a81a651fa5ec53b82f9e385aa7"/>
 	</Texture>
-	<Export Duration="1.2995915790002073"/>
+	<Export Duration="0.5606810610006505"/>
 </DatasmithUnrealScene>

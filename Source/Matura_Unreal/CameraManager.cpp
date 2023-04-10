@@ -77,13 +77,15 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 		usleep(10000); //wait 10 ms
 	}
 
-	camera->destroy_lock.lock(); 
+	camera->destroy_lock.lock();
 
 	camera->must_update_tags = true;
 	while (camera->must_update_tags)
 		usleep(10000); //wait 10 ms
 	
 	UE_LOG(LogTemp, Error, TEXT("%s loop has started"), *camera->camera_path);
+
+	camera->in_use = true;
 	
 	while (run_thread)
 	{
@@ -139,6 +141,8 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 	if (transform_future.IsValid())
 		transform_future.Wait();
 
+	camera->in_use = false;
+	
 	camera->destroy_lock.unlock();
 }
 

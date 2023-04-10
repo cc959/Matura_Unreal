@@ -791,6 +791,9 @@ void ATrackingCamera::UpdateDebugTexture()
 	if (!cv_cap.isOpened() && loaded)
 		return;
 
+	if (!loaded || !in_use)
+		return;
+
 	if (!camera_texture_2d)
 	{
 		UE_LOG(LogTemp, Error, TEXT("camera texture pointer is null"));
@@ -850,7 +853,7 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 	UpdateDebugTexture();
 
-	if (ball != Point2d{-1, -1})
+	if (ball != Point2d{-1, -1} && in_use)
 	{
 		vector ball_point = {ball};
 		vector<Point2d> output_points;
@@ -860,14 +863,14 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 		FVector origin = GetActorTransform().TransformPosition({0, 0, 0});
 		FVector dir = GetActorTransform().TransformVector(homo_ball / homo_ball.Length());
-
+		
 		DrawDebugLine(GetWorld(), origin, origin + dir * 100000, FColor::Red, false, -1, 1, 3);
 	}
-
+	
 	SetActorRelativeTransform(camera_transform);
 
-	camera_mesh->SetVisibility(!IsPlayerControlled());
-	image_plate->SetVisibility(IsPlayerControlled() && cv_cap.isOpened());
+	camera_mesh->SetVisibility(!IsPlayerControlled() && in_use);
+	image_plate->SetVisibility(IsPlayerControlled() && cv_cap.isOpened() && in_use);
 }
 
 void ATrackingCamera::BeginDestroy()
