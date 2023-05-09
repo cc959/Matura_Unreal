@@ -351,7 +351,7 @@ pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 	double mag = normal.Length();
 	normal /= mag;
 
-	FVector v_bat = 0.5 * mag * normal + v0;
+	FVector v_bat = (0.5 * mag + v0.Dot(normal)) * normal;
 
 	FVector v1_check = v0 - 2. * (v0 - v_bat).Dot(normal) * normal;
 
@@ -449,46 +449,54 @@ void ARobotArm::TrackParabola(Position& position)
 	// if (!ik_target)
 	// 	return;
 
-	FVector aim_at(-1400, 0, 800);
-
 	FVector target = last_path(intercept_time);
 	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
 	impact_velocity.Normalize();
 
-	FVector aim = aim_at - target;
-	double yaw_angle = atan2(aim.Y, -aim.X);
-
-	auto [pitch_angle, v] = best_angle(sqrt(aim.X * aim.X + aim.Y * aim.Y), aim.Z, -9810);
-
-	FVector dir = FVector(-v, 0, 0);
-
-	dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
-	dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
-
-	for (double t = 0; t < 1; t += 0.01)
+	if (tool == Bat)
 	{
-		DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-		              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
-	}
-	DrawDebugLine(GetWorld(), target, target - impact_velocity, FColor::Red, false, -1, 1, 10);
+		FVector aim_at(-1400, 0, 800);
 
-	auto [normal, v_bat] = best_impact(impact_velocity, dir);
-
-	DrawDebugLine(GetWorld(), target, target + v_bat, FColor::Green, false, -1, 2, 10);
-
-	TrackBall(target, -normal, position, {0, 0});
-
-	if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
-	{
-		Position start{0, 0, 0, -25, 0};
-		Position end{0, 0, 0, 15, 0};
 	
-		path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,  start, end, 0.1);
-		path_age += path_to_follow.Length();
-	}
-	else
+
+		FVector aim = aim_at - target;
+		double yaw_angle = atan2(aim.Y, -aim.X);
+
+		auto [pitch_angle, v] = best_angle(sqrt(aim.X * aim.X + aim.Y * aim.Y), aim.Z, -9810);
+
+		FVector dir = FVector(-v, 0, 0);
+
+		dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
+		dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
+
+		for (double t = 0; t < 1; t += 0.01)
+		{
+			DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
+						  target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
+		}
+		DrawDebugLine(GetWorld(), target, target - impact_velocity, FColor::Red, false, -1, 1, 10);
+
+		auto [normal, v_bat] = best_impact(impact_velocity, dir);
+
+		DrawDebugLine(GetWorld(), target, target + v_bat, FColor::Green, false, -1, 2, 10);
+
+		TrackBall(target, -normal, position, {0, 0});
+
+		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
+		{
+			Position start{0, 0, 0, -25, 0};
+			Position end{0, 0, 0, 15, 0};
+	
+			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,  start, end, 0.1);
+			path_age += path_to_follow.Length();
+		}
+		else
+		{
+			position.hand_rotation -= 30;
+		}
+	} else
 	{
-		position.hand_rotation -= 30;
+		TrackBall(target, impact_velocity, position);
 	}
 }
 

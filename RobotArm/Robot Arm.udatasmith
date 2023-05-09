@@ -2,457 +2,469 @@
 	<Version>1.0.3</Version>
 	<SDKVersion>4.24E0</SDKVersion>
 	<Host>Blender</Host>
-	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.4.1"/>
-	<User ID="elias" OS="Linux 6.2.9-x64v1-xanmod1-1"/>
-	<ActorMesh name="Base_Plate" layer="Scene Collection">
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.0"/>
+	<User ID="elias" OS="Linux 6.2.12-1-MANJARO"/>
+	<ActorMesh name="Base_Plate" layer="Export">
 		<mesh name="Base_Plate"/>
 		<Transform tx="-0.000000" ty="-0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-		<children visible="False">
-			<ActorMesh name="Lower_Base" layer="Scene Collection">
+		<children visible="True">
+			<ActorMesh name="Lower_Base" layer="Export">
 				<mesh name="Lower_Base"/>
 				<Transform tx="0.000000" ty="0.000000" tz="3.400000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 				<children visible="True">
-					<ActorMesh name="Base_Plate_Screw1" layer="Scene Collection">
+					<ActorMesh name="Base_Plate_Screw1" layer="Export">
 						<mesh name="Base_Plate_Screw"/>
 						<Transform tx="-9.350000" ty="0.000000" tz="4.300000" qw="0.000000" qx="1.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 						<children visible="True">
-							<ActorMesh name="Base_Hex_Nut1" layer="Scene Collection">
+							<ActorMesh name="Base_Hex_Nut1" layer="Export">
 								<mesh name="Hex_Nut"/>
-								<Transform tx="-9.350000" ty="0.000029" tz="-0.620000" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+								<Transform tx="-9.350000" ty="0.000029" tz="-0.451494" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 							</ActorMesh>
 						</children>
 					</ActorMesh>
-					<ActorMesh name="Base_Plate_Screw2" layer="Scene Collection">
+					<ActorMesh name="Base_Plate_Screw2" layer="Export">
 						<mesh name="Base_Plate_Screw"/>
 						<Transform tx="0.000001" ty="9.350000" tz="4.300000" qw="0.000000" qx="0.707107" qy="-0.707107" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 						<children visible="True">
-							<ActorMesh name="Base_Hex_Nut2" layer="Scene Collection">
+							<ActorMesh name="Base_Hex_Nut2" layer="Export">
 								<mesh name="Hex_Nut"/>
-								<Transform tx="0.000030" ty="9.350000" tz="-0.620000" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+								<Transform tx="0.000030" ty="9.350000" tz="-0.451494" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 							</ActorMesh>
 						</children>
 					</ActorMesh>
-					<ActorMesh name="Base_Plate_Screw3" layer="Scene Collection">
+					<ActorMesh name="Base_Plate_Screw3" layer="Export">
 						<mesh name="Base_Plate_Screw"/>
 						<Transform tx="9.350000" ty="-0.000001" tz="4.299999" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 						<children visible="True">
-							<ActorMesh name="Base_Hex_Nut3" layer="Scene Collection">
+							<ActorMesh name="Base_Hex_Nut3" layer="Export">
 								<mesh name="Hex_Nut"/>
-								<Transform tx="9.350000" ty="-0.000028" tz="-0.620000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+								<Transform tx="9.350000" ty="-0.000028" tz="-0.451494" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 							</ActorMesh>
 						</children>
 					</ActorMesh>
-					<ActorMesh name="Base_Plate_Screw4" layer="Scene Collection">
+					<ActorMesh name="Base_Plate_Screw4" layer="Export">
 						<mesh name="Base_Plate_Screw"/>
 						<Transform tx="-0.000002" ty="-9.350000" tz="4.299999" qw="0.000000" qx="0.707107" qy="0.707107" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 						<children visible="True">
-							<ActorMesh name="Base_Hex_Nut4" layer="Scene Collection">
+							<ActorMesh name="Base_Hex_Nut4" layer="Export">
 								<mesh name="Hex_Nut"/>
-								<Transform tx="-0.000028" ty="-9.350000" tz="-0.620000" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+								<Transform tx="-0.000028" ty="-9.350000" tz="-0.451493" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 							</ActorMesh>
 						</children>
 					</ActorMesh>
-					<ActorMesh name="Beefy_Base_Servo" layer="Scene Collection">
+					<ActorMesh name="Beefy_Base_Servo" layer="Export">
 						<mesh name="Beefy_Base_Servo"/>
 						<Transform tx="-0.000000" ty="-0.000000" tz="4.699900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 						<children visible="True">
-							<ActorMesh name="Beefy_Servo_Arm" layer="Scene Collection">
+							<ActorMesh name="Beefy_Servo_Arm" layer="Export">
 								<mesh name="Beefy_Servo_Arm"/>
 								<Transform tx="0.000000" ty="0.000000" tz="4.949900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 								<children visible="True">
-									<ActorMesh name="Upper_Base" layer="Scene Collection">
+									<ActorMesh name="Upper_Base" layer="Export">
 										<mesh name="Upper_Base"/>
 										<Transform tx="0.000000" ty="0.000000" tz="4.399900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-										<children visible="False">
-											<ActorMesh name="Base_Servo_Screw_1" layer="Scene Collection">
+										<children visible="True">
+											<ActorMesh name="Base_Servo_Screw_1" layer="Export">
 												<mesh name="Servo_Screw"/>
 												<Transform tx="8.415319" ty="4.894053" tz="9.199831" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 											</ActorMesh>
-											<ActorMesh name="Base_Servo_Screw_2" layer="Scene Collection">
+											<ActorMesh name="Base_Servo_Screw_2" layer="Export">
 												<mesh name="Servo_Screw"/>
 												<Transform tx="8.415319" ty="4.894053" tz="6.804326" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 											</ActorMesh>
-											<ActorMesh name="Base_Servo_Screw_3" layer="Scene Collection">
+											<ActorMesh name="Base_Servo_Screw_3" layer="Export">
 												<mesh name="Servo_Screw"/>
 												<Transform tx="8.408060" ty="2.491290" tz="9.199831" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 											</ActorMesh>
-											<ActorMesh name="Base_Servo_Screw_4" layer="Scene Collection">
+											<ActorMesh name="Base_Servo_Screw_4" layer="Export">
 												<mesh name="Servo_Screw"/>
 												<Transform tx="8.408060" ty="2.491290" tz="6.804326" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 											</ActorMesh>
-											<ActorMesh name="BaseScrew1" layer="Scene Collection">
+											<ActorMesh name="BaseScrew1" layer="Export">
 												<mesh name="BaseScrew"/>
-												<Transform tx="0.000000" ty="-7.800000" tz="3.400036" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="0.000000" ty="-7.850000" tz="3.400036" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 												<children visible="True">
-													<ActorMesh name="Hex_Nut1" layer="Scene Collection">
+													<ActorMesh name="Hex_Nut1" layer="Export">
 														<mesh name="Hex_Nut"/>
-														<Transform tx="0.000000" ty="-7.800000" tz="4.960000" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+														<Transform tx="0.000000" ty="-7.850000" tz="4.960000" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 													</ActorMesh>
 												</children>
 											</ActorMesh>
-											<ActorMesh name="BaseScrew2" layer="Scene Collection">
+											<ActorMesh name="BaseScrew2" layer="Export">
 												<mesh name="BaseScrew"/>
-												<Transform tx="7.850000" ty="0.050000" tz="3.400036" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="7.850000" ty="0.000000" tz="3.400036" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 												<children visible="True">
-													<ActorMesh name="Hex_Nut2" layer="Scene Collection">
+													<ActorMesh name="Hex_Nut2" layer="Export">
 														<mesh name="Hex_Nut"/>
-														<Transform tx="7.850000" ty="0.050000" tz="5.356602" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+														<Transform tx="7.850000" ty="0.000000" tz="5.356602" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 													</ActorMesh>
 												</children>
 											</ActorMesh>
-											<ActorMesh name="BaseScrew3" layer="Scene Collection">
+											<ActorMesh name="BaseScrew3" layer="Export">
 												<mesh name="BaseScrew"/>
-												<Transform tx="-7.850000" ty="0.050000" tz="3.400036" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="-7.850000" ty="0.000000" tz="3.400036" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 												<children visible="True">
-													<ActorMesh name="Hex_Nut3" layer="Scene Collection">
+													<ActorMesh name="Hex_Nut3" layer="Export">
 														<mesh name="Hex_Nut"/>
-														<Transform tx="-7.850000" ty="0.050000" tz="5.356601" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+														<Transform tx="-7.850000" ty="0.000000" tz="5.356600" qw="0.000000" qx="0.000000" qy="0.000000" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 													</ActorMesh>
 												</children>
 											</ActorMesh>
-											<ActorMesh name="BaseScrew4" layer="Scene Collection">
+											<ActorMesh name="BaseScrew4" layer="Export">
 												<mesh name="BaseScrew"/>
-												<Transform tx="0.000000" ty="7.900001" tz="3.400036" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="0.000000" ty="7.850000" tz="3.400036" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 												<children visible="True">
-													<ActorMesh name="Hex_Nut4" layer="Scene Collection">
+													<ActorMesh name="Hex_Nut4" layer="Export">
 														<mesh name="Hex_Nut"/>
-														<Transform tx="-0.000000" ty="7.900001" tz="4.960000" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+														<Transform tx="-0.000000" ty="7.850000" tz="4.960000" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
 													</ActorMesh>
 												</children>
 											</ActorMesh>
-											<ActorMesh name="Electronics_Cover" layer="Scene Collection">
+											<ActorMesh name="Electronics_Cover" layer="Export">
 												<mesh name="Electronics_Cover"/>
 												<Transform tx="-6.000000" ty="0.000000" tz="9.700001" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 											</ActorMesh>
-											<ActorMesh name="Lazy_Suzan_Inner" layer="Scene Collection">
+											<ActorMesh name="Lazy_Suzan_Inner" layer="Export">
 												<mesh name="Lazy_Suzan_Inner"/>
-												<Transform tx="0.000000" ty="0.050000" tz="3.850000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+												<Transform tx="0.000000" ty="0.000000" tz="3.850000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 											</ActorMesh>
-											<ActorMesh name="Lower_Servo" layer="Scene Collection">
+											<ActorMesh name="Lower_Servo" layer="Export">
 												<mesh name="Lower_Servo"/>
 												<Transform tx="2.451700" ty="0.051700" tz="7.999900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 												<children visible="True">
-													<ActorMesh name="Lower_Servo_Disc" layer="Scene Collection">
+													<ActorMesh name="Lower_Servo_Disc" layer="Export">
 														<mesh name="Lower_Servo_Disc"/>
 														<Transform tx="2.451700" ty="0.051696" tz="7.999900" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 														<children visible="True">
-															<ActorMesh name="Lower_Arm" layer="Scene Collection">
+															<ActorMesh name="Lower_Arm" layer="Export">
 																<mesh name="Lower_Arm"/>
 																<Transform tx="-0.055984" ty="0.050000" tz="25.084192" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-																<children visible="False">
-																	<ActorMesh name="ArmDisc" layer="Scene Collection">
+																<children visible="True">
+																	<ActorMesh name="ArmDisc" layer="Export">
 																		<mesh name="ArmDisc"/>
 																		<Transform tx="-2.748300" ty="0.050000" tz="7.998205" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_1" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_1" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="44.001549" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_2" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_2" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="40.505661" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_3" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_3" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="-1.149245" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_4" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_4" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="0.064334" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_5" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_5" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="38.111176" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_6" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_6" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="40.505661" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Arm_Screw_7" layer="Scene Collection">
+																	<ActorMesh name="Lower_Arm_Screw_7" layer="Export">
 																		<mesh name="Servo_Screw_Long"/>
 																		<Transform tx="-2.601092" ty="1.244481" tz="44.001549" qw="0.500000" qx="-0.500000" qy="0.500000" qz="-0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_1" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_1" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="0.908631" tz="8.851775" qw="0.270598" qx="-0.653282" qy="-0.270598" qz="0.653281" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_10" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_10" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201997" ty="-0.790471" tz="8.851775" qw="0.270598" qx="0.653281" qy="0.270598" qz="0.653282" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_11" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_11" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201997" ty="0.059080" tz="9.203671" qw="0.500000" qx="0.500000" qy="0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_12" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_12" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201997" ty="0.908631" tz="8.851775" qw="0.653281" qx="0.270598" qy="0.653282" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_2" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_2" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="0.059080" tz="9.203671" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_3" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_3" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="-0.790471" tz="8.851775" qw="0.653282" qx="-0.270598" qy="-0.653281" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_4" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_4" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="-0.790471" tz="7.152676" qw="0.270598" qx="-0.653282" qy="-0.270598" qz="0.653281" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_5" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_5" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="0.059080" tz="6.800780" qw="0.500000" qx="-0.500000" qy="-0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_6" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_6" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="-2.188296" ty="0.908631" tz="7.152675" qw="0.653282" qx="-0.270598" qy="-0.653281" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_7" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_7" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201997" ty="0.908631" tz="7.152676" qw="0.270598" qx="0.653281" qy="0.270598" qz="0.653282" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_8" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_8" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201998" ty="0.059080" tz="6.800780" qw="0.500000" qx="0.500000" qy="0.500000" qz="0.500000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Lower_Joint_Screw_9" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_9" layer="Export">
 																		<mesh name="Servo_Screw"/>
 																		<Transform tx="2.201997" ty="-0.790470" tz="7.152675" qw="0.653281" qx="0.270598" qy="0.653282" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																	</ActorMesh>
-																	<ActorMesh name="Upper_Servo" layer="Scene Collection">
+																	<ActorMesh name="Lower_Joint_Screw_Center" layer="Export">
+																		<mesh name="Servo_Screw"/>
+																		<Transform tx="2.243599" ty="0.060007" tz="7.996322" qw="0.707107" qx="-0.000000" qy="0.707106" qz="0.000000" sx="0.918855" sy="0.918855" sz="0.918855"/>
+																	</ActorMesh>
+																	<ActorMesh name="Upper_Servo" layer="Export">
 																		<mesh name="Upper_Servo"/>
 																		<Transform tx="3.251697" ty="0.050000" tz="42.998207" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-																		<children visible="False">
-																			<ActorMesh name="Upper_Servo_Disc" layer="Scene Collection">
+																		<children visible="True">
+																			<ActorMesh name="Upper_Servo_Disc" layer="Export">
 																				<mesh name="Upper_Servo_Disc"/>
 																				<Transform tx="3.251697" ty="0.050000" tz="42.998207" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																				<children visible="True">
-																					<ActorMesh name="Upper_Arm" layer="Scene Collection">
+																					<ActorMesh name="Upper_Arm" layer="Export">
 																						<mesh name="Upper_Arm"/>
 																						<Transform tx="4.850750" ty="13.580555" tz="42.999962" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																						<children visible="True">
-																							<ActorMesh name="Upper_Arm_Screw_1" layer="Scene Collection">
+																							<ActorMesh name="EndCover" layer="Export">
+																								<mesh name="EndCover"/>
+																								<Transform tx="5.059631" ty="28.254677" tz="42.999989" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																							</ActorMesh>
+																							<ActorMesh name="Upper_Arm_Screw_1" layer="Export">
 																								<mesh name="Upper_Arm_Screw"/>
 																								<Transform tx="3.679674" ty="27.997667" tz="43.498436" qw="0.707107" qx="-0.000234" qy="-0.707107" qz="0.000234" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																								<children visible="True">
-																									<ActorMesh name="Upper_Arm_Hex_Nut_1" layer="Scene Collection">
+																									<ActorMesh name="Upper_Arm_Hex_Nut_1" layer="Export">
 																										<mesh name="Hex_Nut"/>
 																										<Transform tx="2.915848" ty="27.978062" tz="43.501614" qw="0.500166" qx="0.499835" qy="-0.500165" qz="-0.499834" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																									</ActorMesh>
 																								</children>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Arm_Screw_2" layer="Scene Collection">
+																							<ActorMesh name="Upper_Arm_Screw_2" layer="Export">
 																								<mesh name="Upper_Arm_Screw"/>
 																								<Transform tx="3.679674" ty="27.997007" tz="42.503014" qw="0.707107" qx="-0.000234" qy="-0.707107" qz="0.000234" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																								<children visible="True">
-																									<ActorMesh name="Upper_Arm_Hex_Nut_2" layer="Scene Collection">
+																									<ActorMesh name="Upper_Arm_Hex_Nut_2" layer="Export">
 																										<mesh name="Hex_Nut"/>
 																										<Transform tx="2.915848" ty="27.977402" tz="42.506191" qw="0.500166" qx="0.499835" qy="-0.500165" qz="-0.499834" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																									</ActorMesh>
 																								</children>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Arm_Screw_3" layer="Scene Collection">
+																							<ActorMesh name="Upper_Arm_Screw_3" layer="Export">
 																								<mesh name="Upper_Arm_Screw"/>
 																								<Transform tx="3.679674" ty="23.118353" tz="43.501667" qw="0.707107" qx="-0.000234" qy="-0.707107" qz="0.000234" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																								<children visible="True">
-																									<ActorMesh name="Upper_Arm_Hex_Nut_3" layer="Scene Collection">
+																									<ActorMesh name="Upper_Arm_Hex_Nut_3" layer="Export">
 																										<mesh name="Hex_Nut"/>
 																										<Transform tx="2.915848" ty="23.098749" tz="43.504845" qw="0.500166" qx="0.499835" qy="-0.500165" qz="-0.499834" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																									</ActorMesh>
 																								</children>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Arm_Screw_4" layer="Scene Collection">
+																							<ActorMesh name="Upper_Arm_Screw_4" layer="Export">
 																								<mesh name="Upper_Arm_Screw"/>
 																								<Transform tx="3.679674" ty="23.117695" tz="42.506245" qw="0.707107" qx="-0.000234" qy="-0.707107" qz="0.000234" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																								<children visible="True">
-																									<ActorMesh name="Upper_Arm_Hex_Nut_4" layer="Scene Collection">
+																									<ActorMesh name="Upper_Arm_Hex_Nut_4" layer="Export">
 																										<mesh name="Hex_Nut"/>
 																										<Transform tx="2.915848" ty="23.098091" tz="42.509422" qw="0.500166" qx="0.499835" qy="-0.500165" qz="-0.499834" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																									</ActorMesh>
 																								</children>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_1" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_1" layer="Export">
 																								<mesh name="Servo_Screw"/>
 																								<Transform tx="3.612725" ty="-0.790470" tz="43.850391" qw="0.653282" qx="-0.270598" qy="-0.653281" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_2" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_2" layer="Export">
 																								<mesh name="Servo_Screw"/>
-																								<Transform tx="3.612725" ty="-1.142365" tz="43.000839" qw="0.707107" qx="-0.000000" qy="-0.707106" qz="-0.000000" sx="0.918855" sy="0.918855" sz="0.918855"/>
+																								<Transform tx="3.612700" ty="-1.142365" tz="43.000839" qw="0.707107" qx="-0.000000" qy="-0.707106" qz="-0.000000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_3" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_3" layer="Export">
 																								<mesh name="Servo_Screw"/>
 																								<Transform tx="3.612725" ty="-0.790470" tz="42.151291" qw="0.653282" qx="0.270598" qy="-0.653281" qz="-0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_4" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_4" layer="Export">
 																								<mesh name="Servo_Screw"/>
 																								<Transform tx="3.612725" ty="0.908630" tz="42.151291" qw="0.653282" qx="-0.270598" qy="-0.653281" qz="0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_5" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_5" layer="Export">
 																								<mesh name="Servo_Screw"/>
 																								<Transform tx="3.612725" ty="1.260526" tz="43.000839" qw="0.707107" qx="-0.000000" qy="-0.707106" qz="-0.000000" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Screw_6" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_6" layer="Export">
 																								<mesh name="Servo_Screw"/>
 																								<Transform tx="3.612725" ty="0.908631" tz="43.850391" qw="0.653282" qx="0.270598" qy="-0.653281" qz="-0.270598" sx="0.918855" sy="0.918855" sz="0.918855"/>
 																							</ActorMesh>
-																							<ActorMesh name="Upper_Joint_Support" layer="Scene Collection">
+																							<ActorMesh name="Upper_Joint_Screw_Center" layer="Export">
+																								<mesh name="Servo_Screw"/>
+																								<Transform tx="3.552668" ty="0.043385" tz="42.996323" qw="0.000000" qx="-0.707107" qy="0.000000" qz="0.707106" sx="0.918855" sy="0.918855" sz="0.918855"/>
+																							</ActorMesh>
+																							<ActorMesh name="Upper_Joint_Support" layer="Export">
 																								<mesh name="Upper_Joint_Support"/>
 																								<Transform tx="3.301697" ty="0.050001" tz="42.998203" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																							</ActorMesh>
-																							<ActorMesh name="Wrist_Servo_1" layer="Scene Collection">
+																							<ActorMesh name="Wrist_Servo_1" layer="Export">
 																								<mesh name="Wrist_Servo_1"/>
 																								<Transform tx="2.000000" ty="26.550001" tz="42.999886" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																								<children visible="True">
-																									<ActorMesh name="Servo_Arm" layer="Scene Collection">
+																									<ActorMesh name="Servo_Arm" layer="Export">
 																										<mesh name="Servo_Arm"/>
 																										<Transform tx="2.000000" ty="26.550001" tz="42.999886" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																										<children visible="True">
-																											<ActorMesh name="Beefy_Hand" layer="Scene Collection">
+																											<ActorMesh name="Beefy_Hand" layer="Export">
 																												<mesh name="Beefy_Hand"/>
 																												<Transform tx="2.000000" ty="26.549997" tz="42.999886" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																												<children visible="True">
-																													<ActorMesh name="Hand_Servo_Screw_2" layer="Scene Collection">
+																													<ActorMesh name="Hand_Servo_Screw_2" layer="Export">
 																														<mesh name="Hand_Servo_Screw"/>
 																														<Transform tx="1.100719" ty="26.549458" tz="41.749996" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																													</ActorMesh>
-																													<ActorMesh name="Hand_Servo_Screw_3" layer="Scene Collection">
+																													<ActorMesh name="Hand_Servo_Screw_3" layer="Export">
 																														<mesh name="Hand_Servo_Screw"/>
 																														<Transform tx="1.100719" ty="26.548943" tz="40.972065" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																													</ActorMesh>
-																													<ActorMesh name="Wrist_Servo_2" layer="Scene Collection">
+																													<ActorMesh name="Wrist_Servo_2" layer="Export">
 																														<mesh name="Wrist_Servo_2"/>
 																														<Transform tx="0.050000" ty="28.049997" tz="42.999985" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																														<children visible="True">
-																															<ActorMesh name="Hand_Screw_1" layer="Scene Collection">
+																															<ActorMesh name="Hand_Screw_1" layer="Export">
 																																<mesh name="Hand_Screw"/>
 																																<Transform tx="-0.445529" ty="27.482912" tz="44.442192" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																<children visible="True">
-																																	<ActorMesh name="Hand_Hex_Nut_1" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Hex_Nut_1" layer="Export">
 																																		<mesh name="Hex_Nut"/>
 																																		<Transform tx="-0.443738" ty="26.157934" tz="44.427444" qw="0.706873" qx="-0.707341" qy="0.000000" qz="0.000000" sx="0.767059" sy="0.767060" sz="0.767060"/>
 																																	</ActorMesh>
 																																</children>
 																															</ActorMesh>
-																															<ActorMesh name="Hand_Screw_2" layer="Scene Collection">
+																															<ActorMesh name="Hand_Screw_2" layer="Export">
 																																<mesh name="Hand_Screw"/>
 																																<Transform tx="0.549598" ty="27.482912" tz="44.442192" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																<children visible="True">
-																																	<ActorMesh name="Hand_Hex_Nut_2" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Hex_Nut_2" layer="Export">
 																																		<mesh name="Hex_Nut"/>
 																																		<Transform tx="0.551389" ty="26.157934" tz="44.427444" qw="0.706873" qx="-0.707341" qy="0.000000" qz="0.000000" sx="0.767059" sy="0.767060" sz="0.767060"/>
 																																	</ActorMesh>
 																																</children>
 																															</ActorMesh>
-																															<ActorMesh name="Hand_Screw_3" layer="Scene Collection">
+																															<ActorMesh name="Hand_Screw_3" layer="Export">
 																																<mesh name="Hand_Screw"/>
-																																<Transform tx="-0.445529" ty="27.479702" tz="39.589607" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="1.492601" sy="1.492601" sz="1.492601"/>
+																																<Transform tx="-0.445530" ty="27.479702" tz="39.589607" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																<children visible="True">
-																																	<ActorMesh name="Hand_Hex_Nut_3" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Hex_Nut_3" layer="Export">
 																																		<mesh name="Hex_Nut"/>
 																																		<Transform tx="-0.443738" ty="26.154724" tz="39.574860" qw="0.706873" qx="-0.707341" qy="0.000000" qz="0.000000" sx="0.767059" sy="0.767060" sz="0.767060"/>
 																																	</ActorMesh>
 																																</children>
 																															</ActorMesh>
-																															<ActorMesh name="Hand_Screw_4" layer="Scene Collection">
+																															<ActorMesh name="Hand_Screw_4" layer="Export">
 																																<mesh name="Hand_Screw"/>
 																																<Transform tx="0.549598" ty="27.479702" tz="39.589607" qw="0.000000" qx="-0.000000" qy="-0.706873" qz="0.707341" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																<children visible="True">
-																																	<ActorMesh name="Hand_Hex_Nut_4" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Hex_Nut_4" layer="Export">
 																																		<mesh name="Hex_Nut"/>
 																																		<Transform tx="0.551389" ty="26.154724" tz="39.574860" qw="0.706873" qx="-0.707341" qy="0.000000" qz="0.000000" sx="0.767059" sy="0.767060" sz="0.767060"/>
 																																	</ActorMesh>
 																																</children>
 																															</ActorMesh>
-																															<ActorMesh name="Hand_Servo_Arm" layer="Scene Collection">
+																															<ActorMesh name="Hand_Servo_Arm" layer="Export">
 																																<mesh name="Hand_Servo_Arm"/>
 																																<Transform tx="0.050000" ty="28.050003" tz="42.999989" qw="0.707107" qx="0.000000" qy="0.707107" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																																<children visible="True">
-																																	<ActorMesh name="Bat" layer="Scene Collection">
-																																		<mesh name="Circle"/>
+																																	<ActorMesh name="Bat" layer="Export">
+																																		<mesh name="Bat"/>
 																																		<Transform tx="0.050000" ty="37.609653" tz="43.001564" qw="0.000000" qx="0.000000" qy="0.000331" qz="1.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																																	</ActorMesh>
-																																	<ActorMesh name="Hand_Holder_Bottom" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Holder_Bottom" layer="Export">
 																																		<mesh name="Hand_Holder"/>
 																																		<Transform tx="0.050000" ty="28.599998" tz="42.724972" qw="1.000000" qx="-0.000662" qy="-0.000000" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																																	</ActorMesh>
-																																	<ActorMesh name="Hand_Holder_Top" layer="Scene Collection">
+																																	<ActorMesh name="Hand_Holder_Top" layer="Export">
 																																		<mesh name="Hand_Holder"/>
-																																		<Transform tx="0.050000" ty="28.599998" tz="43.274986" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																																		<Transform tx="0.050000" ty="28.599998" tz="43.274986" qw="0.000000" qx="0.000000" qy="1.000000" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																																	</ActorMesh>
-																																	<ActorMesh name="Hoop" layer="Scene Collection">
+																																	<ActorMesh name="Hoop" layer="Export">
 																																		<mesh name="Hoop"/>
-																																		<Transform tx="0.050000" ty="28.599995" tz="42.999989" qw="0.000000" qx="0.000000" qy="1.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-																																		<children visible="False">
-																																			<ActorMesh name="Net" layer="Scene Collection">
+																																		<Transform tx="0.050000" ty="28.599995" tz="42.999989" qw="0.000000" qx="0.000000" qy="1.000000" qz="-0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																																		<children visible="True">
+																																			<ActorMesh name="Net" layer="Export">
 																																				<mesh name="Net__Net"/>
-																																				<Transform tx="0.034500" ty="36.485134" tz="39.439178" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="0.000000" sx="0.040995" sy="0.040995" sz="0.040995"/>
+																																				<Transform tx="0.034500" ty="36.485134" tz="39.439178" qw="1.000000" qx="-0.000331" qy="0.000000" qz="0.000000" sx="0.040995" sy="0.040995" sz="0.040995"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Net_Screw_1" layer="Scene Collection">
+																																	<ActorMesh name="Net_Screw_1" layer="Export">
 																																		<mesh name="Net_Screw"/>
 																																		<Transform tx="0.050474" ty="30.445948" tz="43.943493" qw="0.000000" qx="-0.000000" qy="-1.000000" qz="0.000331" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Net_Hex_Nut_1" layer="Scene Collection">
+																																			<ActorMesh name="Net_Hex_Nut_1" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049346" ty="30.433580" tz="42.095791" qw="0.000331" qx="1.000000" qy="0.000000" qz="-0.000000" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Net_Screw_2" layer="Scene Collection">
+																																	<ActorMesh name="Net_Screw_2" layer="Export">
 																																		<mesh name="Net_Screw"/>
 																																		<Transform tx="0.050474" ty="29.648792" tz="43.944019" qw="0.000000" qx="-0.000000" qy="-1.000000" qz="0.000331" sx="1.492601" sy="1.492601" sz="1.492601"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Net_Hex_Nut_2" layer="Scene Collection">
+																																			<ActorMesh name="Net_Hex_Nut_2" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049346" ty="29.636425" tz="42.096317" qw="0.000331" qx="1.000000" qy="0.000000" qz="-0.000000" sx="0.617261" sy="0.617261" sz="0.617261"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Wrist_Screw_1" layer="Scene Collection">
+																																	<ActorMesh name="Wrist_Screw_1" layer="Export">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.209173" tz="44.597218" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.209173" tz="44.597218" qw="1.000000" qx="-0.000331" qy="0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Wrist_Hex_Nut_1" layer="Scene Collection">
+																																			<ActorMesh name="Wrist_Hex_Nut_1" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049962" ty="28.259438" tz="44.595852" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Wrist_Screw_2" layer="Scene Collection">
+																																	<ActorMesh name="Wrist_Screw_2" layer="Export">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.208778" tz="44.002956" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.208778" tz="44.002956" qw="1.000000" qx="-0.000331" qy="0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Wrist_Hex_Nut_2" layer="Scene Collection">
+																																			<ActorMesh name="Wrist_Hex_Nut_2" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049962" ty="28.259045" tz="44.001591" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Wrist_Screw_3" layer="Scene Collection">
+																																	<ActorMesh name="Wrist_Screw_3" layer="Export">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.207438" tz="41.981541" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="-0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.207438" tz="41.981541" qw="1.000000" qx="-0.000331" qy="0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Wrist_Hex_Nut_3" layer="Scene Collection">
+																																			<ActorMesh name="Wrist_Hex_Nut_3" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049962" ty="28.257700" tz="41.980179" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Wrist_Screw_4" layer="Scene Collection">
+																																	<ActorMesh name="Wrist_Screw_4" layer="Export">
 																																		<mesh name="Wrist_Screw"/>
-																																		<Transform tx="0.050308" ty="29.207062" tz="41.409878" qw="1.000000" qx="-0.000331" qy="-0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
+																																		<Transform tx="0.050308" ty="29.207062" tz="41.409878" qw="1.000000" qx="-0.000331" qy="0.000000" qz="0.000000" sx="0.918855" sy="0.918856" sz="0.918856"/>
 																																		<children visible="True">
-																																			<ActorMesh name="Wrist_Hex_Nut_4" layer="Scene Collection">
+																																			<ActorMesh name="Wrist_Hex_Nut_4" layer="Export">
 																																				<mesh name="Hex_Nut"/>
 																																				<Transform tx="0.049962" ty="28.257328" tz="41.408512" qw="0.500192" qx="0.499808" qy="-0.499861" qz="0.500139" sx="0.481071" sy="0.481071" sz="0.481071"/>
 																																			</ActorMesh>
 																																		</children>
 																																	</ActorMesh>
-																																	<ActorMesh name="Wrist_Servo_Screw" layer="Scene Collection">
+																																	<ActorMesh name="Wrist_Servo_Screw" layer="Export">
 																																		<mesh name="Upper_Arm_Screw"/>
-																																		<Transform tx="0.047218" ty="28.647064" tz="42.984234" qw="0.500166" qx="0.499835" qy="-0.499834" qz="0.500165" sx="1.367446" sy="1.367446" sz="1.367446"/>
+																																		<Transform tx="0.047218" ty="28.647064" tz="42.984234" qw="0.500166" qx="0.499834" qy="-0.499834" qz="0.500165" sx="1.367446" sy="1.367446" sz="1.367446"/>
 																																	</ActorMesh>
 																																</children>
 																															</ActorMesh>
@@ -460,7 +472,7 @@
 																													</ActorMesh>
 																												</children>
 																											</ActorMesh>
-																											<ActorMesh name="Hand_Servo_Screw_1" layer="Scene Collection">
+																											<ActorMesh name="Hand_Servo_Screw_1" layer="Export">
 																												<mesh name="Wrist_Servo_Arm_Screw"/>
 																												<Transform tx="1.534052" ty="26.550365" tz="43.012283" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																											</ActorMesh>
@@ -474,9 +486,9 @@
 																			</ActorMesh>
 																		</children>
 																	</ActorMesh>
-																	<ActorMesh name="UpperServoCover" layer="Scene Collection">
+																	<ActorMesh name="UpperServoCover" layer="Export">
 																		<mesh name="UpperServoCover"/>
-																		<Transform tx="-0.186800" ty="0.253400" tz="43.239002" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+																		<Transform tx="-0.186800" ty="0.253400" tz="43.189003" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 																	</ActorMesh>
 																</children>
 															</ActorMesh>
@@ -484,7 +496,7 @@
 													</ActorMesh>
 												</children>
 											</ActorMesh>
-											<ActorMesh name="Servo_Cover" layer="Scene Collection">
+											<ActorMesh name="Servo_Cover" layer="Export">
 												<mesh name="Servo_Cover"/>
 												<Transform tx="5.675600" ty="1.365000" tz="9.732500" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 											</ActorMesh>
@@ -494,7 +506,7 @@
 							</ActorMesh>
 						</children>
 					</ActorMesh>
-					<ActorMesh name="Lazy_Susan_Outer" layer="Scene Collection">
+					<ActorMesh name="Lazy_Susan_Outer" layer="Export">
 						<mesh name="Lazy_Susan_Outer"/>
 						<Transform tx="0.000000" ty="0.000000" tz="3.850000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 					</ActorMesh>
@@ -550,6 +562,12 @@
 		<LightmapUV value="-1"/>
 		<Hash value="7a4a96b896f660ad8b6a1001f51da616"/>
 	</StaticMesh>
+	<StaticMesh label="EndCover" name="EndCover">
+		<Material id="0" name="Plastic___Matte__Black_"/>
+		<file path="Robot Arm_Assets/EndCover.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="44a5b41335ed6809c7658ab4d2dce070"/>
+	</StaticMesh>
 	<StaticMesh label="Upper_Arm_Screw" name="Upper_Arm_Screw">
 		<Material id="0" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Upper_Arm_Screw.udsmesh"/>
@@ -574,13 +592,13 @@
 		<LightmapUV value="-1"/>
 		<Hash value="d77c0752a5080dde0c541ea00de5aa46"/>
 	</StaticMesh>
-	<StaticMesh label="Circle" name="Circle">
+	<StaticMesh label="Bat" name="Bat">
 		<Material id="0" name="Wood"/>
 		<Material id="1" name="Polymide__Kapton_"/>
 		<Material id="2" name="Paint___Metallic__Black_"/>
-		<file path="Robot Arm_Assets/Circle.udsmesh"/>
+		<file path="Robot Arm_Assets/Bat.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="2e722bc191fda6d04981bfc0b0a79830"/>
+		<Hash value="72553185f9f3a35bcecb258064a3d118"/>
 	</StaticMesh>
 	<StaticMesh label="Hand_Holder" name="Hand_Holder">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -592,7 +610,7 @@
 		<Material id="0" name="Net_Material"/>
 		<file path="Robot Arm_Assets/Net__Net.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="e7efe796e661c936b27b2c156d487b99"/>
+		<Hash value="6303b768ebcd8421d88bd23d516843ce"/>
 	</StaticMesh>
 	<StaticMesh label="Hoop" name="Hoop">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -663,10 +681,12 @@
 		<Hash value="c474749805dd85094e303da98ae4f33f"/>
 	</StaticMesh>
 	<StaticMesh label="Upper_Servo" name="Upper_Servo">
-		<Material id="0" name="Plastic___Matte__Black_"/>
+		<Material id="0" name="Polymide__Kapton_"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Upper_Servo.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="9b884b71c89eadafd18c02bdfc8cc037"/>
+		<Hash value="7ffa2ffbeec70ec7571ba2abd703d4ca"/>
 	</StaticMesh>
 	<StaticMesh label="UpperServoCover" name="UpperServoCover">
 		<Material id="0" name="Plastic___Matte__Black_"/>
@@ -688,9 +708,11 @@
 	</StaticMesh>
 	<StaticMesh label="Lower_Servo" name="Lower_Servo">
 		<Material id="0" name="Polymide__Kapton_"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Lower_Servo.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="a5230376ff584c12a5e8fcb01992b6a5"/>
+		<Hash value="4459bd854dff8456296bb66988e29afc"/>
 	</StaticMesh>
 	<StaticMesh label="Servo_Cover" name="Servo_Cover">
 		<Material id="0" name="Plastic___Matte__Black_"/>
@@ -705,7 +727,7 @@
 		<Hash value="9598138b21742d868ae262d68f74e122"/>
 	</StaticMesh>
 	<StaticMesh label="Beefy_Servo_Arm" name="Beefy_Servo_Arm">
-		<Material id="0" name="Polymide__Kapton_"/>
+		<Material id="0" name="Red_Metal"/>
 		<file path="Robot Arm_Assets/Beefy_Servo_Arm.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="50937e7e37e39bd129a08784abc73f7e"/>
@@ -738,9 +760,9 @@
 	</StaticMesh>
 	<UEPbrMaterial name="Aluminum___Satin">
 		<Expressions>
-			<Color constant="(R=0.960784,G=0.960784,B=0.964706,A=1.000000)"/>
+			<Color constant="(R=0.605110,G=0.605110,B=0.607449,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
-			<Scalar constant="0.323325"/>
+			<Scalar constant="0.212529"/>
 			<Scalar constant="1.000000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
@@ -752,7 +774,7 @@
 		<Expressions>
 			<Color constant="(R=0.098039,G=0.098039,B=0.098039,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
-			<Scalar constant="0.552786"/>
+			<Scalar constant="0.500000"/>
 			<Scalar constant="1.000000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
@@ -765,7 +787,7 @@
 			<Color constant="(R=0.020105,G=0.020105,B=0.020105,A=1.000000)"/>
 			<Scalar constant="0.175637"/>
 			<Scalar constant="0.564118"/>
-			<Scalar constant="1.000000"/>
+			<Scalar constant="0.400000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
 		<Metallic expression="1" OutputIndex="0"/>
@@ -776,7 +798,7 @@
 		<Expressions>
 			<Color constant="(R=0.627451,G=0.627451,B=0.627451,A=1.000000)"/>
 			<Scalar constant="1.000000"/>
-			<Scalar constant="0.677432"/>
+			<Scalar constant="0.500000"/>
 			<Scalar constant="1.000000"/>
 		</Expressions>
 		<BaseColor expression="0" OutputIndex="0"/>
@@ -786,7 +808,7 @@
 	</UEPbrMaterial>
 	<UEPbrMaterial name="Wood">
 		<Expressions>
-			<Texture PathName="Wood09_4K_BaseColor_png"/>
+			<Texture PathName="Wood09_4K_BaseColor_png_001"/>
 			<Scalar constant="0.000000"/>
 			<Texture PathName="Wood09_4K_Roughness_png"/>
 			<Color constant="(R=0.333333,G=0.333333,B=0.333333,A=1.0)"/>
@@ -853,9 +875,21 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
+	<UEPbrMaterial name="Red_Metal">
+		<Expressions>
+			<Color constant="(R=0.794828,G=0.023262,B=0.000000,A=1.000000)"/>
+			<Scalar constant="0.920455"/>
+			<Scalar constant="0.350000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
 	<UEPbrMaterial name="Orgasol__Invent_Smooth___PA_12">
 		<Expressions>
-			<Color constant="(R=0.964706,G=0.964706,B=0.952941,A=1.000000)"/>
+			<Color constant="(R=1.000000,G=1.000000,B=0.988661,A=1.000000)"/>
 			<Scalar constant="0.000000"/>
 			<Scalar constant="0.643438"/>
 			<Scalar constant="0.495751"/>
@@ -865,7 +899,7 @@
 		<Roughness expression="2" OutputIndex="0"/>
 		<Specular expression="3" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<Texture name="Wood09_4K_BaseColor_png" file="Robot Arm_Assets/Wood09_4K_BaseColor_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+	<Texture name="Wood09_4K_BaseColor_png_001" file="Robot Arm_Assets/Wood09_4K_BaseColor_png_001.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
 		<Hash value="0eaed31b310395c92c069ec775e9c4a4"/>
 	</Texture>
 	<Texture name="Wood09_4K_Roughness_png" file="Robot Arm_Assets/Wood09_4K_Roughness_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
@@ -874,5 +908,5 @@
 	<Texture name="Wood09_4K_Normal_png" file="Robot Arm_Assets/Wood09_4K_Normal_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
 		<Hash value="ef56a7a81a651fa5ec53b82f9e385aa7"/>
 	</Texture>
-	<Export Duration="0.5606810610006505"/>
+	<Export Duration="0.563138975000129"/>
 </DatasmithUnrealScene>
