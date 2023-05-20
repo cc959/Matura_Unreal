@@ -1,0 +1,634 @@
+<DatasmithUnrealScene>
+	<Version>1.0.3</Version>
+	<SDKVersion>4.24E0</SDKVersion>
+	<Host>Blender</Host>
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
+	<User ID="elias" OS="Linux 6.1.26-1-MANJARO"/>
+	<ActorMesh name="Room" layer="Export">
+		<mesh name="Room__Mesh"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window1" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="83.117035" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window2" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-63.882965" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window3" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-210.882980" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window4" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-357.882965" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window5" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-505.633881" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window6" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-653.635071" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar1" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="8.711121" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar2" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="-138.288879" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar3" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="-285.288879" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar4" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="-432.288879" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar5" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="-579.288879" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Small_Table" layer="Export">
+		<mesh name="Small_Table"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Large_Table" layer="Export">
+		<mesh name="Large_Table"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Whiteboard" layer="Export">
+		<mesh name="Whiteboard"/>
+		<Transform tx="143.884521" ty="48.992435" tz="99.649086" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Blackboard" layer="Export">
+		<mesh name="Blackboard"/>
+		<Transform tx="133.138580" ty="49.425205" tz="-33.597916" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.170622"/>
+	</ActorMesh>
+	<ActorMesh name="PillarFront2" layer="Export">
+		<mesh name="FrontPillarRight"/>
+		<Transform tx="133.937195" ty="248.903656" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="PillarFront1" layer="Export">
+		<mesh name="FrontPillarLeft"/>
+		<Transform tx="133.937195" ty="-149.042526" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Lamp1" layer="Export">
+		<mesh name="Lamp"/>
+		<Transform tx="-347.606445" ty="255.576019" tz="206.037781" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Lamp2" layer="Export">
+		<mesh name="Lamp"/>
+		<Transform tx="-347.606445" ty="-137.459045" tz="206.037781" qw="0.707107" qx="-0.000000" qy="-0.000000" qz="-0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Steps" layer="Export">
+		<mesh name="Steps"/>
+		<Transform tx="-555.680237" ty="55.408215" tz="-67.548721" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Window7" layer="Export">
+		<mesh name="Window"/>
+		<Transform tx="-800.635071" ty="463.031433" tz="58.225586" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Pillar6" layer="Export">
+		<mesh name="Pillar"/>
+		<Transform tx="-727.788879" ty="463.499390" tz="61.943851" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_1" layer="Export">
+		<mesh name="Guard_Rail_1__Mesh"/>
+		<Transform tx="-420.250641" ty="-278.091980" tz="-65.689697" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Table_1" layer="Export">
+		<mesh name="Table_1__Mesh"/>
+		<Transform tx="-359.494385" ty="-208.167343" tz="-0.547781" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_2" layer="Export">
+		<mesh name="Table_2__Mesh"/>
+		<Transform tx="-359.494385" ty="-77.445877" tz="-0.547781" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_3" layer="Export">
+		<mesh name="Table_3__Mesh"/>
+		<Transform tx="-359.494385" ty="190.845459" tz="-0.547781" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_4" layer="Export">
+		<mesh name="Table_4__Mesh"/>
+		<Transform tx="-359.494385" ty="321.566925" tz="-0.547781" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_2" layer="Export">
+		<mesh name="Guard_Rail_2__Mesh"/>
+		<Transform tx="-420.250641" ty="396.069702" tz="-65.689697" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_3" layer="Export">
+		<mesh name="Guard_Rail_3__Mesh"/>
+		<Transform tx="-545.066711" ty="-278.091980" tz="-45.875561" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Table_5" layer="Export">
+		<mesh name="Table_5__Mesh"/>
+		<Transform tx="-484.310394" ty="-208.167343" tz="19.266356" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_6" layer="Export">
+		<mesh name="Table_6__Mesh"/>
+		<Transform tx="-484.310394" ty="-77.445877" tz="19.266356" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_7" layer="Export">
+		<mesh name="Table_7__Mesh"/>
+		<Transform tx="-484.310394" ty="190.845459" tz="19.266356" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_8" layer="Export">
+		<mesh name="Table_8__Mesh"/>
+		<Transform tx="-484.310394" ty="321.566925" tz="19.266356" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_4" layer="Export">
+		<mesh name="Guard_Rail_4__Mesh"/>
+		<Transform tx="-545.066711" ty="396.069702" tz="-45.875561" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_5" layer="Export">
+		<mesh name="Guard_Rail_5__Mesh"/>
+		<Transform tx="-668.734131" ty="-278.091980" tz="-25.955221" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Table_9" layer="Export">
+		<mesh name="Table_9__Mesh"/>
+		<Transform tx="-607.977844" ty="-208.167343" tz="39.186691" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_10" layer="Export">
+		<mesh name="Table_10__Mesh"/>
+		<Transform tx="-607.977844" ty="-77.445869" tz="39.186691" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_11" layer="Export">
+		<mesh name="Table_11__Mesh"/>
+		<Transform tx="-607.977844" ty="190.845459" tz="39.186691" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_12" layer="Export">
+		<mesh name="Table_12__Mesh"/>
+		<Transform tx="-607.977844" ty="321.566925" tz="39.186691" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Guard_Rail_6" layer="Export">
+		<mesh name="Guard_Rail_6__Mesh"/>
+		<Transform tx="-668.734131" ty="396.069702" tz="-25.955221" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Long_Guard_Rail_1" layer="Export">
+		<mesh name="Long_Guard_Rail_1__Mesh"/>
+		<Transform tx="-695.128357" ty="256.586243" tz="-25.955221" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Long_Guard_Rail_2" layer="Export">
+		<mesh name="Long_Guard_Rail_2__Mesh"/>
+		<Transform tx="-695.128357" ty="-146.109940" tz="-25.955221" qw="0.707107" qx="0.000000" qy="0.000000" qz="0.707107" sx="0.061679" sy="0.061679" sz="0.061679"/>
+	</ActorMesh>
+	<ActorMesh name="Table_13" layer="Export">
+		<mesh name="Table_13__Mesh"/>
+		<Transform tx="-230.568817" ty="-208.167343" tz="-18.609819" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_14" layer="Export">
+		<mesh name="Table_14__Mesh"/>
+		<Transform tx="-230.568817" ty="-77.445877" tz="-18.609819" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_15" layer="Export">
+		<mesh name="Table_15__Mesh"/>
+		<Transform tx="-230.568817" ty="190.845459" tz="-18.609819" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Table_16" layer="Export">
+		<mesh name="Table_16__Mesh"/>
+		<Transform tx="-230.568817" ty="321.566925" tz="-18.609819" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Wall" layer="Export">
+		<mesh name="Wall"/>
+		<Transform tx="-346.558563" ty="918.139648" tz="28.692043" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<StaticMesh label="Room__Mesh" name="Room__Mesh">
+		<Material id="0" name="Mosaic_01"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<file path="Physics-Room_Assets/Room__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="511f195179f5498a0b99749e47ef2f5e"/>
+	</StaticMesh>
+	<StaticMesh label="Window" name="Window">
+		<Material id="0" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Window.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="05d20507cce4a0613ca45fdfe1f12f19"/>
+	</StaticMesh>
+	<StaticMesh label="Pillar" name="Pillar">
+		<Material id="0" name="Wood"/>
+		<file path="Physics-Room_Assets/Pillar.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="1f0926395ea9114bdfa919f1e6896833"/>
+	</StaticMesh>
+	<StaticMesh label="Small_Table" name="Small_Table">
+		<Material id="0" name="Steel___Rough"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="DefaultMaterial"/>
+		<Material id="4" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Small_Table.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a23bbfb0b895d1d8854b33def35a9b86"/>
+	</StaticMesh>
+	<StaticMesh label="Large_Table" name="Large_Table">
+		<Material id="0" name="Steel___Rough"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="DefaultMaterial"/>
+		<Material id="4" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Large_Table.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a9a0f5dd40e26c9e3764eab909ae220b"/>
+	</StaticMesh>
+	<StaticMesh label="Whiteboard" name="Whiteboard">
+		<Material id="0" name="Mosaic_01"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="DefaultMaterial"/>
+		<Material id="4" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Whiteboard.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="9bdb8d0eab4c2dd6706842efa11bf8ca"/>
+	</StaticMesh>
+	<StaticMesh label="Blackboard" name="Blackboard">
+		<Material id="0" name="Steel___Rough"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="DefaultMaterial"/>
+		<Material id="4" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Blackboard.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="7dbf693af8f1ab095b8b2cf1a94179f2"/>
+	</StaticMesh>
+	<StaticMesh label="FrontPillarRight" name="FrontPillarRight">
+		<Material id="0" name="Wood"/>
+		<file path="Physics-Room_Assets/FrontPillarRight.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="4e338b12d90410a054eae5ce18f2af0c"/>
+	</StaticMesh>
+	<StaticMesh label="FrontPillarLeft" name="FrontPillarLeft">
+		<Material id="0" name="Wood"/>
+		<file path="Physics-Room_Assets/FrontPillarLeft.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="fa9ee99ade0d7214fe8f9b35febb58a1"/>
+	</StaticMesh>
+	<StaticMesh label="Lamp" name="Lamp">
+		<Material id="0" name="Plastic___Matte__Black_"/>
+		<Material id="1" name="Unlit_White"/>
+		<file path="Physics-Room_Assets/Lamp.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="49ea620f1054c4f08f4138c90edd1bdf"/>
+	</StaticMesh>
+	<StaticMesh label="Steps" name="Steps">
+		<Material id="0" name="DefaultMaterial"/>
+		<file path="Physics-Room_Assets/Steps.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="3549834677f9bfc3233ab450946f299e"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_1__Mesh" name="Guard_Rail_1__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_1__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="b8fd7dcc156365f0c50d2cc688febe4a"/>
+	</StaticMesh>
+	<StaticMesh label="Table_1__Mesh" name="Table_1__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_1__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="b0ca03fa1724f6d103d757ff75696f43"/>
+	</StaticMesh>
+	<StaticMesh label="Table_2__Mesh" name="Table_2__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_2__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="04415836216f9239a8651b385264fe45"/>
+	</StaticMesh>
+	<StaticMesh label="Table_3__Mesh" name="Table_3__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_3__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="4e0e7db3294c333835e6631af819a5dc"/>
+	</StaticMesh>
+	<StaticMesh label="Table_4__Mesh" name="Table_4__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_4__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="543e287fc3a3241694f7bace95ceab2f"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_2__Mesh" name="Guard_Rail_2__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_2__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="e57140345a3142b5cbd31f3815f4b623"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_3__Mesh" name="Guard_Rail_3__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_3__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a84efce02148bee2ea84f9d3d0793a73"/>
+	</StaticMesh>
+	<StaticMesh label="Table_5__Mesh" name="Table_5__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_5__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a48aea58d6de0dc581f63a0bd26c00cc"/>
+	</StaticMesh>
+	<StaticMesh label="Table_6__Mesh" name="Table_6__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_6__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="fa9b522cb7e03164fb6396ccd6d55fd3"/>
+	</StaticMesh>
+	<StaticMesh label="Table_7__Mesh" name="Table_7__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_7__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="0e53a25f950397c40837cf1bdcd58d4f"/>
+	</StaticMesh>
+	<StaticMesh label="Table_8__Mesh" name="Table_8__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_8__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="48d27bbb1099a13252add40e861e9d32"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_4__Mesh" name="Guard_Rail_4__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_4__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="ac88959ec6c9fcdce277eaa19d9c2d33"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_5__Mesh" name="Guard_Rail_5__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_5__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="99b1dc62f8374ca3b3379d01d70ab1d3"/>
+	</StaticMesh>
+	<StaticMesh label="Table_9__Mesh" name="Table_9__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_9__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="0298252dff2643b0d20e4675c856a793"/>
+	</StaticMesh>
+	<StaticMesh label="Table_10__Mesh" name="Table_10__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_10__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="7ad654cf716ba785247bb5f48c73f1c9"/>
+	</StaticMesh>
+	<StaticMesh label="Table_11__Mesh" name="Table_11__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_11__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="556b99cd9cc1a88ccfb2f567b69b728f"/>
+	</StaticMesh>
+	<StaticMesh label="Table_12__Mesh" name="Table_12__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_12__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="f4214751e93f48ce7be92fa34c2808f9"/>
+	</StaticMesh>
+	<StaticMesh label="Guard_Rail_6__Mesh" name="Guard_Rail_6__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Guard_Rail_6__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="538f2493002e316fc5a9d1f1a5d9e5cc"/>
+	</StaticMesh>
+	<StaticMesh label="Long_Guard_Rail_1__Mesh" name="Long_Guard_Rail_1__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Long_Guard_Rail_1__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="1061141b2822917cffbbdf10bb34b413"/>
+	</StaticMesh>
+	<StaticMesh label="Long_Guard_Rail_2__Mesh" name="Long_Guard_Rail_2__Mesh">
+		<Material id="0" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Long_Guard_Rail_2__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="7cc1373e7b613e31789aa8c6da88c4f8"/>
+	</StaticMesh>
+	<StaticMesh label="Table_13__Mesh" name="Table_13__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_13__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="5a8ac8e53d9ad6283d391d01cc38d61d"/>
+	</StaticMesh>
+	<StaticMesh label="Table_14__Mesh" name="Table_14__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_14__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="73fa8ce65bdfa9655abb0e725b538d93"/>
+	</StaticMesh>
+	<StaticMesh label="Table_15__Mesh" name="Table_15__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_15__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="aa66a8291d5f537de44ed1ae5d919c33"/>
+	</StaticMesh>
+	<StaticMesh label="Table_16__Mesh" name="Table_16__Mesh">
+		<Material id="0" name="Aluminum___Satin"/>
+		<Material id="1" name="Plastic___Matte__Black_"/>
+		<Material id="2" name="Orgasol__Invent_Smooth___PA_12"/>
+		<Material id="3" name="Steel___Rough"/>
+		<file path="Physics-Room_Assets/Table_16__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="7b90abf1cfc2ce0a71e303c8ff3f9115"/>
+	</StaticMesh>
+	<StaticMesh label="Wall" name="Wall">
+		<Material id="0" name="Plastic___Matte__Black__002"/>
+		<Material id="1" name="Ball"/>
+		<file path="Physics-Room_Assets/Wall.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="3bbbfbdd8db4078308f2fc5b5d527579"/>
+	</StaticMesh>
+	<UEPbrMaterial name="Mosaic_01">
+		<Expressions>
+			<Texture PathName="Floor_Mosaic_01_basecolor_jpg"/>
+			<Texture PathName="Floor_Mosaic_01_metallic_jpg"/>
+			<Color constant="(R=0.333333,G=0.333333,B=0.333333,A=1.0)"/>
+			<DotProduct>
+				<0 expression="1" OutputIndex="0"/>
+				<1 expression="2"/>
+			</DotProduct>
+			<Texture PathName="Floor_Mosaic_01_roughness_jpg"/>
+			<Color constant="(R=0.333333,G=0.333333,B=0.333333,A=1.0)"/>
+			<DotProduct>
+				<0 expression="4" OutputIndex="0"/>
+				<1 expression="5"/>
+			</DotProduct>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="3"/>
+		<Roughness expression="6"/>
+		<Specular expression="7" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Plastic___Matte__Black_">
+		<Expressions>
+			<Color constant="(R=0.020105,G=0.020105,B=0.020105,A=1.000000)"/>
+			<Scalar constant="0.175637"/>
+			<Scalar constant="0.564118"/>
+			<Scalar constant="0.400000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Orgasol__Invent_Smooth___PA_12">
+		<Expressions>
+			<Color constant="(R=1.000000,G=1.000000,B=0.988661,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.643438"/>
+			<Scalar constant="0.495751"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="DefaultMaterial">
+		<Expressions>
+			<Color constant="(R=0.906332,G=0.906332,B=0.906332,A=1.000000)"/>
+			<Scalar constant="0.400000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Roughness expression="1" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Wood">
+		<Expressions>
+			<Texture PathName="Wood09_4K_BaseColor_png_001"/>
+			<Scalar constant="0.000000"/>
+			<Texture PathName="Wood09_4K_Roughness_png"/>
+			<Color constant="(R=0.333333,G=0.333333,B=0.333333,A=1.0)"/>
+			<DotProduct>
+				<0 expression="2" OutputIndex="0"/>
+				<1 expression="3"/>
+			</DotProduct>
+			<Scalar constant="0.500000"/>
+			<Texture PathName="Wood09_4K_Normal_png"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="4"/>
+		<Specular expression="5" OutputIndex="0"/>
+		<Normal expression="6" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Steel___Rough">
+		<Expressions>
+			<Color constant="(R=0.627451,G=0.627451,B=0.627451,A=1.000000)"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="1.000000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Unlit_White">
+		<Expressions>
+			<Color constant="(R=1.000000,G=1.000000,B=1.000000,A=1.000000)"/>
+			<Scalar constant="22.199999"/>
+			<Multiply>
+				<0 expression="0" OutputIndex="0"/>
+				<1 expression="1" OutputIndex="0"/>
+			</Multiply>
+		</Expressions>
+		<EmissiveColor expression="2"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Aluminum___Satin">
+		<Expressions>
+			<Color constant="(R=0.605110,G=0.605110,B=0.607449,A=1.000000)"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.212529"/>
+			<Scalar constant="1.000000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Plastic___Matte__Black__002">
+		<Expressions>
+			<Color constant="(R=0.020105,G=0.020105,B=0.020105,A=1.000000)"/>
+			<Scalar constant="0.175637"/>
+			<Scalar constant="0.564118"/>
+			<Scalar constant="0.400000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Ball">
+		<Expressions>
+			<Color constant="(R=0.015440,G=0.800000,B=0.000000,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<Texture name="Floor_Mosaic_01_basecolor_jpg" file="Physics-Room_Assets/Floor_Mosaic_01_basecolor_jpg.jpg" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="35a369b42da08638acc1729fcbafd5a5"/>
+	</Texture>
+	<Texture name="Floor_Mosaic_01_metallic_jpg" file="Physics-Room_Assets/Floor_Mosaic_01_metallic_jpg.jpg" rgbcurve="0.0" srgb="2" texturemode="1" texturefilter="3">
+		<Hash value="5bcc2bf04f8bc77f14e8a65b5b0ecba6"/>
+	</Texture>
+	<Texture name="Floor_Mosaic_01_roughness_jpg" file="Physics-Room_Assets/Floor_Mosaic_01_roughness_jpg.jpg" rgbcurve="0.0" srgb="2" texturemode="1" texturefilter="3">
+		<Hash value="118d160dfa1dfac58fe42c6f0444faeb"/>
+	</Texture>
+	<Texture name="Wood09_4K_BaseColor_png_001" file="Physics-Room_Assets/Wood09_4K_BaseColor_png_001.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="0eaed31b310395c92c069ec775e9c4a4"/>
+	</Texture>
+	<Texture name="Wood09_4K_Roughness_png" file="Physics-Room_Assets/Wood09_4K_Roughness_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="ad6ade44c7582fa72d23877111e7b6de"/>
+	</Texture>
+	<Texture name="Wood09_4K_Normal_png" file="Physics-Room_Assets/Wood09_4K_Normal_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="ef56a7a81a651fa5ec53b82f9e385aa7"/>
+	</Texture>
+	<Export Duration="1.7153555040003994"/>
+</DatasmithUnrealScene>

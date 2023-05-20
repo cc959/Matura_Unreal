@@ -204,6 +204,8 @@ protected:
 	ParabPath last_path;
 	LinearMove path_to_follow;
 
+	Position last_valid_position;
+	
 	Position GetPosition();
 	Position GetActualPosition();
 
@@ -329,5 +331,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
 	double actual_wrist_rotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool replay_last_path;
 
 };

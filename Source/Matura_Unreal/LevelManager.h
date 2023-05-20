@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include <IntVectorTypes.h>
 #include <vector>
 #include <Engine/StreamableManager.h>
 
-#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/ObjectLibrary.h"
+#include "Engine/Classes/Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "LevelManager.generated.h"
 
 
@@ -23,10 +25,28 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool SetCameraToPlayerView();
+	bool CapturePlayersView(UE::Geometry::FVector2i Resolution);
 
+	UFUNCTION(BlueprintCallable, Category = Game)
+	void ApplyFoliageVisibility();
+	
 	bool key_pressed = false;
 
 	FName current_level;
+	bool foliage_visible = false;
+
+	UFUNCTION(BlueprintCallable, Category = Game)
+	void LoadCurrentLevel();
+
+	UFUNCTION(BlueprintCallable, Category = Game)
+	void FinishLoading();
+
+	UTexture2D* LoadSlide(FName name);
+	void SetSlideTexture(UTexture* slide_texture, int width, int height);
+	void HideSlides();
+
+	bool finished_loading = false;
 	
 public:
 
@@ -39,10 +59,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<FName> sublevels;
 
-	FVector2d viewport_size;
+	FVector2d viewport_size = {};
 
 	int level = 0;
 	int level_loaded = -1;
+	bool foliage_level_loaded = false;
 
-
+	
 };

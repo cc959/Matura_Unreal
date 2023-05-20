@@ -18,9 +18,15 @@ public:
 	// Sets default values for this character's properties
 	AFlyCharacter();
 
+	bool teleport = false;
+	bool locked = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FVector last_target_position;
+	FQuat last_target_rotation;
 
 public:	
 	// Called every frame

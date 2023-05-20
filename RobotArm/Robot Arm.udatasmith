@@ -2,8 +2,8 @@
 	<Version>1.0.3</Version>
 	<SDKVersion>4.24E0</SDKVersion>
 	<Host>Blender</Host>
-	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.0"/>
-	<User ID="elias" OS="Linux 6.2.12-1-MANJARO"/>
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
+	<User ID="elias" OS="Linux 6.1.26-1-MANJARO"/>
 	<ActorMesh name="Base_Plate" layer="Export">
 		<mesh name="Base_Plate"/>
 		<Transform tx="-0.000000" ty="-0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -514,6 +514,10 @@
 			</ActorMesh>
 		</children>
 	</ActorMesh>
+	<ActorMesh name="Room" layer="Export">
+		<mesh name="Room"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
 	<StaticMesh label="Hex_Nut" name="Hex_Nut">
 		<Material id="0" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Hex_Nut.udsmesh"/>
@@ -610,7 +614,7 @@
 		<Material id="0" name="Net_Material"/>
 		<file path="Robot Arm_Assets/Net__Net.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="6303b768ebcd8421d88bd23d516843ce"/>
+		<Hash value="c510effd41da0088bcce96c7a4914384"/>
 	</StaticMesh>
 	<StaticMesh label="Hoop" name="Hoop">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -757,6 +761,12 @@
 		<file path="Robot Arm_Assets/Base_Plate.udsmesh"/>
 		<LightmapUV value="-1"/>
 		<Hash value="a3d7f0ae41d19a24b99dfce783d98b24"/>
+	</StaticMesh>
+	<StaticMesh label="Room" name="Room">
+		<Material id="0" name="Paint___Metallic__Black_"/>
+		<file path="Robot Arm_Assets/Room.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="8ad16e67bda8f1695b796c4d3078979c"/>
 	</StaticMesh>
 	<UEPbrMaterial name="Aluminum___Satin">
 		<Expressions>
@@ -908,5 +918,5 @@
 	<Texture name="Wood09_4K_Normal_png" file="Robot Arm_Assets/Wood09_4K_Normal_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
 		<Hash value="ef56a7a81a651fa5ec53b82f9e385aa7"/>
 	</Texture>
-	<Export Duration="0.563138975000129"/>
+	<Export Duration="0.589377381000304"/>
 </DatasmithUnrealScene>

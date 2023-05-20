@@ -8,6 +8,8 @@
 #include <unistd.h>	 // write(), read(), close()
 #include <string>
 #include <vector>
+#include <Components/SphereComponent.h>
+
 #include "Core/Public/Misc/AssertionMacros.h"
 
 // Sets default values
@@ -30,7 +32,7 @@ void ARobotArm::BeginPlay()
 
 	if (!visual_only)
 		SetupSerial();
-
+	
 	Super::BeginPlay();
 }
 
@@ -105,17 +107,16 @@ int ARobotArm::NumOverlaps()
 
 	int cnt = 0;
 
-	TArray colliders = robot_arm->GetComponentsByTag(UStaticMeshComponent::StaticClass(), "Collider");
-	for (auto collider : colliders)
-	{
-		if (collider && Cast<UStaticMeshComponent>(collider))
-		{
-			TArray<UPrimitiveComponent*> overlaps;
-			Cast<UStaticMeshComponent>(collider)->GetOverlappingComponents(overlaps);
-			cnt += overlaps.Num();
-		}
-	}
+	TArray<USphereComponent*> sphere_colliders;
+	robot_arm->GetComponents<USphereComponent>(sphere_colliders);
 
+	for (auto sphere : sphere_colliders)
+	{
+		TArray<UPrimitiveComponent*> overlaps;
+		UKismetSystemLibrary::SphereOverlapComponents(GetWorld(), sphere->GetComponentLocation(), sphere->GetScaledSphereRadius(), {}, {}, {}, overlaps);
+		cnt += overlaps.Num();
+	}
+	
 	return cnt;
 }
 
@@ -455,9 +456,7 @@ void ARobotArm::TrackParabola(Position& position)
 
 	if (tool == Bat)
 	{
-		FVector aim_at(-1400, 0, 800);
-
-	
+		FVector aim_at(-1400, 0, 1400);
 
 		FVector aim = aim_at - target;
 		double yaw_angle = atan2(aim.Y, -aim.X);
@@ -484,10 +483,10 @@ void ARobotArm::TrackParabola(Position& position)
 
 		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
 		{
-			Position start{0, 0, 0, -25, 0};
+			Position start{0, 0, 0, -20, 0};
 			Position end{0, 0, 0, 15, 0};
 	
-			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,  start, end, 0.1);
+			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4, start, end, 0.1);
 			path_age += path_to_follow.Length();
 		}
 		else
@@ -572,7 +571,7 @@ void ARobotArm::ApplyPosition(Position position)
 				wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, position.wrist_rotation, 0)));
 		}
 		int after = NumOverlaps();
-
+		
 		if (after > before && check_collision)
 		{
 			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
@@ -580,6 +579,8 @@ void ARobotArm::ApplyPosition(Position position)
 			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
 			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(hand_rotation, 0, 0)));
 			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, wrist_rotation, 0)));
+
+			UE_LOG(LogTemp, Warning, TEXT("Collision!!!"));
 		}
 		else
 		{
@@ -588,6 +589,7 @@ void ARobotArm::ApplyPosition(Position position)
 			if (!isnan(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
 			if (!isnan(position.hand_rotation)) hand_rotation = position.hand_rotation;
 			if (!isnan(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
+			last_valid_position = position;
 		}
 	}
 }
@@ -634,7 +636,7 @@ void ARobotArm::Tick(float DeltaTime)
 			if (tool == Hoop)
 				hoop_component->SetRelativeScale3D(FVector(1));
 			else
-				hoop_component->SetRelativeScale3D(FVector(0));
+				hoop_component->SetRelativeScale3D(FVector(0.01));
 		}
 
 		if (bat_component)
@@ -642,19 +644,38 @@ void ARobotArm::Tick(float DeltaTime)
 			if (tool == Bat)
 				bat_component->SetRelativeScale3D(FVector(1));
 			else
-				bat_component->SetRelativeScale3D(FVector(0));
+				bat_component->SetRelativeScale3D(FVector(0.01));
 		}
 	}
-
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Robot arm blueprint is not set"));
+	}
+	
 	auto before = chrono::high_resolution_clock::now().time_since_epoch();
 	if (update_rotations)
 	{
 		Position new_position;
 
 		double now = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
+		if (replay_last_path)
+		{
+			replay_last_path = false;
+			path_to_follow.reset();
+		}
 		
 		if (!path_to_follow(now, new_position))
 		{
+			if (update_type == User)
+			{
+				new_position = {base_rotation, lower_arm_rotation, upper_arm_rotation, hand_rotation, wrist_rotation};
+				base_rotation = last_valid_position.base_rotation;
+				lower_arm_rotation = last_valid_position.lower_arm_rotation;
+				upper_arm_rotation = last_valid_position.upper_arm_rotation;
+				hand_rotation = last_valid_position.hand_rotation;
+				wrist_rotation = last_valid_position.wrist_rotation;
+			}
 			if (update_type == Animation)
 				GetAnimation(new_position);
 
@@ -678,6 +699,14 @@ void ARobotArm::Tick(float DeltaTime)
 						switch_target = false;
 					}
 				}
+			}
+		} else
+		{
+			if (draw_debug)
+			{
+				double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
+				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100,
+				FColor::Black, 0, -1);
 			}
 		}
 		ApplyPosition(new_position);

@@ -3,13 +3,16 @@
 
 #include "LevelManager.h"
 
+#include <EngineUtils.h>
 #include <AssetRegistry/AssetRegistryModule.h>
 #include <AssetRegistry/AssetRegistryModule.h>
 #include <Components/CanvasPanelSlot.h>
 #include <Kismet/GameplayStatics.h>
 
+#include "Ball.h"
 #include "CameraControl.h"
 #include "FlyCharacter.h"
+#include "MyBlueprintFunctionLibrary.h"
 #include "Runtime/Engine/Classes/Engine/UserInterfaceSettings.h"
 #include "Runtime/Engine/Classes/Engine/RendererSettings.h"
 
@@ -28,15 +31,100 @@ void ALevelManager::BeginPlay()
 		object_library = UObjectLibrary::CreateLibrary(UTexture2D::StaticClass(), false, GIsEditor);
 		object_library->AddToRoot();
 	}
+	object_library->bRecursivePaths = true;
 	object_library->LoadAssetDataFromPath(TEXT("/Game/Slides/"));
 	object_library->LoadAssetsFromAssetData();
+
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
+	TArray<FAssetData> ObjectList;
+
+	AssetRegistryModule.Get().GetAllAssets(ObjectList);
+
+	for (FAssetData& AssetData : ObjectList)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
+	}
+
+	HideSlides();
 
 	Super::BeginPlay();
 }
 
-void HideSlides(ALevelManager* you)
+void ALevelManager::ApplyFoliageVisibility()
 {
-	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(you->GetWorld(), 0));
+	if (current_level == "")
+		foliage_visible = false;
+	else
+	{
+		TActorIterator<ABall> ActorItr(GetWorld());
+
+		if (ActorItr)
+			foliage_visible = false;
+		else
+			foliage_visible = true;
+	}
+
+	if (foliage_visible != foliage_level_loaded)
+	{
+		if (foliage_visible)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Foliage Level Loaded %d"), foliage_level_loaded);
+			UGameplayStatics::LoadStreamLevel(this, "FoliageLevel", true, true, FLatentActionInfo());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("Foliage Level Unloaded %d"), foliage_level_loaded);
+			UGameplayStatics::UnloadStreamLevel(this, "FoliageLevel", FLatentActionInfo(), true);
+		}
+	}
+	foliage_level_loaded = foliage_visible;
+
+	if (!sublevels[level].ToString().StartsWith("Slide_"))
+	{
+		HideSlides();
+	}
+}
+
+void ALevelManager::LoadCurrentLevel()
+{
+	UGameplayStatics::SetGamePaused(this, false);
+	UE_LOG(LogTemp, Display, TEXT("Unpaused game"));
+
+	if (sublevels[level].ToString().StartsWith("Slide_"))
+	{
+		auto slide_texture = LoadSlide(sublevels[level]);
+		SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+		current_level = "";
+		ApplyFoliageVisibility();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Loading level number %d: %s, current level: %s"), level, *sublevels[level].ToString(),
+		       *current_level.ToString());
+
+		FLatentActionInfo info;
+		info.CallbackTarget = this;
+		info.ExecutionFunction = "ApplyFoliageVisibility";
+		info.UUID = 1;
+		info.Linkage = 0;
+
+		UGameplayStatics::LoadStreamLevel(this, sublevels[level], true, true, info);
+		current_level = sublevels[level];
+	}
+
+	// UGameplayStatics::SetGamePaused(this, false);
+}
+
+void ALevelManager::FinishLoading()
+{
+	UE_LOG(LogTemp, Display, TEXT("Done unloading"));
+	finished_loading = true;
+}
+
+void ALevelManager::HideSlides()
+{
+	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
 	{
@@ -52,14 +140,16 @@ void HideSlides(ALevelManager* you)
 	}
 }
 
-UTexture2D* LoadSlide(ALevelManager* you, FName name)
+UTexture2D* ALevelManager::LoadSlide(FName name)
 {
 	TArray<FAssetData> AssetDatas;
-	you->object_library->GetAssetDataList(AssetDatas);
+	object_library->GetAssetDataList(AssetDatas);
 
 	TArray<FSoftObjectPath> AssetPaths;
 	for (FAssetData& AssetData : AssetDatas)
 	{
+		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
+
 		if (AssetData.AssetName == name)
 		{
 			AssetPaths.Push(AssetData.GetSoftObjectPath());
@@ -67,20 +157,19 @@ UTexture2D* LoadSlide(ALevelManager* you, FName name)
 		}
 	}
 
-	you->blubpointer = you->manager.RequestSyncLoad(AssetPaths);
 
-	if (you->blubpointer.IsValid() && you->blubpointer->IsActive())
+	blubpointer = manager.RequestSyncLoad(AssetPaths);
+
+	if (blubpointer.IsValid() && blubpointer->IsActive())
 	{
-		while(!you->blubpointer->HasLoadCompleted()) usleep(10);
-		return Cast<UTexture2D>(you->blubpointer->GetLoadedAsset());
+		while (!blubpointer->HasLoadCompleted()) usleep(10);
+		return Cast<UTexture2D>(blubpointer->GetLoadedAsset());
 	}
 	return nullptr;
 }
 
-void SetSlideTexture(ALevelManager* you, FName name)
+void ALevelManager::SetSlideTexture(UTexture* slide_texture, int width, int height)
 {
-	UTexture2D* slide_texture = LoadSlide(you, name);
-	
 	if (!slide_texture)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Slide texture is null!"));
@@ -88,8 +177,8 @@ void SetSlideTexture(ALevelManager* you, FName name)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Slide texture is null!"));
 		return;
 	}
-	
-	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(you->GetWorld(), 0));
+
+	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
 	{
@@ -100,27 +189,31 @@ void SetSlideTexture(ALevelManager* you, FName name)
 			{
 				if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
 				{
-					double slide_aspect = slide_texture->GetSizeX() / double(slide_texture->GetSizeY());
-					double viewport_aspect = you->viewport_size.X / you->viewport_size.Y;
+					double slide_aspect = width / double(height);
+					double viewport_aspect = viewport_size.X / viewport_size.Y;
 
-					FVector2d slide_size{double(slide_texture->GetSizeX()), double(slide_texture->GetSizeY())};
+					FVector2d slide_size{double(width), double(height)};
 
 					if (slide_aspect >= viewport_aspect)
 					{
-						double ratio = (you->viewport_size.X / slide_size.X);
+						double ratio = (viewport_size.X / slide_size.X);
 						slot->SetSize(slide_size * ratio);
-						slot->SetPosition({0, (you->viewport_size.Y - (slide_size.Y * ratio)) / 2});
+						slot->SetPosition({0, (viewport_size.Y - (slide_size.Y * ratio)) / 2});
 					}
 					else
 					{
-						double ratio = (you->viewport_size.Y / slide_size.Y);
+						double ratio = (viewport_size.Y / slide_size.Y);
 						slot->SetSize(slide_size * ratio);
-						slot->SetPosition({(you->viewport_size.X - (slide_size.X * ratio)) / 2, 0});
+						slot->SetPosition({(viewport_size.X - (slide_size.X * ratio)) / 2, 0});
 					}
 				}
-				UE_LOG(LogTemp, Warning, TEXT("%d"), slide_texture->GetSizeX());
-				if (slide_texture->GetSizeX() != 0 || slide_texture->GetSizeY() != 0)
-					slide->Brush.SetResourceObject(slide_texture);
+				UE_LOG(LogTemp, Warning, TEXT("%d"), width);
+				if (width != 0 || height != 0)
+				{
+					auto brush = slide->GetBrush();
+					brush.SetResourceObject(slide_texture);
+					slide->SetBrush(brush);
+				}
 				slide->SetVisibility(ESlateVisibility::Visible);
 			}
 
@@ -128,7 +221,7 @@ void SetSlideTexture(ALevelManager* you, FName name)
 			{
 				if (auto slot = Cast<UCanvasPanelSlot>(slide_bg->Slot))
 				{
-					slot->SetSize(you->viewport_size);
+					slot->SetSize(viewport_size);
 					slot->SetPosition({0, 0});
 				}
 
@@ -142,7 +235,6 @@ void SetSlideTexture(ALevelManager* you, FName name)
 void ALevelManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
 	{
@@ -176,34 +268,28 @@ void ALevelManager::Tick(float DeltaTime)
 		if (new_viewport_size != viewport_size && sublevels[level].ToString().StartsWith("Slide_"))
 		{
 			viewport_size = new_viewport_size;
-			SetSlideTexture(this, sublevels[level]);
+			auto slide_texture = LoadSlide(sublevels[level]);
+			SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
 		}
+
 
 		if (level != level_loaded)
 		{
+			level_loaded = level;
+
 			// for some reason can't load and unload a level on the same frame, or perhaps I did it incorrectly
 			if (current_level != "")
 			{
 				UGameplayStatics::UnloadStreamLevel(this, current_level, FLatentActionInfo(), true);
-				current_level = "";
+				LoadCurrentLevel();
 			}
 			else
 			{
-				level_loaded = level;
+				LoadCurrentLevel();
+				TActorIterator<AFlyCharacter> ActorItr(GetWorld());
 
-				if (sublevels[level].ToString().StartsWith("Slide_"))
-				{
-					SetSlideTexture(this, sublevels[level]);
-				}
-				else
-				{
-					HideSlides(this);
-
-					UE_LOG(LogTemp, Display, TEXT("Loading level number %d: %s, current level: %s"), level, *sublevels[level].ToString(),
-					       *current_level.ToString());
-					UGameplayStatics::LoadStreamLevel(this, sublevels[level], true, true, FLatentActionInfo());
-					current_level = sublevels[level];
-				}
+				if (ActorItr)
+					ActorItr->teleport = true;
 			}
 		}
 	}

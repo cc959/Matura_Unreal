@@ -11,6 +11,7 @@
 ACameraControl::ACameraControl()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
 	SetShowMouseCursor(true);
 }
 
@@ -19,6 +20,7 @@ void ACameraControl::Tick(float DeltaTime)
 	FHitResult res;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_PhysicsBody,true, res);
 
+	
 	if (AFlyCharacter* fly = Cast<AFlyCharacter>(GetPawn()))
 	{
 		if (fly->hud_instance)
@@ -37,7 +39,9 @@ void ACameraControl::Tick(float DeltaTime)
 						slot->SetPosition(translation);
 					}
 					
-					camera_preview->Brush.SetResourceObject(camera->camera_texture_2d);
+					auto brush = camera_preview->GetBrush();
+					brush.SetResourceObject(camera->camera_texture_2d);
+					camera_preview->SetBrush(brush);
 					camera_preview->SetVisibility(ESlateVisibility::Visible);
 
 					if (WasInputKeyJustPressed(FKey("LeftMouseButton")))
@@ -50,7 +54,9 @@ void ACameraControl::Tick(float DeltaTime)
 					
 					if (selected)
 					{
-						camera_preview->Brush.SetResourceObject(selected->camera_texture_2d);
+						auto brush = camera_preview->GetBrush();
+						brush.SetResourceObject(selected->camera_texture_2d);
+						camera_preview->SetBrush(brush);
 						camera_preview->SetVisibility(ESlateVisibility::Visible);
 					} else
 					{

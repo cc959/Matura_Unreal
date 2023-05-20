@@ -3,6 +3,9 @@
 
 #include "FlyCharacter.h"
 
+#include <EngineUtils.h>
+#include <Camera/CameraActor.h>
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "MyUserWidget.h"
@@ -73,8 +76,55 @@ void AFlyCharacter::BeginPlay()
 // Called every frame
 void AFlyCharacter::Tick(float DeltaTime)
 {
+	TActorIterator<ACameraActor> ActorItr(GetWorld());
+
+	if (ActorItr)
+	{
+		auto target_position = ActorItr->GetActorLocation();
+		auto target_rotation = ActorItr->GetActorRotation().Quaternion();
+
+		auto current_position = GetActorLocation();
+		auto current_rotation = Controller->GetControlRotation().Quaternion();
+
+		if ((target_position - last_target_position).Length() > 1 || target_rotation.AngularDistance(last_target_rotation) > PI / 180)
+		{
+			locked = true;
+		}
+		
+		auto new_position = current_position * (1-0.1) + (target_position - FVector(0, 0, 64)) * 0.1;
+		auto new_rotation = UE::Math::TQuat<double>::Slerp(current_rotation, target_rotation, 0.1);
+
+		if (teleport)
+		{
+			new_position = target_position - FVector(0, 0, 64);
+			new_rotation = target_rotation;
+			teleport = false;
+		}
+
+		if (locked)
+		{
+			SetActorLocation(new_position);
+			Controller->SetControlRotation(new_rotation.Rotator());
+
+			last_target_position = target_position;
+			last_target_rotation = target_rotation;
+		}
+
+		if ((current_position - (target_position - FVector(0, 0, 64))).Length() < 1 && current_rotation.AngularDistance(target_rotation) < PI / 180)
+		{
+			locked = false;
+		}
+		
+	} else
+	{
+		last_target_position = FVector(-1e20);
+		last_target_rotation = FQuat(-1e20);
+	}
+	
 	Super::Tick(DeltaTime);
 }
+
+
 
 // Called to bind functionality to input
 void AFlyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
