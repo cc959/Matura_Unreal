@@ -1,0 +1,102 @@
+<DatasmithUnrealScene>
+	<Version>1.0.3</Version>
+	<SDKVersion>4.24E0</SDKVersion>
+	<Host>Blender</Host>
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
+	<User ID="elias" OS="Linux 6.1.29-1-MANJARO"/>
+	<ActorMesh name="Arduino_Nano" layer="Separated quadro">
+		<mesh name="Arduino_Nano__Mesh"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<StaticMesh label="Arduino_Nano__Mesh" name="Arduino_Nano__Mesh">
+		<Material id="0" name="PinMaterial"/>
+		<Material id="1" name="BlackPlasic"/>
+		<Material id="2" name="SideMaterial"/>
+		<Material id="3" name="BodyMaterial"/>
+		<file path="ArduinoNano_Assets/Arduino_Nano__Mesh.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="6afeaa617fe2febce76c14f96a3df3d7"/>
+	</StaticMesh>
+	<UEPbrMaterial name="PinMaterial">
+		<Expressions>
+			<Color constant="(R=0.625800,G=0.625800,B=0.625800,A=1.000000)"/>
+			<Scalar constant="1.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="BlackPlasic">
+		<Expressions>
+			<Color constant="(R=0.013968,G=0.013968,B=0.013968,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.811927"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="SideMaterial">
+		<Expressions>
+			<Color constant="(R=0.077037,G=0.089437,B=0.336296,A=1.000000)"/>
+			<Scalar constant="0.330275"/>
+			<Scalar constant="0.463303"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="BodyMaterial">
+		<Expressions>
+			<TextureCoordinate Index="0" UTiling="1.0" VTiling="1.0"/>
+			<Scalar constant="0.000000"/>
+			<AppendVector>
+				<0 expression="0"/>
+				<1 expression="1"/>
+			</AppendVector>
+			<ComponentMask>
+				<0 expression="2"/>
+			</ComponentMask>
+			<Texture PathName="Arduino_Nano_FT232RL_FTDI____________jpg">
+				<Coordinates expression="3"/>
+			</Texture>
+			<Scalar constant="-0.025000"/>
+			<Scalar constant="0.000000"/>
+			<FunctionCall Function="/DatasmithBlenderContent/MaterialFunctions/BrightContrast">
+				<0 expression="4" OutputIndex="0"/>
+				<1 expression="5" OutputIndex="0"/>
+				<2 expression="6" OutputIndex="0"/>
+			</FunctionCall>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+			<TextureObject>
+				<0 name="Texture" type="Texture" val="Arduino_Nano_FT232RL_FTDI____________jpg"/>
+			</TextureObject>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.100000"/>
+			<FunctionCall Function="/Engine/Functions/Engine_MaterialFunctions03/Procedurals/NormalFromHeightmap">
+				<0 expression="11"/>
+				<1 expression="12" OutputIndex="0"/>
+				<2 expression="13" OutputIndex="0"/>
+				<3 expression="2"/>
+			</FunctionCall>
+		</Expressions>
+		<BaseColor expression="7"/>
+		<Metallic expression="8" OutputIndex="0"/>
+		<Roughness expression="9" OutputIndex="0"/>
+		<Specular expression="10" OutputIndex="0"/>
+		<Normal expression="14"/>
+	</UEPbrMaterial>
+	<Texture name="Arduino_Nano_FT232RL_FTDI____________jpg" file="ArduinoNano_Assets/Arduino_Nano_FT232RL_FTDI____________jpg.jpg" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="1e3a25083a241d03e4a81924e38b9837"/>
+	</Texture>
+	<Export Duration="0.06934816100010721"/>
+</DatasmithUnrealScene>

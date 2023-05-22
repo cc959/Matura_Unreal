@@ -21,11 +21,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void ReconstructSpline();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	virtual bool ShouldTickIfViewportsOnly() const override;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Spline")
 	USplineComponent* spline_component;
@@ -35,4 +38,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 	TArray<UMaterialInterface*> material_slots;
+	
+	bool must_reconstruct = false;
 };

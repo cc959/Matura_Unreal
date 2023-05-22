@@ -20,7 +20,11 @@ public:
 	
 	void OnMove();
 
-	virtual void PostEditComponentMove(bool bFinished) override;
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+	
+	virtual bool ShouldRenderSelected() const override;
 	
 protected:
 	// Called when the game starts or when spawned

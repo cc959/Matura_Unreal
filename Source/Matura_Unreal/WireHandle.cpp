@@ -20,23 +20,33 @@ void UWireHandle::BeginPlay()
 
 void UWireHandle::OnMove()
 {
-	ArrowSize = 0.5;
-	ArrowLength = tangent_weight * 100;
-	
 	if (wire_spline && point_index < wire_spline->spline_component->GetNumberOfSplinePoints())
 	{
 		wire_spline->spline_component->SetLocationAtSplinePoint(point_index, GetComponentLocation(), ESplineCoordinateSpace::World, false);
 		wire_spline->spline_component->SetRotationAtSplinePoint(point_index, GetComponentRotation(), ESplineCoordinateSpace::World, false);
 		wire_spline->spline_component->SetTangentAtSplinePoint(point_index, GetForwardVector() * tangent_weight * 100, ESplineCoordinateSpace::World, false);
 		
-		wire_spline->RerunConstructionScripts();
+		wire_spline->must_reconstruct = true;
 	}
 }
 
-void UWireHandle::PostEditComponentMove(bool bFinished)
+
+#if WITH_EDITOR
+void UWireHandle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	
+	SetVisibility(IsSelectedInEditor() || IsOwnerSelected());
+	SetArrowLength(ArrowSize * tangent_weight * 100);
+	
 	OnMove();
-	Super::PostEditComponentMove(bFinished);
+
+}
+#endif
+
+bool UWireHandle::ShouldRenderSelected() const
+{
+	return Super::ShouldRenderSelected();
 }
 
 

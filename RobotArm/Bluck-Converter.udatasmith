@@ -1,0 +1,167 @@
+<DatasmithUnrealScene>
+	<Version>1.0.3</Version>
+	<SDKVersion>4.24E0</SDKVersion>
+	<Host>Blender</Host>
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
+	<User ID="elias" OS="Linux 6.1.29-1-MANJARO"/>
+	<ActorMesh name="Base" layer="Collection">
+		<mesh name="Base"/>
+		<Transform tx="0.034804" ty="0.039424" tz="-0.001228" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="RightCapacitor" layer="Collection">
+		<mesh name="RightCapacitor"/>
+		<Transform tx="-20.232706" ty="8.579672" tz="6.762016" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="LeftCapacitor" layer="Collection">
+		<mesh name="RightCapacitor"/>
+		<Transform tx="18.111868" ty="8.295763" tz="6.762016" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="LeftTerminal" layer="Collection">
+		<mesh name="LeftTerminal"/>
+		<Transform tx="0.034804" ty="0.039424" tz="-0.001228" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="LCD" layer="Collection">
+		<mesh name="LCD"/>
+		<Transform tx="0.951858" ty="1.506747" tz="-0.001228" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="Adjuster" layer="Collection">
+		<mesh name="Adjuster"/>
+		<Transform tx="10.366983" ty="0.406255" tz="-0.001228" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="RightTerminal" layer="Collection">
+		<mesh name="RightTerminal"/>
+		<Transform tx="0.034804" ty="0.039424" tz="-0.001228" qw="0.000000" qx="-0.000000" qy="-0.707107" qz="0.707107" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
+	<StaticMesh label="Base" name="Base">
+		<Material id="0" name="BaseMaterial"/>
+		<Material id="1" name="Silvery"/>
+		<file path="Bluck-Converter_Assets/Base.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="234e09ebe912351ab746b50adf2c6253"/>
+	</StaticMesh>
+	<StaticMesh label="RightCapacitor" name="RightCapacitor">
+		<Material id="0" name="CapacitorMaterial"/>
+		<file path="Bluck-Converter_Assets/RightCapacitor.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="55400c46d7fa3e7acfae9d8af30e446b"/>
+	</StaticMesh>
+	<StaticMesh label="LeftTerminal" name="LeftTerminal">
+		<Material id="0" name="BluePlastic"/>
+		<Material id="1" name="Silvery"/>
+		<file path="Bluck-Converter_Assets/LeftTerminal.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="694181de3a63e0be81f9e6c21b401b45"/>
+	</StaticMesh>
+	<StaticMesh label="LCD" name="LCD">
+		<Material id="0" name="BlackPlastic"/>
+		<Material id="1" name="RedLight"/>
+		<file path="Bluck-Converter_Assets/LCD.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="862e7f20fb57454c47f547b28e587f1a"/>
+	</StaticMesh>
+	<StaticMesh label="Adjuster" name="Adjuster">
+		<Material id="0" name="BluePlastic"/>
+		<Material id="1" name="Silvery"/>
+		<file path="Bluck-Converter_Assets/Adjuster.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="37fb4bb09aadd7963cb4a1eccb967e36"/>
+	</StaticMesh>
+	<StaticMesh label="RightTerminal" name="RightTerminal">
+		<Material id="0" name="BluePlastic"/>
+		<Material id="1" name="Silvery"/>
+		<file path="Bluck-Converter_Assets/RightTerminal.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="679d2f38bb2c1969e7a15f04695c69cd"/>
+	</StaticMesh>
+	<UEPbrMaterial name="BaseMaterial">
+		<Expressions>
+			<Texture PathName="Top_View__LM2596_Buck_Converter_4_0_40_to_1_3_37V_JPG"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+			<TextureObject>
+				<0 name="Texture" type="Texture" val="Top_View__LM2596_Buck_Converter_4_0_40_to_1_3_37V_JPG"/>
+			</TextureObject>
+			<Scalar constant="10.000000"/>
+			<Scalar constant="0.005000"/>
+			<FunctionCall Function="/Engine/Functions/Engine_MaterialFunctions03/Procedurals/NormalFromHeightmap">
+				<0 expression="4"/>
+				<1 expression="5" OutputIndex="0"/>
+				<2 expression="6" OutputIndex="0"/>
+				<3/>
+			</FunctionCall>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+		<Normal expression="7"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="Silvery">
+		<Expressions>
+			<Color constant="(R=0.520433,G=0.520433,B=0.520433,A=1.000000)"/>
+			<Scalar constant="0.794286"/>
+			<Scalar constant="0.254286"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="CapacitorMaterial">
+		<Expressions>
+			<Texture PathName="Top_View__220_35V_Capacitor__LM2596_Buck_Converter_4_0_40_to_1_"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="BluePlastic">
+		<Expressions>
+			<Color constant="(R=0.042402,G=0.232800,B=0.674988,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="BlackPlastic">
+		<Expressions>
+			<Color constant="(R=0.000000,G=0.000000,B=0.000000,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<UEPbrMaterial name="RedLight">
+		<Expressions>
+			<Color constant="(R=0.800000,G=0.000000,B=0.003743,A=1.000000)"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.500000"/>
+			<Scalar constant="0.500000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<Texture name="Top_View__LM2596_Buck_Converter_4_0_40_to_1_3_37V_JPG" file="Bluck-Converter_Assets/Top_View__LM2596_Buck_Converter_4_0_40_to_1_3_37V_JPG.jpg" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="60ec23b2d8cc7f74dba72d8625534813"/>
+	</Texture>
+	<Texture name="Top_View__220_35V_Capacitor__LM2596_Buck_Converter_4_0_40_to_1_" file="Bluck-Converter_Assets/Top_View__220_35V_Capacitor__LM2596_Buck_Converter_4_0_40_to_1_.jpg" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="a588644eac9ad33c8bc44b287fbdb754"/>
+	</Texture>
+	<Export Duration="0.05937335199996596"/>
+</DatasmithUnrealScene>

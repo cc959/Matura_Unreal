@@ -1,0 +1,43 @@
+<DatasmithUnrealScene>
+	<Version>1.0.3</Version>
+	<SDKVersion>4.24E0</SDKVersion>
+	<Host>Blender</Host>
+	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
+	<User ID="elias" OS="Linux 6.1.29-1-MANJARO"/>
+	<ActorMesh name="Breadboard" layer="Scene Collection">
+		<mesh name="Breadboard__Board"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="0.999998" sz="1.000000"/>
+	</ActorMesh>
+	<ActorMesh name="BreadboardWORight" layer="Scene Collection">
+		<mesh name="BreadboardWORight__BreadboeardWORight"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="0.999998" sz="1.000000"/>
+	</ActorMesh>
+	<StaticMesh label="Breadboard__Board" name="Breadboard__Board">
+		<Material id="0" name="Plastic___Texture_001"/>
+		<file path="Breadboard_Assets/Breadboard__Board.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="a21357801863e8124470fb28935fdd82"/>
+	</StaticMesh>
+	<StaticMesh label="BreadboardWORight__BreadboeardWORight" name="BreadboardWORight__BreadboeardWORight">
+		<Material id="0" name="Plastic___Texture_001"/>
+		<file path="Breadboard_Assets/BreadboardWORight__BreadboeardWORight.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="747a330017b797ef919a6705a695903b"/>
+	</StaticMesh>
+	<UEPbrMaterial name="Plastic___Texture_001">
+		<Expressions>
+			<Texture PathName="uv_jpg_001"/>
+			<Scalar constant="0.000000"/>
+			<Scalar constant="0.200000"/>
+			<Scalar constant="1.000000"/>
+		</Expressions>
+		<BaseColor expression="0" OutputIndex="0"/>
+		<Metallic expression="1" OutputIndex="0"/>
+		<Roughness expression="2" OutputIndex="0"/>
+		<Specular expression="3" OutputIndex="0"/>
+	</UEPbrMaterial>
+	<Texture name="uv_jpg_001" file="Breadboard_Assets/uv_jpg_001.jpg" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
+		<Hash value="fe86f820ab5f49a4cc613021cbe3dea1"/>
+	</Texture>
+	<Export Duration="0.03946602400083066"/>
+</DatasmithUnrealScene>
