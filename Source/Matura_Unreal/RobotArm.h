@@ -296,7 +296,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;
-	
+
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	FVector aim_at = {-1400, 0, 1400};
+
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	double outgoing_weight = 1;
 	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	FVector impact;

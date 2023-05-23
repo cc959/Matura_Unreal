@@ -452,12 +452,9 @@ void ARobotArm::TrackParabola(Position& position)
 
 	FVector target = last_path(intercept_time);
 	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
-	impact_velocity.Normalize();
 
 	if (tool == Bat)
 	{
-		FVector aim_at(-1400, 0, 1400);
-
 		FVector aim = aim_at - target;
 		double yaw_angle = atan2(aim.Y, -aim.X);
 
@@ -467,13 +464,17 @@ void ARobotArm::TrackParabola(Position& position)
 
 		dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
 		dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
+		
+		dir *= outgoing_weight;
+
+		UE_LOG(LogTemp, Display, TEXT("Dir: %f %f %f, Impact_V: %f %f %f"), dir.X, dir.Y, dir.Z, impact_velocity.X, impact_velocity.Y, impact_velocity.Z);
 
 		for (double t = 0; t < 1; t += 0.01)
 		{
 			DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
 						  target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Red, false, -1, 1, 10);
 		}
-		DrawDebugLine(GetWorld(), target, target - impact_velocity, FColor::Red, false, -1, 1, 10);
+		DrawDebugLine(GetWorld(), target, target - impact_velocity * 0.1, FColor::Red, false, -1, 1, 10);
 
 		auto [normal, v_bat] = best_impact(impact_velocity, dir);
 
@@ -501,6 +502,8 @@ void ARobotArm::TrackParabola(Position& position)
 
 void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset)
 {
+	impact_velocity.Normalize();
+	
 	FVector relative_position = target - ArmOrigin();
 
 	bool fixed = false;

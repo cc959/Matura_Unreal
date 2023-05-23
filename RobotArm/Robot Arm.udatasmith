@@ -3,7 +3,7 @@
 	<SDKVersion>4.24E0</SDKVersion>
 	<Host>Blender</Host>
 	<Application Vendor="Blender Foundation" ProductName="Blender" ProductVersion="3.5.1"/>
-	<User ID="elias" OS="Linux 6.1.26-1-MANJARO"/>
+	<User ID="elias" OS="Linux 6.1.29-1-MANJARO"/>
 	<ActorMesh name="Base_Plate" layer="Export">
 		<mesh name="Base_Plate"/>
 		<Transform tx="-0.000000" ty="-0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
@@ -514,10 +514,6 @@
 			</ActorMesh>
 		</children>
 	</ActorMesh>
-	<ActorMesh name="Room" layer="Export">
-		<mesh name="Room"/>
-		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
-	</ActorMesh>
 	<StaticMesh label="Hex_Nut" name="Hex_Nut">
 		<Material id="0" name="Aluminum___Satin"/>
 		<file path="Robot Arm_Assets/Hex_Nut.udsmesh"/>
@@ -614,7 +610,7 @@
 		<Material id="0" name="Net_Material"/>
 		<file path="Robot Arm_Assets/Net__Net.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="c510effd41da0088bcce96c7a4914384"/>
+		<Hash value="a9607778b5de5a7f05cbc7d756e5fede"/>
 	</StaticMesh>
 	<StaticMesh label="Hoop" name="Hoop">
 		<Material id="0" name="Polymide__Kapton_"/>
@@ -676,7 +672,7 @@
 		<Material id="0" name="Aluminum___Polished"/>
 		<file path="Robot Arm_Assets/Upper_Arm.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="c9342d20b81e5042d210a7798ce32b97"/>
+		<Hash value="783ada0095cde0708d3b31d36fe3a2b4"/>
 	</StaticMesh>
 	<StaticMesh label="Upper_Servo_Disc" name="Upper_Servo_Disc">
 		<Material id="0" name="Steel___Rough"/>
@@ -760,13 +756,7 @@
 		<Material id="0" name="Orgasol__Invent_Smooth___PA_12"/>
 		<file path="Robot Arm_Assets/Base_Plate.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="a3d7f0ae41d19a24b99dfce783d98b24"/>
-	</StaticMesh>
-	<StaticMesh label="Room" name="Room">
-		<Material id="0" name="Paint___Metallic__Black_"/>
-		<file path="Robot Arm_Assets/Room.udsmesh"/>
-		<LightmapUV value="-1"/>
-		<Hash value="8ad16e67bda8f1695b796c4d3078979c"/>
+		<Hash value="2a6f8b2270017013f1edd626631cde82"/>
 	</StaticMesh>
 	<UEPbrMaterial name="Aluminum___Satin">
 		<Expressions>
@@ -918,5 +908,5 @@
 	<Texture name="Wood09_4K_Normal_png" file="Robot Arm_Assets/Wood09_4K_Normal_png.png" rgbcurve="0.0" srgb="1" texturemode="0" texturefilter="3">
 		<Hash value="ef56a7a81a651fa5ec53b82f9e385aa7"/>
 	</Texture>
-	<Export Duration="0.589377381000304"/>
+	<Export Duration="0.7508191179995265"/>
 </DatasmithUnrealScene>

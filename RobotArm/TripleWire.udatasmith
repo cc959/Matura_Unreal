@@ -8,13 +8,25 @@
 		<mesh name="TripleWire"/>
 		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
 	</ActorMesh>
+	<ActorMesh name="SingleWire" layer="Collection">
+		<mesh name="SingleWire"/>
+		<Transform tx="0.000000" ty="0.000000" tz="0.000000" qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" sx="1.000000" sy="1.000000" sz="1.000000"/>
+	</ActorMesh>
 	<StaticMesh label="TripleWire" name="TripleWire">
 		<Material id="0" name="DefaultMaterial"/>
 		<Material id="1" name="DefaultMaterial"/>
 		<Material id="2" name="DefaultMaterial"/>
 		<file path="TripleWire_Assets/TripleWire.udsmesh"/>
 		<LightmapUV value="-1"/>
-		<Hash value="a58cfbe35e7aadfec45a31c63dcb9e2e"/>
+		<Hash value="a7f3b7a4ee4a135b2c2bd4f227150392"/>
+	</StaticMesh>
+	<StaticMesh label="SingleWire" name="SingleWire">
+		<Material id="0" name="DefaultMaterial"/>
+		<Material id="1" name="DefaultMaterial"/>
+		<Material id="2" name="DefaultMaterial"/>
+		<file path="TripleWire_Assets/SingleWire.udsmesh"/>
+		<LightmapUV value="-1"/>
+		<Hash value="9cb4f11dfc9aa665d5d9486660d443a6"/>
 	</StaticMesh>
 	<UEPbrMaterial name="DefaultMaterial">
 		<Expressions>
@@ -24,5 +36,5 @@
 		<BaseColor expression="0" OutputIndex="0"/>
 		<Roughness expression="1" OutputIndex="0"/>
 	</UEPbrMaterial>
-	<Export Duration="0.008299999999508145"/>
+	<Export Duration="0.016363466000029803"/>
 </DatasmithUnrealScene>
