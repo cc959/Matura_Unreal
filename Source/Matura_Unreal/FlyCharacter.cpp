@@ -90,6 +90,11 @@ void AFlyCharacter::Tick(float DeltaTime)
 		{
 			locked = true;
 		}
+
+		if (GetWorld()->GetFirstPlayerController() && GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(FKey("R")))
+		{
+			locked = true;
+		}
 		
 		auto new_position = current_position * (1-0.1) + (target_position - FVector(0, 0, 64)) * 0.1;
 		auto new_rotation = UE::Math::TQuat<double>::Slerp(current_rotation, target_rotation, 0.1);

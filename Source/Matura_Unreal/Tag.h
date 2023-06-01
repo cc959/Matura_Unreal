@@ -3,6 +3,7 @@
 #pragma once
 
 #include <deque>
+#include <mutex>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"

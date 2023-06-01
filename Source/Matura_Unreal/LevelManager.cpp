@@ -272,7 +272,6 @@ void ALevelManager::Tick(float DeltaTime)
 			SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
 		}
 
-
 		if (level != level_loaded)
 		{
 			level_loaded = level;

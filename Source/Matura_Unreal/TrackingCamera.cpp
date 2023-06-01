@@ -545,6 +545,11 @@ double ATrackingCamera::UpdateTransform(FTransform update)
 
 	auto relative_difference = ((new_position - average_position).GetAbs() / new_position.ComponentMax(average_position)).GetMax();
 
+	auto new_rotation = update.GetRotation().Rotator().Quaternion();
+	auto average_rotation = camera_transform.GetRotation().Rotator().Quaternion();
+
+	relative_difference = max(relative_difference, new_rotation.AngularDistance(average_rotation));
+
 	RecalculateAverageTransform();
 
 	return pow(1. - min(relative_difference, 1.), 2.) * update_rate;
