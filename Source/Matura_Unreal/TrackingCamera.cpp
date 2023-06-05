@@ -93,6 +93,7 @@ void ATrackingCamera::InitCamera()
 		       int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)),
 		       int(cv_cap.get(CAP_PROP_FPS)));
 
+		UE_LOG(LogTemp, Display, TEXT("Camera GUID: %d"), int(cv_cap.get(CAP_PROP_GUID)));
 
 		camera_texture_2d = UTexture2D::CreateTransient(cv_size.width, cv_size.height, PF_R8G8B8A8);
 #if WITH_EDITORONLY_DATA
@@ -328,7 +329,7 @@ Point2d ATrackingCamera::FindBall()
 	Mat cv_frame_HSV, cv_color_threshold, cv_bg_threshold, cv_threshold;
 	cvtColor(cv_frame_scaled, cv_frame_HSV, COLOR_RGB2HSV);
 
-	if (display_debug_frame && debug_frame_type != Threshold && apply_threshold_to_debug_frame)
+	if (debug_frame_type != None && debug_frame_type != Threshold && apply_threshold_to_debug_frame)
 	{
 		if (debug_frame_type == HueOnly)
 			inRange(cv_frame_HSV, Scalar(low_H, 0, 0), Scalar(high_H, 255, 255), cv_color_threshold);
@@ -336,8 +337,8 @@ Point2d ATrackingCamera::FindBall()
 			inRange(cv_frame_HSV, Scalar(0, low_S, 0), Scalar(180, high_S, 255), cv_color_threshold);
 		if (debug_frame_type == ValOnly)
 			inRange(cv_frame_HSV, Scalar(0, 0, low_V), Scalar(180, 255, high_V), cv_color_threshold);
-
-	} else
+	}
+	else
 	{
 		inRange(cv_frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), cv_color_threshold);
 	}
@@ -362,7 +363,7 @@ Point2d ATrackingCamera::FindBall()
 
 	Mat cv_debug_frame_temp;
 
-	if (display_debug_frame)
+	if (debug_frame_type != None)
 	{
 		if (debug_frame_type == Threshold)
 		{
@@ -395,7 +396,7 @@ Point2d ATrackingCamera::FindBall()
 			resize(cv_frame_HSV, cv_frame_HSV_resized, {}, 1 / factor_used, 1 / factor_used);
 
 			Mat sv_channels(cv_frame_HSV_resized.size(), cv_frame_HSV_resized.type(), Scalar(255));
-			
+
 			if (debug_frame_type == HueOnly)
 			{
 				setChannel(cv_frame_HSV_resized, 1, 255);
@@ -409,7 +410,7 @@ Point2d ATrackingCamera::FindBall()
 			if (debug_frame_type == ValOnly)
 			{
 				setChannel(cv_frame_HSV_resized, 0, 255);
-				setChannel(cv_frame_HSV_resized, 1, 255);
+				setChannel(cv_frame_HSV_resized, 1, 0);
 			}
 
 			cvtColor(cv_frame_HSV_resized, cv_frame_HSV_resized, COLOR_HSV2RGB);
@@ -419,7 +420,8 @@ Point2d ATrackingCamera::FindBall()
 				Mat cv_resized_threshold;
 				resize(cv_threshold, cv_resized_threshold, {}, 1 / factor_used, 1 / factor_used);
 				cv_frame_HSV_resized.copyTo(cv_debug_frame_temp, cv_resized_threshold);
-			} else
+			}
+			else
 			{
 				cv_debug_frame_temp = cv_frame_HSV_resized;
 			}
@@ -427,7 +429,15 @@ Point2d ATrackingCamera::FindBall()
 	}
 	else
 	{
-		cv_debug_frame_temp = cv_frame;
+		if (apply_threshold_to_debug_frame)
+		{
+			Mat cv_resized_threshold;
+			resize(cv_threshold, cv_resized_threshold, {}, 1 / factor_used, 1 / factor_used);
+			cv_frame.copyTo(cv_debug_frame_temp, cv_resized_threshold);
+		} else
+		{
+			cv_debug_frame_temp = cv_frame;
+		}
 	}
 
 	if (detection_type == BlobDetector)
@@ -446,11 +456,14 @@ Point2d ATrackingCamera::FindBall()
 			det = points[0].pt / factor_used;
 
 			const int radius = 50;
-			circle(cv_debug_frame_temp, det, radius, Scalar(255, 0, 0), 3);
-			line(cv_debug_frame_temp, det - Point2f(radius, 0), det + Point2f(radius, 0),
-			     Scalar(255, 0, 0), 3);
-			line(cv_debug_frame_temp, det - Point2f(0, radius), det + Point2f(0, radius),
-			     Scalar(255, 0, 0), 3);
+			if (draw_debug_overlay)
+			{
+				circle(cv_debug_frame_temp, det, radius, Scalar(255, 0, 0), 3);
+				line(cv_debug_frame_temp, det - Point2f(radius, 0), det + Point2f(radius, 0),
+				     Scalar(255, 0, 0), 3);
+				line(cv_debug_frame_temp, det - Point2f(0, radius), det + Point2f(0, radius),
+				     Scalar(255, 0, 0), 3);
+			}
 		}
 	}
 	else if (detection_type == ContourFilter)
@@ -478,12 +491,16 @@ Point2d ATrackingCamera::FindBall()
 			for (Point p : contours[best_contour])
 				contours_to_draw[0].push_back(p / factor_used);
 
-			drawContours(cv_debug_frame_temp, contours_to_draw, -1, cv::Scalar(0, 0, 255), 2);
+			if (draw_debug_overlay)
+				drawContours(cv_debug_frame_temp, contours_to_draw, -1, cv::Scalar(0, 0, 255), 2);
+
 			RotatedRect bounding_box = minAreaRect(contours[best_contour]);
 			Point2f points[4];
 			bounding_box.points(points);
-			for (int i = 0; i < 4; i++)
-				line(cv_debug_frame_temp, points[i] / factor_used, points[(i + 1) % 4] / factor_used, Scalar(255, 0, 0), 3);
+
+			if (draw_debug_overlay)
+				for (int i = 0; i < 4; i++)
+					line(cv_debug_frame_temp, points[i] / factor_used, points[(i + 1) % 4] / factor_used, Scalar(255, 0, 0), 3);
 
 			det = bounding_box.center / factor_used;
 		}
@@ -500,10 +517,11 @@ Point2d ATrackingCamera::FindBall()
 	else if (ball_steps_skipped++ == 5)
 		ball_path.clear();
 
-	for (int i = 0; i < int(ball_path.size()) - 1; i++)
-	{
-		line(cv_debug_frame_temp, ball_path[i], ball_path[i + 1], Scalar(0, 255, 0), 3);
-	}
+	if (draw_debug_overlay)
+		for (int i = 0; i < int(ball_path.size()) - 1; i++)
+		{
+			line(cv_debug_frame_temp, ball_path[i], ball_path[i + 1], Scalar(0, 255, 0), 3);
+		}
 
 	auto time_after = chrono::high_resolution_clock::now();
 
@@ -868,10 +886,10 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 		FVector origin = GetActorTransform().TransformPosition({0, 0, 0});
 		FVector dir = GetActorTransform().TransformVector(homo_ball / homo_ball.Length());
-		
+
 		DrawDebugLine(GetWorld(), origin, origin + dir * 100000, FColor::Red, false, -1, 1, 3);
 	}
-	
+
 	SetActorRelativeTransform(camera_transform);
 
 	camera_mesh->SetVisibility(!IsPlayerControlled() && in_use);

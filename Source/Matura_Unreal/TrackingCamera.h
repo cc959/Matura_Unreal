@@ -67,10 +67,11 @@ enum Decompressor
 UENUM()
 enum DebugFrameType
 {
-	Threshold = 0 UMETA(DisplayName = "Threshold"),
-	HueOnly = 1 UMETA(DisplayName = "Hue Only"),
-	SatOnly = 2 UMETA(DisplayName = "Saturation Only"),
-	ValOnly = 3 UMETA(DisplayName = "Value Only"),
+	None = 0 UMETA(DisplayName = "None"),
+	Threshold = 1 UMETA(DisplayName = "Threshold"),
+	HueOnly = 2 UMETA(DisplayName = "Hue Only"),
+	SatOnly = 3 UMETA(DisplayName = "Saturation Only"),
+	ValOnly = 4 UMETA(DisplayName = "Value Only"),
 };
 
 UCLASS()
@@ -173,10 +174,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = WebCam)
 	UTexture2D *camera_texture_2d;
-
+	
 	UPROPERTY(EditAnywhere, Category = WebCam)
 	FString camera_path;
-	
 
 	UPROPERTY(EditAnywhere, meta = (UIMin = "0.0", UIMax = "1.0"))
 	float plate_opacity;
@@ -189,8 +189,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = AprilTag, DisplayName="Minimum Update Rate (s)")
 	double update_rate = 1; // 100ms
-
-
+	
 	UPROPERTY(EditAnywhere, Category = CameraParams)
 	FVector2D resolution;
 
@@ -228,15 +227,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = BlobParams, DisplayName = "Minimum Blob Size (px)")
 	int min_blob_size = 300;
-	
-	UPROPERTY(EditAnywhere, Category = BlobParams)
-	bool display_debug_frame = false;
 
 	UPROPERTY(EditAnywhere, Category = BlobParams)
-	TEnumAsByte<DebugFrameType> debug_frame_type = Threshold;
+	TEnumAsByte<DebugFrameType> debug_frame_type = None;
 
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (EditCondition = "debug_frame_type != 0", EditConditionHides))
 	bool apply_threshold_to_debug_frame = false;
+
+	UPROPERTY(EditAnywhere, Category = BlobParams)
+	bool draw_debug_overlay = true;
 	
 	UPROPERTY(EditAnywhere, Category = BlobParams)
 	TEnumAsByte<DetectionType> detection_type = DetectionType::BlobDetector;

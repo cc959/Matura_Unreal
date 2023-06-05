@@ -21,4 +21,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	ATrackingCamera* selected;
+
+	int corner;
 };
