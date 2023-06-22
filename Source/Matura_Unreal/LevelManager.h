@@ -25,8 +25,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	bool SetCameraToPlayerView();
-	bool CapturePlayersView(UE::Geometry::FVector2i Resolution);
 
 	UFUNCTION(BlueprintCallable, Category = Game)
 	void ApplyFoliageVisibility();

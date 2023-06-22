@@ -40,10 +40,10 @@ void ACameraControl::Tick(float DeltaTime)
 				{
 
 					ATrackingCamera* camera = Cast<ATrackingCamera>(res.GetActor());
-					
-					if (camera)
+
+					if (WasInputKeyJustPressed(FKey("LeftMouseButton")))
 					{
-						if (WasInputKeyJustPressed(FKey("LeftMouseButton")))
+						if (camera)
 						{
 							selected = camera;
 
@@ -57,7 +57,7 @@ void ACameraControl::Tick(float DeltaTime)
 							corner = c;
 						}
 					}
-
+					
 					if (selected)
 					{
 						camera_preview->SetRenderTransformAngle(round(selected->GetActorRotation().Roll / 90) * 90);
@@ -138,8 +138,6 @@ void ACameraControl::Tick(float DeltaTime)
 							if (WasInputKeyJustPressed(FKey("RightMouseButton")))
 							{
 								selected->apply_threshold_to_debug_frame = !selected->apply_threshold_to_debug_frame;
-								if (selected->apply_threshold_to_debug_frame)
-									selected->learning_rate = 1;
 							}
 
 							if (WasInputKeyJustPressed(FKey("MiddleMouseButton")))
@@ -149,6 +147,14 @@ void ACameraControl::Tick(float DeltaTime)
 								else if (selected->learning_rate != -1)
 									selected->learning_rate = -1;
 							}
+						} else if (WasInputKeyJustPressed(FKey("LeftMouseButton")) && !camera)
+						{
+							selected->debug_frame_type = None;
+							selected->draw_debug_overlay = true;
+							selected->learning_rate = -1;
+							selected->apply_threshold_to_debug_frame = false;
+							
+							selected = nullptr;
 						}
 					}
 					else

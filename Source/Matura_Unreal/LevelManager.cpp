@@ -94,7 +94,15 @@ void ALevelManager::LoadCurrentLevel()
 	if (sublevels[level].ToString().StartsWith("Slide_"))
 	{
 		auto slide_texture = LoadSlide(sublevels[level]);
-		SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+		if (slide_texture)
+		{
+			SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+			UE_LOG(LogTemp, Display, TEXT("Now displaying slide %s"), *sublevels[level].ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
+		}
 		current_level = "";
 		ApplyFoliageVisibility();
 	}
@@ -207,7 +215,6 @@ void ALevelManager::SetSlideTexture(UTexture* slide_texture, int width, int heig
 						slot->SetPosition({(viewport_size.X - (slide_size.X * ratio)) / 2, 0});
 					}
 				}
-				UE_LOG(LogTemp, Warning, TEXT("%d"), width);
 				if (width != 0 || height != 0)
 				{
 					auto brush = slide->GetBrush();
@@ -269,7 +276,15 @@ void ALevelManager::Tick(float DeltaTime)
 		{
 			viewport_size = new_viewport_size;
 			auto slide_texture = LoadSlide(sublevels[level]);
-			SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+			if (slide_texture)
+			{
+				SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+				UE_LOG(LogTemp, Display, TEXT("Now displaying slide %s"), *sublevels[level].ToString());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
+			}
 		}
 
 		if (level != level_loaded)

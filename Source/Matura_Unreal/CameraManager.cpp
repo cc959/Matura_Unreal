@@ -219,7 +219,7 @@ uint32 CameraManager::Run()
 
 		Vec4d average_position(0, 0, 0, 0);
 		double num = 0;
-
+		
 		for (int i = 0; i < cameras.Num(); i++)
 			for (int j = i + 1; j < cameras.Num(); j++)
 			{
@@ -231,10 +231,22 @@ uint32 CameraManager::Run()
 				triangulatePoints(projection_matrices[i], projection_matrices[j], a, b, position);
 				position /= position[3];
 
-				average_position = ((average_position * num) + position) / (num + 1);
+				Mat reprojection = projection_matrices[i] * position;
+				Vec3d reprojected_ball_point = Vec3d((double*)reprojection.data);
+				reprojected_ball_point /= reprojected_ball_point[2];
+
+				double error = pow(ball_points[i].x - reprojected_ball_point[0], 2) + pow(ball_points[i].y - reprojected_ball_point[1], 2);
+
+				if (error > 200)
+					continue;
+				
+				average_position += position;
 				num++;
 			}
-		
+
+		if (num > 0)
+			average_position /= num;
+
 		
 		ball_position_mut.lock();
 		{

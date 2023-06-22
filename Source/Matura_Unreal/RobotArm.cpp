@@ -444,7 +444,7 @@ void ARobotArm::TrackParabola(Position& position)
 	}
 	
 	if (draw_debug)
-		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100,
+		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 10,
 		                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
 	
 	// if (!ik_target)
@@ -467,6 +467,8 @@ void ARobotArm::TrackParabola(Position& position)
 		
 		dir *= outgoing_weight;
 
+		UE_LOG(LogTemp, Display, TEXT("Aim: %f %f %f, pitch: %f, yaw: %f, v: %f"), aim.X, aim.Y, aim.Z, pitch_angle / PI * 180., yaw_angle / PI * 180., v);
+		
 		UE_LOG(LogTemp, Display, TEXT("Dir: %f %f %f, Impact_V: %f %f %f"), dir.X, dir.Y, dir.Z, impact_velocity.X, impact_velocity.Y, impact_velocity.Z);
 
 		for (double t = 0; t < 1; t += 0.01)
@@ -492,7 +494,7 @@ void ARobotArm::TrackParabola(Position& position)
 		}
 		else
 		{
-			position.hand_rotation -= 30;
+			position.hand_rotation -= 20;
 		}
 	} else
 	{
@@ -708,7 +710,7 @@ void ARobotArm::Tick(float DeltaTime)
 			if (draw_debug)
 			{
 				double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 100,
+				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 10,
 				FColor::Black, 0, -1);
 			}
 		}
