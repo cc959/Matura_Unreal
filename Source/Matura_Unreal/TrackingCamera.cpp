@@ -264,7 +264,7 @@ void ATrackingCamera::GetFrame()
 		}
 		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData = (uint8*)uj.getImage());
 	}
-	else
+	else if (decompressor_used == Unreal)
 	{
 		if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(cv_frame_raw.data,
 		                                                          cv_frame_raw.size().area() * cv_frame_raw.elemSize()))
@@ -823,6 +823,8 @@ void ATrackingCamera::UpdateDebugTexture()
 		return;
 	}
 
+	auto time_before = chrono::high_resolution_clock::now();
+	
 	if (cv_debug_frame.size().area() > 0)
 	{
 		void* texture_data = camera_texture_2d->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
@@ -834,6 +836,11 @@ void ATrackingCamera::UpdateDebugTexture()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("cv_debug_frame Mat is empty, could not update"));
 	}
+
+	auto time_after = chrono::high_resolution_clock::now();
+
+	if (debug_output)
+		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to update debug texture"), *camera_path, (time_after - time_before).count() / 1e6);
 }
 
 void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

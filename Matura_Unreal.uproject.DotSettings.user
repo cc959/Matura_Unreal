@@ -1116,4 +1116,5 @@
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=fe672655_002D86b2_002D057f_002Dd798_002De844e9cf4378_0023AugmentedReality/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ff2c794e_002D5525_002D0a02_002D0aa4_002D6d8a88bcc633_0023MessageLog/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ff526905_002De149_002D9654_002D3a7a_002D935c28ce64c7_0023TextureFormatASTC/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ff7fb85e_002D4b2d_002D74d2_002Deba1_002D6c5268b9054a_0023BackgroundHTTP/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ff7fb85e_002D4b2d_002D74d2_002Deba1_002D6c5268b9054a_0023BackgroundHTTP/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=validls/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

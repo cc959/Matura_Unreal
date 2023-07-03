@@ -162,6 +162,9 @@ uint32 CameraManager::Run()
 	while (run_thread)
 	{
 		usleep(10000);
+		
+		auto time_before = chrono::high_resolution_clock::now();
+		
 		vector<Point2d> ball_points;
 
 		ball_detection_2d_mut.lock();
@@ -360,6 +363,10 @@ uint32 CameraManager::Run()
 		}
 		
 		ball->tracking_path = tracking_path;
+
+		auto time_after = chrono::high_resolution_clock::now();
+
+		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update tracking path"), float((time_after-time_before).count()) / 1e6);
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop

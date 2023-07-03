@@ -28,6 +28,9 @@ enum Tool
 	Bat = 1,
 };
 
+#define NaN nan("")
+#define isvalid(x) !(std::isnan(x) || std::isnan(-(x)))
+
 UCLASS()
 class MATURA_UNREAL_API ARobotArm : public AActor
 {
@@ -54,7 +57,7 @@ protected:
 		double hand_rotation;
 		double wrist_rotation;
 
-		Position(double v = nan(""))
+		Position(double v = NaN)
 		{
 			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = v;
 		}
@@ -92,11 +95,11 @@ protected:
 		Position operator+(Position other)
 		{
 			Position copy = *this;
-			copy.base_rotation += other.base_rotation;
-			copy.lower_arm_rotation += other.lower_arm_rotation;
-			copy.upper_arm_rotation += other.upper_arm_rotation;
-			copy.hand_rotation += other.hand_rotation;
-			copy.wrist_rotation += other.wrist_rotation;
+			copy.base_rotation += isvalid(other.base_rotation) ? other.base_rotation : 0;
+			copy.lower_arm_rotation += isvalid(other.lower_arm_rotation) ? other.lower_arm_rotation : 0;
+			copy.upper_arm_rotation += isvalid(other.upper_arm_rotation) ? other.upper_arm_rotation : 0;
+			copy.hand_rotation += isvalid(other.hand_rotation) ? other.hand_rotation : 0;
+			copy.wrist_rotation += isvalid(other.wrist_rotation) ? other.wrist_rotation : 0;
 
 			return copy;
 		}
@@ -104,11 +107,28 @@ protected:
 		Position operator-(Position other)
 		{
 			Position copy = *this;
-			copy.base_rotation -= other.base_rotation;
-			copy.lower_arm_rotation -= other.lower_arm_rotation;
-			copy.upper_arm_rotation -= other.upper_arm_rotation;
-			copy.hand_rotation -= other.hand_rotation;
-			copy.wrist_rotation -= other.wrist_rotation;
+			copy.base_rotation -= isvalid(other.base_rotation) ? other.base_rotation : 0;
+			copy.lower_arm_rotation -= isvalid(other.lower_arm_rotation) ? other.lower_arm_rotation : 0;
+			copy.upper_arm_rotation -= isvalid(other.upper_arm_rotation) ? other.upper_arm_rotation : 0;
+			copy.hand_rotation -= isvalid(other.hand_rotation) ? other.hand_rotation : 0;
+			copy.wrist_rotation -= isvalid(other.wrist_rotation) ? other.wrist_rotation : 0;
+
+			return copy;
+		}
+
+		Position operator^(Position other)
+		{
+			Position copy = *this;
+			if (isvalid(other.base_rotation))
+				copy.base_rotation = other.base_rotation;
+			if (isvalid(other.lower_arm_rotation))
+				copy.lower_arm_rotation = other.lower_arm_rotation;
+			if (isvalid(other.upper_arm_rotation))
+				copy.base_rotation = other.upper_arm_rotation;
+			if (isvalid(other.hand_rotation))
+				copy.hand_rotation = other.hand_rotation;
+			if (isvalid(other.wrist_rotation))
+				copy.wrist_rotation = other.wrist_rotation;
 
 			return copy;
 		}
@@ -123,8 +143,10 @@ protected:
 
 		double min_duration = 0;
 		
-		Position extra_rotation_before, extra_rotation_after;
-		double extra_rotation_time = 0;
+		Position rotation_before, rotation_after;
+		double rotation_time = 0;
+
+		bool absolute_rotation;
 
 	private:
 		double movement_time = 0;
@@ -134,8 +156,8 @@ protected:
 
 		LinearMove() {}
 		
-		LinearMove(ARobotArm* robot_arm, FVector start, FVector target, FVector impact_velocity, double min_duration = 0, Position extra_rotation_before = {0}, Position extra_rotation_after = {0}, double extra_rotation_time = 0)
-			: robot_arm(robot_arm), start(start), target(target), impact_velocity(impact_velocity), min_duration(min_duration), extra_rotation_before(extra_rotation_before), extra_rotation_after(extra_rotation_after), extra_rotation_time(extra_rotation_time)
+		LinearMove(ARobotArm* robot_arm, FVector start, FVector target, FVector impact_velocity, double min_duration = 0, Position rotation_before = {0}, Position rotation_after = {0}, double rotation_time = 0, bool absolute_rotation = false)
+			: robot_arm(robot_arm), start(start), target(target), impact_velocity(impact_velocity), min_duration(min_duration), rotation_before(rotation_before), rotation_after(rotation_after), rotation_time(rotation_time), absolute_rotation(absolute_rotation)
 		{
 			if (!robot_arm)
 				return;
@@ -163,11 +185,25 @@ protected:
 			double t = min(time / movement_time, 1.);
 
 			robot_arm->TrackBall(Lerp(start, target, t), impact_velocity, position);
-			
-			if (time >= extra_rotation_time)
-				position = position + extra_rotation_after;
+
+			if (absolute_rotation)
+			{
+				if (time >= rotation_time)
+				{
+					position = position ^ rotation_after;
+				}
+				else
+				{
+					position = position ^ rotation_before;
+				}
+			}
 			else
-				position = position + extra_rotation_before;
+			{
+				if (time >= rotation_time)
+					position = position + rotation_after;
+				else
+					position = position + rotation_before;
+			}
 
 			return true;
 		}
@@ -297,6 +333,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;
 
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
+	bool use_first_intersect = false;
+	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	FVector aim_at = {-1400, 0, 2000};
 
