@@ -85,7 +85,7 @@ void ALevelManager::ApplyFoliageVisibility()
 	}
 	foliage_level_loaded = foliage_visible;
 
-	if (!sublevels[level].ToString().StartsWith("Slide_"))
+	if (!sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
 		UpdateSlideTexture(nullptr);
 	}
@@ -95,8 +95,13 @@ void ALevelManager::LoadCurrentLevel()
 {
 	UE_LOG(LogTemp, Display, TEXT("Unpaused game"));
 
-	if (sublevels[level].ToString().StartsWith("Slide_"))
+	if (sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
+		if (!switch_direction)
+			instant_transtition = sublevels[level].ToString()[0] == 's'; // lower case means sub-slide
+		else if (level+1 < sublevels.Num())
+			instant_transtition = sublevels[level+1].ToString()[0] == 's'; // lower case means sub-slide
+
 		auto slide_texture = LoadSlide(sublevels[level]);
 		if (slide_texture)
 		{
@@ -133,6 +138,11 @@ void ALevelManager::FinishLoading()
 
 UTexture2D* ALevelManager::LoadSlide(FName name)
 {
+	auto name_string = name.ToString();
+	if (name_string.StartsWith("slide_"))
+	{
+		name_string[0] = 'S';
+	}
 	TArray<FAssetData> AssetDatas;
 	object_library->GetAssetDataList(AssetDatas);
 
@@ -141,7 +151,7 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 	{
 		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
 
-		if (AssetData.AssetName == name)
+		if (AssetData.AssetName.ToString() == name_string)
 		{
 			AssetPaths.Push(AssetData.GetSoftObjectPath());
 			break;
@@ -214,11 +224,15 @@ bool ALevelManager::UpdateWidgets()
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * normal_target;
-					render_transform.Translation.Y -= clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					if (!instant_transtition)
+						offset = clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - normal_opacity_target;
-					slide->SetRenderOpacity(slide->GetRenderOpacity() - clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time));
+					if (!instant_transtition)
+						opacity_offset = clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time);
+					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
 					transition_is_done &= abs(offset) < 1e-5;
@@ -229,17 +243,24 @@ bool ALevelManager::UpdateWidgets()
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * old_target;
-					render_transform.Translation.Y -= clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					if (!instant_transtition)
+						offset = clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - old_opacity_target;
-					slide->SetRenderOpacity(slide->GetRenderOpacity() - clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time));
+					if (!instant_transtition)
+						opacity_offset = clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time);
+					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
 					transition_is_done &= abs(offset) < 1e-5;
 				}
 		}
 	}
+
+	if (instant_transtition)
+		instant_transtition = false;
 
 	return transition_is_done;
 }
@@ -378,7 +399,7 @@ void ALevelManager::Tick(float DeltaTime)
 			float dpi = GetDefault<UUserInterfaceSettings>(UUserInterfaceSettings::StaticClass())->GetDPIScaleBasedOnSize(
 				FIntPoint(new_viewport_size.X, new_viewport_size.Y));
 			new_viewport_size /= dpi;
-			if (new_viewport_size != viewport_size && sublevels[level].ToString().StartsWith("Slide_"))
+			if (new_viewport_size != viewport_size && sublevels[level].ToString().ToLower().StartsWith("slide_"))
 			{
 				viewport_size = new_viewport_size;
 				if (auto old_slide_texture_2d = Cast<UTexture2D>(old_slide_texture))
@@ -393,7 +414,7 @@ void ALevelManager::Tick(float DeltaTime)
 				// for some reason can't load and unload a level on the same frame, or perhaps I did it incorrectly
 				if (current_level != "")
 				{
-					if (sublevels[level].ToString().StartsWith("Slide_"))
+					if (sublevels[level].ToString().ToLower().StartsWith("slide_"))
 					{
 						level_to_unload = current_level;
 						LoadCurrentLevel();
