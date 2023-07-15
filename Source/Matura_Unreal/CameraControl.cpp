@@ -117,7 +117,7 @@ void ACameraControl::Tick(float DeltaTime)
 						position.X = (corner & 1 ? viewport_size.X - size.X / 2 - 25 : size.X / 2 + 25);
 						position.Y = (corner & 2 ? viewport_size.Y - size.Y / 2 - 25 : size.Y / 2 + 25);
 						
-						if (abs(mouse_position.X - position.X) <= size.X && abs(mouse_position.Y - position.Y) <= size.Y)
+						if (abs(mouse_position.X - position.X) * 2 <= size.X && abs(mouse_position.Y - position.Y) * 2 <= size.Y)
 						{
 							if (WasInputKeyJustPressed(FKey("LeftMouseButton")))
 							{

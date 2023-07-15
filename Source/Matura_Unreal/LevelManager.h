@@ -6,6 +6,7 @@
 #include <vector>
 #include <Engine/StreamableManager.h>
 
+#include "CameraControl.h"
 #include "GameFramework/Actor.h"
 #include "Engine/ObjectLibrary.h"
 #include "Engine/Classes/Components/SceneCaptureComponent2D.h"
@@ -41,11 +42,25 @@ protected:
 	void FinishLoading();
 
 	UTexture2D* LoadSlide(FName name);
-	void SetSlideTexture(UTexture* slide_texture, int width, int height);
-	void HideSlides();
+	void ApplyViewportSize(int slide_width, int slide_height);
+	bool UpdateWidgets();
+	void UpdateSlideTexture(UTexture* slide_texture);
+
+	UTexture* old_slide_texture = nullptr;
+
+	double normal_target = 0;
+	double old_target = -1;
+
+	double normal_opacity_target = 0;
+	double old_opacity_target = 0;
 
 	bool finished_loading = false;
-	
+
+	bool switch_direction = false;
+
+	ACameraControl* camera_control = nullptr;
+
+	FName level_to_unload = "";
 public:
 
 	UObjectLibrary* object_library;
@@ -54,6 +69,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	double transition_time = 0.2;
+	
 	UPROPERTY(EditAnywhere)
 	TArray<FName> sublevels;
 

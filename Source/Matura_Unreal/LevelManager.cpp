@@ -46,7 +46,12 @@ void ALevelManager::BeginPlay()
 		//UE_LOG(LogTemp, Warning, TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
 	}
 
-	HideSlides();
+	old_slide_texture = nullptr;
+	
+	UpdateSlideTexture(nullptr);
+
+	camera_control = nullptr;
+	level_to_unload = "";
 
 	Super::BeginPlay();
 }
@@ -82,13 +87,12 @@ void ALevelManager::ApplyFoliageVisibility()
 
 	if (!sublevels[level].ToString().StartsWith("Slide_"))
 	{
-		HideSlides();
+		UpdateSlideTexture(nullptr);
 	}
 }
 
 void ALevelManager::LoadCurrentLevel()
 {
-	UGameplayStatics::SetGamePaused(this, false);
 	UE_LOG(LogTemp, Display, TEXT("Unpaused game"));
 
 	if (sublevels[level].ToString().StartsWith("Slide_"))
@@ -96,7 +100,7 @@ void ALevelManager::LoadCurrentLevel()
 		auto slide_texture = LoadSlide(sublevels[level]);
 		if (slide_texture)
 		{
-			SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
+			UpdateSlideTexture(slide_texture);
 			UE_LOG(LogTemp, Display, TEXT("Now displaying slide %s"), *sublevels[level].ToString());
 		}
 		else
@@ -104,7 +108,6 @@ void ALevelManager::LoadCurrentLevel()
 			UE_LOG(LogTemp, Error, TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
 		}
 		current_level = "";
-		ApplyFoliageVisibility();
 	}
 	else
 	{
@@ -120,32 +123,12 @@ void ALevelManager::LoadCurrentLevel()
 		UGameplayStatics::LoadStreamLevel(this, sublevels[level], true, true, info);
 		current_level = sublevels[level];
 	}
-
-	// UGameplayStatics::SetGamePaused(this, false);
 }
 
 void ALevelManager::FinishLoading()
 {
 	UE_LOG(LogTemp, Display, TEXT("Done unloading"));
 	finished_loading = true;
-}
-
-void ALevelManager::HideSlides()
-{
-	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
-	{
-		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
-		if (fly->hud_instance)
-		{
-			if (UImage* slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide")))
-				slide->SetVisibility(ESlateVisibility::Hidden);
-
-			if (UImage* slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide_bg")))
-				slide_bg->SetVisibility(ESlateVisibility::Hidden);
-		}
-	}
 }
 
 UTexture2D* ALevelManager::LoadSlide(FName name)
@@ -165,7 +148,6 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 		}
 	}
 
-
 	blubpointer = manager.RequestSyncLoad(AssetPaths);
 
 	if (blubpointer.IsValid() && blubpointer->IsActive())
@@ -176,18 +158,114 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 	return nullptr;
 }
 
-void ALevelManager::SetSlideTexture(UTexture* slide_texture, int width, int height)
+void ALevelManager::ApplyViewportSize(int slide_width, int slide_height)
 {
+	if (!camera_control)
+		camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	
+	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
+	{
+		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
+		if (fly->hud_instance)
+		{
+			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
+				if (UImage* slide = Cast<UImage>(widget))
+				{
+					UE_LOG(LogTemp, Display, TEXT("BLUBBLUB"));
+					if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
+					{
+						double slide_aspect = slide_width / double(slide_height);
+						double viewport_aspect = viewport_size.X / viewport_size.Y;
+
+						FVector2d slide_size{double(slide_width), double(slide_height)};
+
+						if (slide_aspect >= viewport_aspect)
+						{
+							double ratio = (viewport_size.X / slide_size.X);
+							slot->SetSize(slide_size * ratio);
+							slot->SetPosition({0, (viewport_size.Y - (slide_size.Y * ratio)) / 2});
+						}
+						else
+						{
+							double ratio = (viewport_size.Y / slide_size.Y);
+							slot->SetSize(slide_size * ratio);
+							slot->SetPosition({(viewport_size.X - (slide_size.X * ratio)) / 2, 0});
+						}
+					}
+				}
+		}
+	}
+}
+
+bool ALevelManager::UpdateWidgets()
+{
+	if (!camera_control)
+		camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	bool transition_is_done = true;
+	
+	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
+	{
+		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
+		if (fly->hud_instance)
+		{
+			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("slide_bg")})
+				if (UImage* slide = Cast<UImage>(widget))
+				{
+					auto render_transform = slide->GetRenderTransform();
+					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * normal_target;
+					render_transform.Translation.Y -= clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					slide->SetRenderTransform(render_transform);
+
+					double opacity_offset = slide->GetRenderOpacity() - normal_opacity_target;
+					slide->SetRenderOpacity(slide->GetRenderOpacity() - clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time));
+
+					transition_is_done &= abs(opacity_offset) < 1e-5;
+					transition_is_done &= abs(offset) < 1e-5;
+				}
+
+			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("old_slide"), fly->hud_instance->GetWidgetFromName("old_slide_bg")})
+				if (UImage* slide = Cast<UImage>(widget))
+				{
+					auto render_transform = slide->GetRenderTransform();
+					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * old_target;
+					render_transform.Translation.Y -= clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time, viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+					slide->SetRenderTransform(render_transform);
+
+					double opacity_offset = slide->GetRenderOpacity() - old_opacity_target;
+					slide->SetRenderOpacity(slide->GetRenderOpacity() - clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time, GetWorld()->DeltaTimeSeconds / transition_time));
+
+					transition_is_done &= abs(opacity_offset) < 1e-5;
+					transition_is_done &= abs(offset) < 1e-5;
+				}
+		}
+	}
+
+	return transition_is_done;
+}
+
+void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
+{
+	bool show_new = slide_texture;
+	bool show_old = old_slide_texture;
+
+	if (switch_direction)
+		swap(show_new, show_old);
+	
+	normal_opacity_target = show_new;
+	old_opacity_target = show_old;
+
+	normal_target = !switch_direction ? 0 : 1;
+	old_target = !switch_direction ? -1 : 0;
+	
 	if (!slide_texture)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Slide texture is null!"));
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Slide texture is null!"));
-		return;
 	}
 
-	auto camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
+	if (!camera_control)
+		camera_control = Cast<ACameraControl>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	
 	if (camera_control && Cast<AFlyCharacter>(camera_control->GetPawn()))
 	{
 		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
@@ -195,47 +273,61 @@ void ALevelManager::SetSlideTexture(UTexture* slide_texture, int width, int heig
 		{
 			if (UImage* slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide")))
 			{
-				if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
-				{
-					double slide_aspect = width / double(height);
-					double viewport_aspect = viewport_size.X / viewport_size.Y;
-
-					FVector2d slide_size{double(width), double(height)};
-
-					if (slide_aspect >= viewport_aspect)
-					{
-						double ratio = (viewport_size.X / slide_size.X);
-						slot->SetSize(slide_size * ratio);
-						slot->SetPosition({0, (viewport_size.Y - (slide_size.Y * ratio)) / 2});
-					}
-					else
-					{
-						double ratio = (viewport_size.Y / slide_size.Y);
-						slot->SetSize(slide_size * ratio);
-						slot->SetPosition({(viewport_size.X - (slide_size.X * ratio)) / 2, 0});
-					}
-				}
-				if (width != 0 || height != 0)
+				if (show_new)
 				{
 					auto brush = slide->GetBrush();
-					brush.SetResourceObject(slide_texture);
+					brush.SetResourceObject(!switch_direction ? slide_texture : old_slide_texture);
 					slide->SetBrush(brush);
 				}
 				slide->SetVisibility(ESlateVisibility::Visible);
+				slide->SetRenderOpacity(show_new);
+
+				auto render_transform = slide->GetRenderTransform();
+				render_transform.Translation.Y = !switch_direction ? viewport_size.Y : 0;
+				slide->SetRenderTransform(render_transform);
+			}
+
+			if (UImage* old_slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide")))
+			{
+				if (show_old)
+				{
+					auto brush = old_slide->GetBrush();
+					brush.SetResourceObject(!switch_direction ? old_slide_texture : slide_texture);
+					old_slide->SetBrush(brush);
+				}
+				old_slide->SetVisibility(ESlateVisibility::Visible);
+				old_slide->SetRenderOpacity(show_old);
+
+				auto render_transform = old_slide->GetRenderTransform();
+				render_transform.Translation.Y = !switch_direction ? 0 : -viewport_size.Y;
+				old_slide->SetRenderTransform(render_transform);
 			}
 
 			if (UImage* slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide_bg")))
 			{
-				if (auto slot = Cast<UCanvasPanelSlot>(slide_bg->Slot))
-				{
-					slot->SetSize(viewport_size);
-					slot->SetPosition({0, 0});
-				}
-
 				slide_bg->SetVisibility(ESlateVisibility::Visible);
+				slide_bg->SetRenderOpacity(show_new);
+
+				auto render_transform = slide_bg->GetRenderTransform();
+				render_transform.Translation.Y = !switch_direction ? viewport_size.Y : 0;
+				slide_bg->SetRenderTransform(render_transform);
+			}
+
+			if (UImage* old_slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide_bg")))
+			{
+				old_slide_bg->SetVisibility(ESlateVisibility::Visible);
+				old_slide_bg->SetRenderOpacity(show_old);
+
+				auto render_transform = old_slide_bg->GetRenderTransform();
+				render_transform.Translation.Y = !switch_direction ? 0 : -viewport_size.Y;
+				old_slide_bg->SetRenderTransform(render_transform);
 			}
 		}
 	}
+
+	old_slide_texture = slide_texture;
+	if (auto old_slide_texture_2d = Cast<UTexture2D>(old_slide_texture))
+		ApplyViewportSize(old_slide_texture_2d->GetSizeX(), old_slide_texture_2d->GetSizeY());
 }
 
 // Called every frame
@@ -243,73 +335,87 @@ void ALevelManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
-	{
-		if (key_pressed == false)
-		{
-			level++;
-		}
-		key_pressed = true;
-	}
-	else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp))
-	{
-		if (key_pressed == false)
-		{
-			level--;
-		}
-		key_pressed = true;
-	}
-	else
-	{
-		key_pressed = false;
-	}
+	bool transition_is_done = UpdateWidgets();
 
-
-	if (level >= 0 && level < sublevels.Num() && !sublevels[level].IsNone())
+	if (!transition_is_done)
 	{
-		FVector2d new_viewport_size;
-		GetWorld()->GetGameViewport()->GetViewportSize(new_viewport_size);
-		float dpi = GetDefault<UUserInterfaceSettings>(UUserInterfaceSettings::StaticClass())->GetDPIScaleBasedOnSize(
-			FIntPoint(new_viewport_size.X, new_viewport_size.Y));
-		new_viewport_size /= dpi;
-		if (new_viewport_size != viewport_size && sublevels[level].ToString().StartsWith("Slide_"))
+		return;
+	}
+		if (level_to_unload != "")
 		{
-			viewport_size = new_viewport_size;
-			auto slide_texture = LoadSlide(sublevels[level]);
-			if (slide_texture)
+			UGameplayStatics::UnloadStreamLevel(this, level_to_unload, FLatentActionInfo(), true);
+			level_to_unload = "";
+			ApplyFoliageVisibility();
+			return;
+		}
+		
+		if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
+		{
+			if (key_pressed == false)
 			{
-				SetSlideTexture(slide_texture, slide_texture->GetSizeX(), slide_texture->GetSizeY());
-				UE_LOG(LogTemp, Display, TEXT("Now displaying slide %s"), *sublevels[level].ToString());
+				level++;
 			}
-			else
+			key_pressed = true;
+		}
+		else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp))
+		{
+			if (key_pressed == false)
 			{
-				UE_LOG(LogTemp, Error, TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
+				level--;
 			}
+			key_pressed = true;
+		}
+		else
+		{
+			key_pressed = false;
 		}
 
-		if (level != level_loaded)
+
+		if (level >= 0 && level < sublevels.Num() && !sublevels[level].IsNone())
 		{
-			level_loaded = level;
-
-			// for some reason can't load and unload a level on the same frame, or perhaps I did it incorrectly
-			if (current_level != "")
+			FVector2d new_viewport_size;
+			GetWorld()->GetGameViewport()->GetViewportSize(new_viewport_size);
+			float dpi = GetDefault<UUserInterfaceSettings>(UUserInterfaceSettings::StaticClass())->GetDPIScaleBasedOnSize(
+				FIntPoint(new_viewport_size.X, new_viewport_size.Y));
+			new_viewport_size /= dpi;
+			if (new_viewport_size != viewport_size && sublevels[level].ToString().StartsWith("Slide_"))
 			{
-				UGameplayStatics::UnloadStreamLevel(this, current_level, FLatentActionInfo(), true);
-				LoadCurrentLevel();
+				viewport_size = new_viewport_size;
+				if (auto old_slide_texture_2d = Cast<UTexture2D>(old_slide_texture))
+					ApplyViewportSize(old_slide_texture_2d->GetSizeX(), old_slide_texture_2d->GetSizeY());
 			}
-			else
-			{
-				LoadCurrentLevel();
-				TActorIterator<AFlyCharacter> ActorItr(GetWorld());
 
-				if (ActorItr)
-					ActorItr->teleport = true;
+			if (level != level_loaded)
+			{
+				switch_direction = level < level_loaded;
+				level_loaded = level;
+
+				// for some reason can't load and unload a level on the same frame, or perhaps I did it incorrectly
+				if (current_level != "")
+				{
+					if (sublevels[level].ToString().StartsWith("Slide_"))
+					{
+						level_to_unload = current_level;
+						LoadCurrentLevel();
+					} else
+					{
+						UGameplayStatics::UnloadStreamLevel(this, current_level, FLatentActionInfo(), true);
+						LoadCurrentLevel();
+					}
+				}
+				else
+				{
+					LoadCurrentLevel();
+					TActorIterator<AFlyCharacter> ActorItr(GetWorld());
+
+					if (ActorItr)
+						ActorItr->teleport = true;
+				}
 			}
 		}
-	}
-	else
-	{
-		level = level_loaded;
-		UE_LOG(LogTemp, Error, TEXT("Error loading level number %d"), level);
-	}
+		else
+		{
+			level = level_loaded;
+			UE_LOG(LogTemp, Error, TEXT("Error loading level number %d"), level);
+		}
 }
