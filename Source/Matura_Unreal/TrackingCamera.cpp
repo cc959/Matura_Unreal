@@ -49,7 +49,7 @@ ATrackingCamera::ATrackingCamera()
 
 	camera_mesh->SetupAttachment(scene_camera);
 
-	camera_path = "/dev/video0";
+	camera_path = "";
 	plate_opacity = 0.5;
 }
 
@@ -57,7 +57,10 @@ void ATrackingCamera::InitCamera()
 {
 	loaded = false;
 
-	cv_cap.open(TCHAR_TO_UTF8(*camera_path));
+	if (camera_path != "")
+		cv_cap.open(TCHAR_TO_UTF8(*camera_path));
+	else
+		UE_LOG(LogTemp, Error, TEXT("Invalid cmaera path!"));
 
 	if (cv_cap.isOpened())
 	{
@@ -126,7 +129,7 @@ void ATrackingCamera::InitCamera()
 	cv_bg_subtractor = createBackgroundSubtractorMOG2();
 
 	SimpleBlobDetector::Params cv_blob_params;
-	memset(&cv_blob_params, 0, sizeof(SimpleBlobDetector::Params)); // TODO: reveal options in UE Editor
+	memset(&cv_blob_params, 0, sizeof(SimpleBlobDetector::Params));
 
 	cv_blob_params.minThreshold = 254;
 	cv_blob_params.maxThreshold = 255;
@@ -202,7 +205,7 @@ Mat ATrackingCamera::p() const
 
 double ATrackingCamera::SyncFrame()
 {
-	if (!cv_cap.isOpened() && loaded)
+	if (!cv_cap.isOpened() || !loaded)
 		return 0;
 
 	cv_cap.grab();
@@ -216,13 +219,12 @@ double ATrackingCamera::SyncFrame()
 
 void ATrackingCamera::GetFrame()
 {
-	if (!cv_cap.isOpened() && loaded)
+	if (!cv_cap.isOpened() || !loaded || camera_path == "/dev/video0" || camera_path == "")
 		return;
-
+	
 	Mat cv_frame_raw, cv_frame_distorted;
 	cv_cap.retrieve(cv_frame_raw);
-
-
+	
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	uint8* UncompressedData = nullptr;
@@ -310,7 +312,7 @@ void ATrackingCamera::GetFrame()
 
 Point2d ATrackingCamera::FindBall()
 {
-	if (!cv_cap.isOpened() && loaded)
+	if (!cv_cap.isOpened() || !loaded)
 		return {};
 
 	if (cv_frame.empty())
@@ -811,7 +813,7 @@ void ATrackingCamera::UpdateDebugTexture()
 	if (!update_texture)
 		return;
 
-	if (!cv_cap.isOpened() && loaded)
+	if (!cv_cap.isOpened() || !loaded)
 		return;
 
 	if (!loaded || !in_use)

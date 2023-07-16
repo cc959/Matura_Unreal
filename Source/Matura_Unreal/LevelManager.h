@@ -57,7 +57,8 @@ protected:
 	bool finished_loading = false;
 
 	bool switch_direction = false;
-	bool instant_transtition = false;
+	bool instant_transition = false;
+	bool fade_transition = false;
 
 	ACameraControl* camera_control = nullptr;
 
