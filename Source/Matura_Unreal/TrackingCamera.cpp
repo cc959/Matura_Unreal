@@ -15,6 +15,8 @@
 #define STB_IMAGE_IMPLEMENTATION // make sure not to include implementation anywhere else
 #include "stb_image.h"
 
+#include "turbojpeg.h"
+
 using namespace std;
 
 
@@ -113,7 +115,6 @@ void ATrackingCamera::InitCamera()
 		}
 		image_plate->SetImagePlate(plate_config);
 
-		_jpegDecompressor = tjInitDecompress();
 	}
 	else
 	{
@@ -250,6 +251,8 @@ void ATrackingCamera::GetFrame()
 	{
 		cv_frame_distorted = Mat(cv_size, CV_8UC3);
 
+		tjhandle _jpegDecompressor = tjInitDecompress();
+		
 		long unsigned int _jpegSize = cv_frame_raw.size().area() * cv_frame_raw.elemSize();
 		unsigned char* _compressedImage = cv_frame_raw.data;
 
@@ -264,6 +267,8 @@ void ATrackingCamera::GetFrame()
 		}
 	
 		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, cv_frame_distorted.data, width, 0/*pitch*/, height, TJPF_RGB, TJFLAG_FASTDCT);
+
+		tjDestroy(_jpegDecompressor);
 	}
 	
 	auto time_end_uncompress = std::chrono::high_resolution_clock::now().time_since_epoch();
@@ -777,8 +782,6 @@ void ATrackingCamera::ReleaseCamera()
 
 	cv_cap.release();
 	
-	tjDestroy(_jpegDecompressor);
-
 	ReleaseTagDetector();
 }
 
