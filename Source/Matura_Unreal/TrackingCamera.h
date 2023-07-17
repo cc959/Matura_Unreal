@@ -44,6 +44,8 @@
 #include "apriltags/tagStandard52h13.h"
 #include "apriltags/apriltag_pose.h"
 
+#include "turbojpeg.h"
+
 #include "TrackingCamera.generated.h"
 
 using namespace cv;
@@ -60,8 +62,7 @@ UENUM()
 enum Decompressor
 {
 	STB = 0 UMETA(DisplayName = "stb-image"),
-	UJPEG = 1 UMETA(DisplayName = "ujpeg"),
-	Unreal = 2 UMETA(DisplayNAme = "Unreal Engine")
+	Turbo = 1 UMETA(DisplayName = "Turbo-JPEG"),
 };
 
 UENUM()
@@ -133,9 +134,6 @@ protected:
 	apriltag_detector* at_td = nullptr;
 	TArray<apriltag_family_t*> created_families;
 
-	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
-	TSharedPtr<IImageWrapper> ImageWrapper;
-
 	Mat cv_undistort_map1, cv_undistort_map2;
 	
 	std::vector<Point2f> ball_path;
@@ -143,6 +141,8 @@ protected:
 
 	Mutex last_tags_mut;
 	std::vector<apriltag_detection_t> last_tags;
+
+	tjhandle _jpegDecompressor;
 
 
 	

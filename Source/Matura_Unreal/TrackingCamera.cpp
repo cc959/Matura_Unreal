@@ -15,8 +15,6 @@
 #define STB_IMAGE_IMPLEMENTATION // make sure not to include implementation anywhere else
 #include "stb_image.h"
 
-#include "ujpeg.h"
-
 using namespace std;
 
 
@@ -114,15 +112,15 @@ void ATrackingCamera::InitCamera()
 			plate_config.RenderTexture = camera_texture_2d;
 		}
 		image_plate->SetImagePlate(plate_config);
+
+		_jpegDecompressor = tjInitDecompress();
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Could not open camera at path: %s"), *camera_path);
 		return;
 	}
-
-	ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::JPEG);
-
+	
 	initUndistortRectifyMap(K(), p(), {}, {}, cv_size, CV_32FC1, cv_undistort_map1,
 	                        cv_undistort_map2);
 
@@ -159,7 +157,7 @@ void ATrackingCamera::CreateTagDetector()
 {
 	if (at_td)
 		return;
-
+	
 	at_td = apriltag_detector_create();
 
 	at_td->quad_decimate = 1.0; // decimate factor
@@ -219,18 +217,20 @@ double ATrackingCamera::SyncFrame()
 
 void ATrackingCamera::GetFrame()
 {
-	if (!cv_cap.isOpened() || !loaded || camera_path == "/dev/video0" || camera_path == "")
+	if (!cv_cap.isOpened() || !loaded || camera_path == "")
 		return;
 	
 	Mat cv_frame_raw, cv_frame_distorted;
+
 	cv_cap.retrieve(cv_frame_raw);
 	
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
-	uint8* UncompressedData = nullptr;
 	TEnumAsByte<Decompressor> decompressor_used = decompressor;
+	
 	if (decompressor_used == STB)
 	{
+		uint8* UncompressedData;
 		// uncompress jpeg frame with stb single header library -> OpenCV plugin for UE's uncompression is broken for some reason :(
 		// this is also the reason why getting raw data from webcam instead of uncompressed -> setting CAP_PROP_CONVERT_RGB to false
 		int Width, Height, NumComponents;
@@ -244,55 +244,28 @@ void ATrackingCamera::GetFrame()
 			return;
 		}
 		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData);
-	}
-	else if (decompressor_used == UJPEG)
+		free(UncompressedData);
+		
+	} else if (decompressor_used == Turbo)
 	{
-		uJPEG uj; // alternative decompressor, seems slower though...
-		uj.setChromaMode(UJ_CHROMA_MODE_FAST);
-		uj.decode(cv_frame_raw.data, cv_frame_raw.size().area() * cv_frame_raw.elemSize());
+		cv_frame_distorted = Mat(cv_size, CV_8UC3);
 
-		if (uj.bad())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not decode JPEG"))
-			return;
-		}
+		long unsigned int _jpegSize = cv_frame_raw.size().area() * cv_frame_raw.elemSize();
+		unsigned char* _compressedImage = cv_frame_raw.data;
 
-		if (uj.getWidth() != cv_size.width || uj.getHeight() != cv_size.height || uj.getImageSize() / uj.getWidth() / uj
-			.getHeight() != 3)
+		int jpegSubsamp, width, height;
+		tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height, &jpegSubsamp);
+
+		if (width != cv_size.width || height != cv_size.height)
 		{
 			UE_LOG(LogTemp, Warning,
-			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect)"));
+				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect)"));
 			return;
 		}
-		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData = (uint8*)uj.getImage());
+	
+		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, cv_frame_distorted.data, width, 0/*pitch*/, height, TJPF_RGB, TJFLAG_FASTDCT);
 	}
-	else if (decompressor_used == Unreal)
-	{
-		if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(cv_frame_raw.data,
-		                                                          cv_frame_raw.size().area() * cv_frame_raw.elemSize()))
-		{
-			TArray<uint8> UncompressedBGRA;
-			if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA))
-			{
-				cv_frame = Mat(cv_size, CV_8UC3);
-				for (int i = 0; i < UncompressedBGRA.Num() / 4; i++) // copy the data
-				{
-					cv_frame_distorted.data[i * 3] = UncompressedBGRA[i * 4];
-					cv_frame_distorted.data[i * 3 + 1] = UncompressedBGRA[i * 4 + 1];
-					cv_frame_distorted.data[i * 3 + 2] = UncompressedBGRA[i * 4 + 2];
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Could not decode JPEG"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not set JPEG data or ImageWrapper is not valid"));
-		}
-	}
-
+	
 	auto time_end_uncompress = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	if (debug_output)
@@ -301,7 +274,6 @@ void ATrackingCamera::GetFrame()
 
 	remap(cv_frame_distorted, cv_frame, cv_undistort_map1, cv_undistort_map2, INTER_LINEAR);
 
-	free(UncompressedData); // in case stb or ujpeg was used free the memory allocated by the library
 
 	if (cv_frame.empty())
 	{
@@ -804,6 +776,8 @@ void ATrackingCamera::ReleaseCamera()
 	destroy_lock.lock();
 
 	cv_cap.release();
+	
+	tjDestroy(_jpegDecompressor);
 
 	ReleaseTagDetector();
 }

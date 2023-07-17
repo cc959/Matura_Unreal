@@ -404,8 +404,6 @@ void CameraManager::DrawBallHistory()
 
 	if (tracking_path.t0 != -1)
 	{
-		FColor color = FColor::Red;
-		color.R = min(255 * 100 / abs(tracking_path.derivative2() - ball->g), 255.);
 		//tracking_path.Draw(ball->GetWorld(), color, 20, 1, -1);
 
 		if (abs(tracking_path.derivative2() - ball->g) < 1500)
