@@ -87,7 +87,7 @@ public:
 	void CreateTagDetector();
 
 	double SyncFrame();
-	void GetFrame();
+	__attribute__((target("mmx,sse2,avx2"))) void GetFrame();
 	Point2d FindBall();
 	double UpdateTransform(FTransform update);
 	void DrawDetectedTags();

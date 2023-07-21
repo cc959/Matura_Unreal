@@ -265,7 +265,7 @@ void ATrackingCamera::GetFrame()
 				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect)"));
 			return;
 		}
-	
+
 		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, cv_frame_distorted.data, width, 0/*pitch*/, height, TJPF_RGB, TJFLAG_FASTDCT);
 
 		tjDestroy(_jpegDecompressor);
@@ -276,6 +276,9 @@ void ATrackingCamera::GetFrame()
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path,
 	       (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
+	       
+	      GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Took camera %s %f ms to decompress frame at %d x %d"),  *camera_path,
+          		   (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height));
 
 	remap(cv_frame_distorted, cv_frame, cv_undistort_map1, cv_undistort_map2, INTER_LINEAR);
 

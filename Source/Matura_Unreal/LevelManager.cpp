@@ -58,17 +58,18 @@ void ALevelManager::BeginPlay()
 
 void ALevelManager::ApplyFoliageVisibility()
 {
-	if (current_level == "")
-		foliage_visible = false;
-	else
-	{
-		TActorIterator<ABall> ActorItr(GetWorld());
-
-		if (ActorItr)
-			foliage_visible = false;
-		else
-			foliage_visible = true;
-	}
+	// if (current_level == "")
+	// 	foliage_visible = false;
+	// else
+	// {
+	// 	TActorIterator<ABall> ActorItr(GetWorld());
+	//
+	// 	if (ActorItr)
+	// 		foliage_visible = false;
+	// 	else
+	// 		foliage_visible = true;
+	// }
+	foliage_visible = true;
 
 	if (foliage_visible != foliage_level_loaded)
 	{
