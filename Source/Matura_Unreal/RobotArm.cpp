@@ -2,13 +2,15 @@
 
 #include "RobotArm.h"
 
-#include <fcntl.h>	 // Contains file controls like O_RDWR
-#include <errno.h>	 // Error integer and strerror() function
-#include <termios.h> // Contains POSIX terminal control definitions
-#include <unistd.h>	 // write(), read(), close()
+//#include <fcntl.h>	 // Contains file controls like O_RDWR
+//#include <errno.h>	 // Error integer and strerror() function
+//#include <termios.h> // Contains POSIX terminal control definitions
+//#include <unistd.h>	 // write(), read(), close()
 #include <string>
 #include <vector>
 #include <Components/SphereComponent.h>
+
+#define M_PI 3.141592653
 
 #include "Core/Public/Misc/AssertionMacros.h"
 
@@ -315,7 +317,7 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 
 // angle for the ball to fly to minimize the starting velocity but still reach the point (length,height)
-pair<double, double> best_angle(double length, double height, double g)
+std::pair<double, double> best_angle(double length, double height, double g)
 {
 	double delta = 0.001;
 	double learning_rate = 0.01;
@@ -346,7 +348,7 @@ pair<double, double> best_angle(double length, double height, double g)
 	return {x, v(x)};
 }
 
-pair<FVector, FVector> best_impact(FVector v0, FVector v1)
+std::pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 {
 	FVector normal = -(v0 - v1);
 	double mag = normal.Length();
@@ -385,10 +387,10 @@ void ARobotArm::TrackParabola(Position& position)
 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
 	
 	
-	vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
+	std::vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
 	
 	// only times in the future, not infinity and a number are valid - obviously
-	intersections.erase(remove_if(intersections.begin(), intersections.end(),
+	intersections.erase(std::remove_if(intersections.begin(), intersections.end(),
 	                              [&](double p)
 	                              {
 		                              return p <= last_path.t1 + path_age || isnan(p) || isnan(-p) || isinf(p);
@@ -663,7 +665,7 @@ void ARobotArm::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Warning, TEXT("Robot arm blueprint is not set"));
 	}
 	
-	auto before = chrono::high_resolution_clock::now().time_since_epoch();
+	auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
 	if (update_rotations)
 	{
 		Position new_position;
@@ -724,11 +726,11 @@ void ARobotArm::Tick(float DeltaTime)
 		ApplyPosition(new_position);
 
 		actual_base_rotation = actual_base_rotation
-			+ clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			+ std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_lower_arm_rotation = actual_lower_arm_rotation
-			+ clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			+ std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_upper_arm_rotation = actual_upper_arm_rotation
-			+ clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			+ std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 
@@ -738,7 +740,7 @@ void ARobotArm::Tick(float DeltaTime)
 		if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
 		if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
 	}
-	auto after = chrono::high_resolution_clock::now().time_since_epoch();
+	auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	if (show_profiling)
 		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update robot arm"), (after - before).count() / 1e6);

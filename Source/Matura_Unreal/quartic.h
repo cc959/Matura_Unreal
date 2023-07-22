@@ -3,9 +3,7 @@
 
 #include <complex>
 
-using namespace std;
-
-inline vector<double> solve_quartic(double a, double b, double c, double d, double e)
+inline std::vector<double> solve_quartic(double a, double b, double c, double d, double e)
 {
     const double pi = 3.141592653589793238463L;
     const double M_2pi = 2*pi;
@@ -97,7 +95,7 @@ inline vector<double> solve_quartic(double a, double b, double c, double d, doub
         p2 = (c-a*q2)/(q1-q2);
     }
 
-    vector<complex<double>> complex_roots(4);
+    std::vector<std::complex<double>> complex_roots(4);
 
     // solving quadratic eq. - x^2 + p1*x + q1 = 0
     D = p1*p1 - 4*q1;
@@ -129,7 +127,7 @@ inline vector<double> solve_quartic(double a, double b, double c, double d, doub
         complex_roots[3].real((-p2 - sqD) * 0.5 );
     }
 
-    vector<double> roots;
+    std::vector<double> roots;
 
     for (auto root : complex_roots)
         if (fabs(root.imag()) < eps)

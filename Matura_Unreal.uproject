@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "40715B7D-2E78-440F-953E-BB42C43D297A",
+	"EngineAssociation": "5.2",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -95,8 +95,5 @@
 			"Enabled": false,
 			"MarketplaceURL": "https://www.unrealengine.com/marketplace/en-US/product/nvidia-dlss"
 		}
-	],
-	"TargetPlatforms": [
-		"Linux"
 	]
 }

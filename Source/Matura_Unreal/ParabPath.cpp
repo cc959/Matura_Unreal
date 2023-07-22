@@ -40,7 +40,7 @@ ParabPath ParabPath::from2Points(Position p1, Position p2, double a)
 	return ParabPath(a, B.X, B.Y, p1.position.X - p1.time * vx, p1.position.Y - p1.time * vy, vx, vy, t0, t1);
 }
 
-vector<double> ParabPath::LeastSquares(const Eigen::MatrixXd& data, int degree)
+std::vector<double> ParabPath::LeastSquares(const Eigen::MatrixXd& data, int degree)
 {
 	assert(data.rows() >= degree);
 
@@ -53,7 +53,7 @@ vector<double> ParabPath::LeastSquares(const Eigen::MatrixXd& data, int degree)
 
 	auto decomposition = powers.householderQr();
 
-	vector<double> coeffs(degree + 1);
+	std::vector<double> coeffs(degree + 1);
 	auto coeffs_map = Eigen::Map<Eigen::VectorXd>(coeffs.data(), coeffs.size());
 	coeffs_map = decomposition.solve(data.col(1));
 
@@ -95,7 +95,7 @@ ParabPath ParabPath::fromNPoints(std::vector<Position> positions)
 	return ParabPath(paramsZ[2], paramsZ[1], paramsZ[0], paramsX[0], paramsY[0], paramsX[1], paramsY[1], t0, t1);
 }
 
-vector<double> ParabPath::IntersectSphere(FVector center, double radius) const
+std::vector<double> ParabPath::IntersectSphere(FVector center, double radius) const
 {
 	double A = a * a;
 	double B = 2 * a * b;
@@ -105,7 +105,7 @@ vector<double> ParabPath::IntersectSphere(FVector center, double radius) const
 	double E = px * px - 2 * px * center.X + center.X * center.X + py * py - 2 * py * center.Y + center.Y * center.Y +
 		c * c - 2 * c * center.Z + center.Z * center.Z - radius * radius;
 
-	vector<double> solutions = solve_quartic(A, B, C, D, E);
+	std::vector<double> solutions = solve_quartic(A, B, C, D, E);
 
 	for (auto& t : solutions)
 		t += t0;

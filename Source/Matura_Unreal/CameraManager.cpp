@@ -2,13 +2,14 @@
 
 #include "CameraManager.h"
 
+
 #include <filesystem>
 #include <fstream>
-
-using namespace std;
+#include <chrono>
 #include <thread>
 #include <deque>
 
+#define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(x));
 
 CameraManager::CameraManager(class ABall* ball) : ball(ball)
 {
@@ -63,10 +64,10 @@ Mat ConvertToCameraMatrix(FTransform transform)
 	return RT.rowRange(0, 3);
 }
 
-void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2d_detections)
+void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* ball_2d_detections)
 {
-	TFuture<pair<FTransform, map<ATag*, FMatrix>>> transform_future;
-	int64_t last_now = chrono::high_resolution_clock::now().time_since_epoch().count();
+	TFuture<std::pair<FTransform, std::map<ATag*, FMatrix>>> transform_future;
+	int64_t last_now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 
 
 	while (!camera || !camera->loaded)
@@ -131,12 +132,12 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, deque<Detection>* ball_2
 
 				}
 			}
-			transform_future = TFuture<pair<FTransform, map<ATag*, FMatrix>>>();
+			transform_future = TFuture<std::pair<FTransform, std::map<ATag*, FMatrix>>>();
 		}
 
 		if (!transform_future.IsValid() && last_now >= camera->next_update_time)
 			transform_future = Async(EAsyncExecution::Thread, [camera] { return camera->UpdateTags(camera->cv_frame); });
-		last_now = chrono::high_resolution_clock::now().time_since_epoch().count();
+		last_now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	}
 	if (transform_future.IsValid())
 		transform_future.Wait();
@@ -150,7 +151,7 @@ uint32 CameraManager::Run()
 {
 	TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
 
-	vector<deque<Detection>> ball_2d_detections(cameras.Num());
+	std::vector<std::deque<Detection>> ball_2d_detections(cameras.Num());
 
 
 	for (int i = 0; i < cameras.Num(); i++)
@@ -163,9 +164,9 @@ uint32 CameraManager::Run()
 	{
 		usleep(10000);
 		
-		auto time_before = chrono::high_resolution_clock::now();
+		auto time_before = std::chrono::high_resolution_clock::now();
 		
-		vector<Point2d> ball_points;
+		std::vector<Point2d> ball_points;
 
 		ball_detection_2d_mut.lock();
 		auto ball_det_backup = ball_2d_detections;
@@ -212,7 +213,7 @@ uint32 CameraManager::Run()
 			}
 		}
 		// compute triangulation of points
-		vector<Mat> projection_matrices;
+		std::vector<Mat> projection_matrices;
 		for (ATrackingCamera* camera : cameras)
 		{
 			Mat RT = ConvertToCameraMatrix(camera->camera_transform);
@@ -229,7 +230,7 @@ uint32 CameraManager::Run()
 				if (ball_points[i] == Point2d{-1, -1} || ball_points[j] == Point2d{-1, -1})
 					continue;
 
-				vector<Point2d> a{ball_points[i]}, b{ball_points[j]};
+				std::vector<Point2d> a{ball_points[i]}, b{ball_points[j]};
 				Vec4d position;
 				triangulatePoints(projection_matrices[i], projection_matrices[j], a, b, position);
 				position /= position[3];
@@ -286,7 +287,7 @@ uint32 CameraManager::Run()
 
 			if (diff < 0.15)
 			{
-				ball_paths.push_back(tracking_path = ParabPath::fromNPoints({ball_positions.end() - min({++num_points_in_path, int(ball_positions.size()), 30}), ball_positions.end()}));
+				ball_paths.push_back(tracking_path = ParabPath::fromNPoints(std::vector(ball_positions.end() - min(++num_points_in_path, min(int(ball_positions.size()), 30)), ball_positions.end())));
 			}
 			else
 			{
@@ -298,41 +299,41 @@ uint32 CameraManager::Run()
 					std::stringstream ss;
 					ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
 
-					string path = "/home/elias/Documents/ParabPaths/"+ ss.str() + ".txt";
+					std::string path = "/home/elias/Documents/ParabPaths/"+ ss.str() + ".txt";
 					
-					ofstream parab_file(path);
+					std::ofstream parab_file(path);
 
 					auto t0 = ball_paths.begin()->t0;
 					
 					if (parab_file.is_open())
 					{
-						parab_file << "t, x = " + to_string(tracking_path.vx / 1e3) + " * x + " + to_string(tracking_path.px / 1e3) + "\n";
+						parab_file << "t, x = " + std::to_string(tracking_path.vx / 1e3) + " * x + " + std::to_string(tracking_path.px / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
 						{
 							output_path += (t0 - output_path.t0);
-							parab_file << to_string(output_path.vx / 1e3) + " * x + " + to_string(output_path.px / 1e3) + "\n";
+							parab_file << std::to_string(output_path.vx / 1e3) + " * x + " + std::to_string(output_path.px / 1e3) + "\n";
 						}
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
 							parab_file << t-t0 << " " << position.X / 1e3 << "\n";
 						}
-						parab_file << "t, y = " + to_string(tracking_path.vy / 1e3) + " * t + " + to_string(tracking_path.py / 1e3) + "\n";
+						parab_file << "t, y = " + std::to_string(tracking_path.vy / 1e3) + " * t + " + std::to_string(tracking_path.py / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
 						{
 							output_path += (t0 - output_path.t0);
-							parab_file << to_string(output_path.vy / 1e3) + " * x + " + to_string(output_path.py / 1e3) + "\n";
+							parab_file << std::to_string(output_path.vy / 1e3) + " * x + " + std::to_string(output_path.py / 1e3) + "\n";
 						}
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
 							parab_file << t-t0 << " " << position.Y / 1e3 << "\n";
 						}
-						parab_file << "t, z = " + to_string(tracking_path.a / 1e3) + " * t^2 + " + to_string(tracking_path.b / 1e3) + " * t + " + to_string(tracking_path.c / 1e3) + "\n";
+						parab_file << "t, z = " + std::to_string(tracking_path.a / 1e3) + " * t^2 + " + std::to_string(tracking_path.b / 1e3) + " * t + " + std::to_string(tracking_path.c / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
 						{
 							output_path += (t0 - output_path.t0);
-							parab_file << to_string(output_path.a / 1e3) + " * x * x + " + to_string(output_path.b / 1e3) + " * x + " + to_string(output_path.c / 1e3) + "\n";
+							parab_file << std::to_string(output_path.a / 1e3) + " * x * x + " + std::to_string(output_path.b / 1e3) + " * x + " + std::to_string(output_path.c / 1e3) + "\n";
 						}
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
@@ -364,7 +365,7 @@ uint32 CameraManager::Run()
 		
 		ball->tracking_path = tracking_path;
 
-		auto time_after = chrono::high_resolution_clock::now();
+		auto time_after = std::chrono::high_resolution_clock::now();
 
 		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update tracking path"), float((time_after-time_before).count()) / 1e6);
 	}
@@ -388,7 +389,7 @@ void CameraManager::Stop()
 
 void CameraManager::DrawBallHistory()
 {
-	vector<ParabPath> paths;
+	std::vector<ParabPath> paths;
 	ball_position_mut.lock();
 	auto positions = ball_positions; // make a copy of the data so the camera thread is not held up too much
 	ball_position_mut.unlock();

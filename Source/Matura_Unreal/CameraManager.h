@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
+
 #include <deque>
 
 #include "Ball.h"
@@ -7,9 +8,6 @@
 #include "TrackingCamera.h"
 
 #include "ParabPath.h"
-
-
-using namespace std;
 
 class MATURA_UNREAL_API CameraManager : public FRunnable
 {

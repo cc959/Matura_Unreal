@@ -29,7 +29,7 @@ void AParabolaTest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	vector<Position> positions;
+	std::vector<Position> positions;
 
 	for (int i = 0; i < targets.Num(); i++)
 	{

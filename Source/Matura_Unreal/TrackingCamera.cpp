@@ -17,8 +17,6 @@
 
 #include "turbojpeg.h"
 
-using namespace std;
-
 
 // Sets default values
 ATrackingCamera::ATrackingCamera()
@@ -168,12 +166,12 @@ void ATrackingCamera::CreateTagDetector()
 	at_td->refine_edges = true; // refine tag edges
 
 
-	static const function<apriltag_family_t *()> family_functions[] = {
+	static const std::function<apriltag_family_t *()> family_functions[] = {
 		tag16h5_create, tag25h9_create, tag36h11_create, tagCircle21h7_create, tagCircle49h12_create,
 		tagCustom48h12_create, tagStandard41h12_create, tagStandard52h13_create
 	};
 
-	set<int> families;
+	std::set<int> families;
 	for (ATag* tag : april_tags)
 		if (tag)
 			families.insert(tag->tag_family);
@@ -222,8 +220,6 @@ void ATrackingCamera::GetFrame()
 		return;
 	
 	Mat cv_frame_raw, cv_frame_distorted;
-
-	cv_cap.retrieve(cv_frame_raw);
 	
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
@@ -241,7 +237,7 @@ void ATrackingCamera::GetFrame()
 		if (Width != cv_size.width || Height != cv_size.height || NumComponents != 3)
 		{
 			UE_LOG(LogTemp, Warning,
-			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect)"));
+			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
 			return;
 		}
 		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData);
@@ -256,17 +252,17 @@ void ATrackingCamera::GetFrame()
 		long unsigned int _jpegSize = cv_frame_raw.size().area() * cv_frame_raw.elemSize();
 		unsigned char* _compressedImage = cv_frame_raw.data;
 
-		int jpegSubsamp, width, height;
-		tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height, &jpegSubsamp);
+		int width, height;
+		int result = tjDecompressHeader(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height);
 
-		if (width != cv_size.width || height != cv_size.height)
+		if (width != cv_size.width || height != cv_size.height || result == -1)
 		{
 			UE_LOG(LogTemp, Warning,
-				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect)"));
+				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d %d raw size: %d %d"), width, height, result, cv_frame_raw.size().width, cv_frame_raw.size().height);
 			return;
 		}
 
-		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, cv_frame_distorted.data, width, 0/*pitch*/, height, TJPF_RGB, TJFLAG_FASTDCT);
+		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, cv_frame_distorted.data, width, 0, height, TJPF_RGB, TJFLAG_FASTDCT);
 
 		tjDestroy(_jpegDecompressor);
 	}
@@ -301,7 +297,7 @@ Point2d ATrackingCamera::FindBall()
 		return {};
 	}
 
-	auto time_before = chrono::high_resolution_clock::now();
+	auto time_before = std::chrono::high_resolution_clock::now();
 
 	Mat cv_frame_scaled;
 	float factor_used = processing_resolution_factor;
@@ -358,7 +354,7 @@ Point2d ATrackingCamera::FindBall()
 				// https://stackoverflow.com/questions/23510571/how-to-set-given-channel-of-a-cvmat-to-a-given-value-efficiently-without-chang
 			{
 				// make sure have enough channels
-				if (mat.channels() < channel + 1)
+				if (mat.channels() < int(channel + 1))
 					return;
 
 				const int cols = mat.cols;
@@ -424,7 +420,7 @@ Point2d ATrackingCamera::FindBall()
 
 	if (detection_type == BlobDetector)
 	{
-		vector<KeyPoint> points;
+		std::vector<KeyPoint> points;
 		cv_blob_detector->detect(cv_threshold, points);
 
 
@@ -451,7 +447,7 @@ Point2d ATrackingCamera::FindBall()
 	else if (detection_type == ContourFilter)
 	{
 		// Find contours in the image
-		vector<vector<Point>> contours;
+		std::vector<std::vector<Point>> contours;
 		findContours(cv_threshold, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
 		int best_contour = -1;
@@ -468,7 +464,7 @@ Point2d ATrackingCamera::FindBall()
 
 		if (best_contour != -1 && area > min_blob_size * factor_used * factor_used) // at least 20x20 pixels seems reasonable
 		{
-			vector<vector<Point>> contours_to_draw = {{}};
+			std::vector<std::vector<Point>> contours_to_draw = {{}};
 
 			for (Point p : contours[best_contour])
 				contours_to_draw[0].push_back(p / factor_used);
@@ -505,7 +501,7 @@ Point2d ATrackingCamera::FindBall()
 			line(cv_debug_frame_temp, ball_path[i], ball_path[i + 1], Scalar(0, 255, 0), 3);
 		}
 
-	auto time_after = chrono::high_resolution_clock::now();
+	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find ball"), *camera_path, (time_after - time_before).count() / 1e6);
@@ -573,7 +569,7 @@ void ATrackingCamera::DrawDetectedTags()
 		     Point(det.p[3][0], det.p[3][1]),
 		     Scalar(0, 0, 0xff, 0xff), 2);
 
-		string text = to_string(det.id);
+		std::string text = std::to_string(det.id);
 		int fontface = FONT_HERSHEY_SCRIPT_SIMPLEX;
 		double fontscale = 1.0;
 		int baseline;
@@ -585,7 +581,7 @@ void ATrackingCamera::DrawDetectedTags()
 	last_tags_mut.unlock();
 }
 
-pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
+std::pair<FTransform, std::map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 {
 	if (frame.empty())
 	{
@@ -599,19 +595,18 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 		return {FTransform::Identity, {}};
 	}
 
-	auto time_before = chrono::high_resolution_clock::now();
+	auto time_before = std::chrono::high_resolution_clock::now();
 
 	Mat cv_frame_gray;
 
 	cvtColor(frame, cv_frame_gray, COLOR_RGB2GRAY);
 
 	// Make an image_u8_t header for the Mat data
-	image_u8_t im = {
-		.width = cv_frame_gray.cols,
-		.height = cv_frame_gray.rows,
-		.stride = cv_frame_gray.cols,
-		.buf = cv_frame_gray.data
-	};
+	image_u8_t im {
+		cv_frame_gray.cols,
+		cv_frame_gray.rows,
+		cv_frame_gray.cols,
+		cv_frame_gray.data};
 
 	if (cv_frame_gray.empty())
 	{
@@ -627,12 +622,12 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 	last_tags_mut.lock();
 	last_tags.clear();
 
-	map<ATag*, FMatrix> local_tag_transforms;
+	std::map<ATag*, FMatrix> local_tag_transforms;
 
 	// Draw detection outlines
 	for (int i = 0; i < zarray_size(detections); i++)
 	{
-		std::map<string, int> family_names = {
+		std::map<std::string, int> family_names = {
 			{"tag16h5", 0}, {"tag25h9", 1}, {"tag36h11", 2}, {"tagCircle21h7", 3}, {"tagCircle49h12", 4},
 			{"tagCustom48h12", 5}, {"tagStandard41h12", 6}, {"tagStandard52h13", 7}
 		};
@@ -647,7 +642,7 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 		ATag* det_tag = NULL;
 		for (ATag* tag : april_tags)
 		{
-			if (tag && tag->tag_family == family_names[string(det->family->name)] && tag->tag_id == det->id)
+			if (tag && tag->tag_family == family_names[std::string(det->family->name)] && tag->tag_id == det->id)
 				det_tag = tag;
 		}
 
@@ -695,7 +690,7 @@ pair<FTransform, map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat frame)
 
 	apriltag_detections_destroy(detections);
 
-	auto time_after = chrono::high_resolution_clock::now();
+	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
@@ -805,13 +800,14 @@ void ATrackingCamera::UpdateDebugTexture()
 		return;
 	}
 
-	auto time_before = chrono::high_resolution_clock::now();
+	auto time_before = std::chrono::high_resolution_clock::now();
 	
 	if (cv_debug_frame.size().area() > 0)
 	{
 		void* texture_data = camera_texture_2d->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
 		memcpy(texture_data, cv_debug_frame.data, cv_debug_frame.elemSize() * cv_debug_frame.size().area());
 		camera_texture_2d->GetPlatformData()->Mips[0].BulkData.Unlock();
+#define UpdateResource UpdateResource
 		camera_texture_2d->UpdateResource();
 	}
 	else
@@ -819,7 +815,7 @@ void ATrackingCamera::UpdateDebugTexture()
 		UE_LOG(LogTemp, Warning, TEXT("cv_debug_frame Mat is empty, could not update"));
 	}
 
-	auto time_after = chrono::high_resolution_clock::now();
+	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
 		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to update debug texture"), *camera_path, (time_after - time_before).count() / 1e6);
@@ -867,8 +863,8 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 	if (ball != Point2d{-1, -1} && in_use)
 	{
-		vector ball_point = {ball};
-		vector<Point2d> output_points;
+		std::vector ball_point = {ball};
+		std::vector<Point2d> output_points;
 		undistortPoints(ball_point, output_points, K(), {});
 		FVector homo_ball = {1, output_points[0].x, -output_points[0].y};
 

@@ -16,6 +16,11 @@
 #include "Runtime/Engine/Classes/Engine/UserInterfaceSettings.h"
 #include "Runtime/Engine/Classes/Engine/RendererSettings.h"
 
+#include <chrono>
+#include <thread>
+
+#define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(x));
+
 // Sets default values
 ALevelManager::ALevelManager()
 {
@@ -179,7 +184,7 @@ void ALevelManager::ApplyViewportSize(int slide_width, int slide_height)
 		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
 		if (fly->hud_instance)
 		{
-			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
+			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
 				if (UImage* slide = Cast<UImage>(widget))
 				{
 					UE_LOG(LogTemp, Display, TEXT("BLUBBLUB"));
@@ -220,20 +225,20 @@ bool ALevelManager::UpdateWidgets()
 		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
 		if (fly->hud_instance)
 		{
-			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("slide_bg")})
+			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("slide_bg")})
 				if (UImage* slide = Cast<UImage>(widget))
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * normal_target;
 					if (!instant_transition)
-						offset = clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
+						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
 						               viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - normal_opacity_target;
 					if (!instant_transition)
-						opacity_offset = clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
+						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
 						                       GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
@@ -241,20 +246,20 @@ bool ALevelManager::UpdateWidgets()
 					transition_is_done &= abs(offset) < 1e-5;
 				}
 
-			for (auto widget : vector{fly->hud_instance->GetWidgetFromName("old_slide"), fly->hud_instance->GetWidgetFromName("old_slide_bg")})
+			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("old_slide"), fly->hud_instance->GetWidgetFromName("old_slide_bg")})
 				if (UImage* slide = Cast<UImage>(widget))
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * old_target;
 					if (!instant_transition)
-						offset = clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
+						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
 						               viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - old_opacity_target;
 					if (!instant_transition)
-						opacity_offset = clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
+						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
 						                       GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
@@ -272,8 +277,8 @@ bool ALevelManager::UpdateWidgets()
 
 void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 {
-	bool show_new = slide_texture;
-	bool show_old = old_slide_texture;
+	bool show_new = bool(slide_texture);
+	bool show_old = bool(old_slide_texture);
 
 	if (switch_direction && !fade_transition)
 		swap(show_new, show_old);

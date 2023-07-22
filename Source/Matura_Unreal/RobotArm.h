@@ -64,11 +64,11 @@ protected:
 
 		double diff(Position other)
 		{
-			return max({
+			return max(max(
 				abs(base_rotation - other.base_rotation) / motor_speed, 
-				abs(lower_arm_rotation - other.lower_arm_rotation) / motor_speed, 
-				abs(upper_arm_rotation - other.upper_arm_rotation) / motor_speed,
-			});
+				abs(lower_arm_rotation - other.lower_arm_rotation) / motor_speed), 
+				abs(upper_arm_rotation - other.upper_arm_rotation) / motor_speed
+			);
 		}
 
 		Position(double base_rotation, double lower_arm_rotation, double upper_arm_rotation, double hand_rotation, double wrist_rotation) :

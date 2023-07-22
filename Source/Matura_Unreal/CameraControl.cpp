@@ -48,12 +48,11 @@ void ACameraControl::Tick(float DeltaTime)
 						{
 							selected = camera;
 
-							auto [trash, c] = max({
-								std::pair{(mouse_position - FVector2D{0, 0}).Size(), 0},
-								std::pair{(mouse_position - FVector2D{viewport_size.X, 0}).Size(), 1},
-								std::pair{(mouse_position - FVector2D{0, viewport_size.Y}).Size(), 2},
-								std::pair{(mouse_position - FVector2D{viewport_size.X, viewport_size.Y}).Size(), 3},
-							});
+							std::pair<double, int> largest = max(std::pair((mouse_position - FVector2D{0, 0}).Size(), 0), std::pair((mouse_position - FVector2D{viewport_size.X, 0}).Size(), 1));
+							largest = max(largest, std::pair((mouse_position - FVector2D{0, viewport_size.Y}).Size(), 2));
+							largest = max(largest, std::pair((mouse_position - FVector2D{viewport_size.X, viewport_size.Y}).Size(), 3));
+
+							auto [trash, c] = largest;
 
 							corner = c;
 						}

@@ -8,16 +8,7 @@
 
 #include "CoreMinimal.h"
 
-// doesn't compile without this stuff
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-PRAGMA_DISABLE_SHADOW_VARIABLE_WARNINGS
-#include <Eigen/Eigen/Dense>
-PRAGMA_ENABLE_SHADOW_VARIABLE_WARNINGS
-#pragma clang diagnostic pop
-
-using namespace std;
-
+#include <Eigen/Dense>
 
 struct Position
 {
@@ -39,11 +30,11 @@ public:
 
 	static ParabPath from2Points(Position p1, Position p2, double a);
 
-	static vector<double> LeastSquares(const Eigen::MatrixXd& data, int degree);
+	static std::vector<double> LeastSquares(const Eigen::MatrixXd& data, int degree);
 
 	static ParabPath fromNPoints(std::vector<Position> positions);
 	
-	vector<double> IntersectSphere(FVector center, double radius) const;
+	std::vector<double> IntersectSphere(FVector center, double radius) const;
 
 	double derivative(double t) const;
 
