@@ -693,7 +693,7 @@ std::pair<FTransform, std::map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat 
 	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
-		LogDisplay(TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
+		LogDisplay(TEXT("Took camera %s %f ms to find apriltag"), *camera_path, (time_after - time_before).count() / 1e6);
 
 	return {average_transform, local_tag_transforms};
 }

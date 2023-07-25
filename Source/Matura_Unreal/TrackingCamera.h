@@ -33,16 +33,16 @@
 #include <opencv2/bgsegm.hpp>
 #include "PostOpenCVHeaders.h"
 
-#include "apriltags/apriltag.h"
-#include "apriltags/tag16h5.h"
-#include "apriltags/tag25h9.h"
-#include "apriltags/tag36h11.h"
-#include "apriltags/tagCircle21h7.h"
-#include "apriltags/tagCircle49h12.h"
-#include "apriltags/tagCustom48h12.h"
-#include "apriltags/tagStandard41h12.h"
-#include "apriltags/tagStandard52h13.h"
-#include "apriltags/apriltag_pose.h"
+#include "apriltag/apriltag.h"
+#include "apriltag/tag16h5.h"
+#include "apriltag/tag25h9.h"
+#include "apriltag/tag36h11.h"
+#include "apriltag/tagCircle21h7.h"
+#include "apriltag/tagCircle49h12.h"
+#include "apriltag/tagCustom48h12.h"
+#include "apriltag/tagStandard41h12.h"
+#include "apriltag/tagStandard52h13.h"
+#include "apriltag/apriltag_pose.h"
 
 
 #include "TrackingCamera.generated.h"

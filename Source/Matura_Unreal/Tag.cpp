@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include "GlobalIncludes.h"
-#include "apriltags/common/math_util.h"
+#include "apriltag/common/math_util.h"
 
 // Sets default values
 ATag::ATag()
