@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "GlobalIncludes.h"
 #include "apriltags/common/math_util.h"
 
 // Sets default values
@@ -25,14 +26,14 @@ ATag::ATag()
 	if (material.Object)
 		mesh->SetMaterial(0, material.Object);
 	else
-		UE_LOG(LogTemp, Warning, TEXT("Could not find material"));
+		LogWarning(TEXT("Could not find material"));
 
 	UpdateScale();
 }
 
 void ATag::Clicked(UPrimitiveComponent *Target, FKey ButtonPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
+	LogWarning(TEXT("Clicked!"));
 }
 
 

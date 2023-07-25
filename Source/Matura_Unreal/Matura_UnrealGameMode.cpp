@@ -16,8 +16,6 @@ AMatura_UnrealGameMode::AMatura_UnrealGameMode()
 	// static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Gadme/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
 	// if (PlayerPawnBPClass.Class != NULL)
 	// 	DefaultPawnClass = PlayerPawnBPClass.Class;
-	// else
-	// 	UE_LOG(LogTemp, Error, TEXT("Could not find spectator blueprint!"));
 
 	DefaultPawnClass = AFlyCharacter::StaticClass();
 	

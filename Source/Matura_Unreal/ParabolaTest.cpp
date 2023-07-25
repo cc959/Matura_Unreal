@@ -3,6 +3,8 @@
 
 #include "ParabolaTest.h"
 
+#include "GlobalIncludes.h"
+
 // Sets default values
 AParabolaTest::AParabolaTest()
 {
@@ -47,7 +49,7 @@ void AParabolaTest::Tick(float DeltaTime)
 	
 	for (auto t : path.IntersectSphere(center, radius))
 	{
-		UE_LOG(LogTemp, Display, TEXT("%f"), t);
+		LogDisplay(TEXT("%f"), t);
 		DrawDebugSphere(GetWorld(), path(t), 20, 10, FColor::Green, 0, -1, 2, 3);
 	}
 }

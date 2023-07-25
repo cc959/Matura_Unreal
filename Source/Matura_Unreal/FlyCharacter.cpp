@@ -8,6 +8,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GlobalIncludes.h"
 #include "MyUserWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/SphereComponent.h"
@@ -51,12 +52,12 @@ void AFlyCharacter::InitGUI()
 			hud_instance->GetWidgetFromName("camera_preview")->SetVisibility(ESlateVisibility::Hidden);
 			hud_instance->GetWidgetFromName("slide")->SetVisibility(ESlateVisibility::Hidden);
 		} else {
-			UE_LOG(LogTemp, Warning, TEXT("Is not controlled by a player, can't add UI: Fly Character"));
+			LogWarning(TEXT("Is not controlled by a player, can't add UI: Fly Character"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UI Class is null: Tracking Camera"));
+		LogWarning(TEXT("UI Class is null: Tracking Camera"));
 	}
 }
 

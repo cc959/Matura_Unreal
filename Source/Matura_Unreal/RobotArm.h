@@ -4,12 +4,18 @@
 
 #include <filesystem>
 
+#include "GlobalIncludes.h"
+
+#include "serial/serial.h"
+
 #include "CoreMinimal.h"
 #include "Ball.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "RobotArm.generated.h"
+
+using namespace serial;
 
 UENUM()
 enum UpdateType
@@ -241,13 +247,26 @@ protected:
 	LinearMove path_to_follow;
 
 	Position last_valid_position;
+	Position ball_position;
 	
 	Position GetPosition();
 	Position GetActualPosition();
 
+	void BallLoop();
+	bool RobotArmValid();
+	void UpdateArm(float DeltaTime);
+	void StopLoop();
+
+	TFuture<void> ball_thread;
+
+	bool ball_loop_running = false;
+	int missed_ticks = 0;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
@@ -255,7 +274,7 @@ public:
 	virtual bool ShouldTickIfViewportsOnly() const override;
 
 #endif
-
+	
 	virtual void BeginDestroy() override;
 	
 	UPROPERTY(EditAnywhere)
@@ -273,8 +292,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	FString port;
 
-	UPROPERTY(VisibleAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
-	int serial_port = -1;
+	//UPROPERTY(VisibleAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
+	Serial serial_port;
 
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	bool debug_serial = false;

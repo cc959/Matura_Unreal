@@ -8,9 +8,8 @@
 //#include <unistd.h>	 // write(), read(), close()
 #include <string>
 #include <vector>
+#include <cmath>
 #include <Components/SphereComponent.h>
-
-#define M_PI 3.141592653
 
 #include "Core/Public/Misc/AssertionMacros.h"
 
@@ -19,6 +18,8 @@ ARobotArm::ARobotArm()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	StopLoop();
 
 	if (WITH_EDITOR)
 	{
@@ -30,11 +31,13 @@ ARobotArm::ARobotArm()
 // Called when the game starts or when spawned
 void ARobotArm::BeginPlay()
 {
-	serial_port = -1;
+	StopLoop();
+
+	LogDisplay(TEXT("Robot arm started playing"));
 
 	if (!visual_only)
 		SetupSerial();
-	
+
 	Super::BeginPlay();
 }
 
@@ -43,57 +46,24 @@ void ARobotArm::SetupSerial()
 	// code sourced from https://blog.mbedded.ninja/programming/operating-systems/linux/linux-serial-ports-using-c-cpp/
 	std::string port_path(TCHAR_TO_UTF8(*port));
 
-	serial_port = open(port_path.c_str(), O_RDWR);
-
-	if (serial_port < 0)
+	serial_port.setPort(port_path);
+	serial_port.setBaudrate(115200);
+	try
 	{
-		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Error, TEXT("Error from open: %s"), *errorText);
+		serial_port.open();
+	}
+	catch (std::invalid_argument e)
+	{
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
 		return;
-	}
-
-	struct termios tty;
-
-	if (tcgetattr(serial_port, &tty) != 0)
+	} catch (SerialException e)
 	{
-		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Error, TEXT("Error from tcgetattr: %s"), *errorText);
-	}
-
-	tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)
-	tty.c_cflag &= ~CSTOPB; // Clear stop field, only one stop bit used in communication (most common)
-	tty.c_cflag &= ~CSIZE; // Clear all the size bits, then use one of the statements below
-	tty.c_cflag |= CS8; // 8 bits per byte (most common)
-	tty.c_cflag &= ~CRTSCTS; // Disable RTS/CTS hardware flow control (most common)
-	tty.c_lflag &= ~ICANON;
-	tty.c_cflag |= CREAD | CLOCAL; // Turn on READ & ignore ctrl lines (CLOCAL = 1)
-
-	tty.c_lflag &= ~ECHO; // Disable echo
-	tty.c_lflag &= ~ECHOE; // Disable erasure
-	tty.c_lflag &= ~ECHONL; // Disable new-line echo
-
-	tty.c_lflag &= ~ISIG; // Disable interpretation of INTR, QUIT and SUSP
-	tty.c_iflag &= ~(IXON | IXOFF | IXANY); // Turn off s/w flow ctrl
-
-	tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR |
-		ICRNL); // Disable any special wristling of received bytes
-
-	tty.c_oflag &= ~OPOST; // Prevent special interpretation of output bytes (e.g. newline chars)
-	tty.c_oflag &= ~ONLCR; // Prevent conversion of newline to carriage return/line feed
-	// tty.c_oflag &= ~OXTABS; // Prevent conversion of tabs to spaces (NOT PRESENT IN LINUX)
-	// tty.c_oflag &= ~ONOEOT; // Prevent removal of C-d chars (0x004) in output (NOT PRESENT IN LINUX)
-
-	tty.c_cc[VTIME] = 10; // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
-	tty.c_cc[VMIN] = 0; // return after reading at least VMIN bytes
-
-	cfsetispeed(&tty, B115200);
-	cfsetospeed(&tty, B115200);
-
-	// Save tty settings, also checking for error
-	if (tcsetattr(serial_port, TCSANOW, &tty) != 0)
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+		return;
+	} catch (IOException e)
 	{
-		FString errorText(strerror(errno));
-		UE_LOG(LogTemp, Display, TEXT("Error from tcsetattr: %s"), *errorText);
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+		return;
 	}
 
 	serial_thread = Async(EAsyncExecution::Thread, [&]
@@ -115,10 +85,17 @@ int ARobotArm::NumOverlaps()
 	for (auto sphere : sphere_colliders)
 	{
 		TArray<UPrimitiveComponent*> overlaps;
-		UKismetSystemLibrary::SphereOverlapComponents(GetWorld(), sphere->GetComponentLocation(), sphere->GetScaledSphereRadius(), {}, {}, {}, overlaps);
+		TArray<AActor*> ignored;
+		if (ball)
+			ignored.Push(ball);
+		if (ik_target)
+			ignored.Push(ik_target);
+
+		UKismetSystemLibrary::SphereOverlapComponents(GetWorld(), sphere->GetComponentLocation(), sphere->GetScaledSphereRadius(), {}, {}, ignored,
+		                                              overlaps);
 		cnt += overlaps.Num();
 	}
-	
+
 	return cnt;
 }
 
@@ -217,29 +194,43 @@ void ARobotArm::SendRotations()
 	if (debug_serial)
 	{
 		FString blub = msg.c_str();
-		UE_LOG(LogTemp, Display, TEXT("Serial port: %d Message: %s"), serial_port, *blub);
+		LogDisplay(TEXT("Serial port: %d Message: %s"), *FString(serial_port.getPort().c_str()), *blub);
 	}
 
-	if (serial_port < 0)
+	try
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Serial port is not open, can't send data!"));
-		return;
+		serial_port.write(msg);
+		serial_port.flush();
 	}
-
-	write(serial_port, &msg[0], sizeof(msg[0]) * msg.size());
-	tcdrain(serial_port);
-	tcflush(serial_port, TCIOFLUSH);
+	catch (SerialException e)
+	{
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+	} catch (IOException e)
+	{
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+	} catch (PortNotOpenedException e)
+	{
+		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+	}
 }
 
 void ARobotArm::SerialLoop()
 {
 	while (serial_loop_running)
 	{
+		auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
 		SendRotations();
-		usleep(10000); // sleep for 10ms
+		auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+		if (show_profiling)
+			LogDisplay(TEXT("Took %f ms to send rotations"), (after - before).count() / 1e6);
+
+		float actual_delta = (after - before).count() / 1e9;
+
+		usleep(max(10000 - actual_delta * 1e6, 0.)); // sleep for 10ms
 	}
 
-	close(serial_port);
+	serial_port.close();
 }
 
 FVector ARobotArm::ArmOrigin() const
@@ -361,8 +352,9 @@ std::pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 	double dot = abs(v1_check.Dot(v1) / v1_check.Length() / v1.Length() - 1);
 
 	if (dot > 1e-6)
-		UE_LOG(LogTemp, Error, TEXT("Something seems wrong with the best impact function: %f %f %f * %f %f %f = %f"), v1.X, v1.Y, v1.Z, v1_check.X, v1_check.Y, v1_check.Z, dot);
-	
+		LogError(TEXT("Something seems wrong with the best impact function: %f %f %f * %f %f %f = %f"), v1.X, v1.Y, v1.Z, v1_check.X, v1_check.Y,
+	         v1_check.Z, dot);
+
 	return {normal, v_bat};
 }
 
@@ -383,37 +375,37 @@ void ARobotArm::TrackParabola(Position& position)
 		path_age = 0;
 		last_path = ball->tracking_path;
 	}
-	
+
 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-	
-	
+
+
 	std::vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
-	
+
 	// only times in the future, not infinity and a number are valid - obviously
 	intersections.erase(std::remove_if(intersections.begin(), intersections.end(),
-	                              [&](double p)
-	                              {
-		                              return p <= last_path.t1 + path_age || isnan(p) || isnan(-p) || isinf(p);
-	                              }), intersections.end());
-	
+	                                   [&](double p)
+	                                   {
+		                                   return p <= last_path.t1 + path_age || isnan(p) || isnan(-p) || isinf(p);
+	                                   }), intersections.end());
+
 	if (intersections.size() == 0)
 	{
 		return;
 	}
-	
+
 	if (draw_debug)
 		for (auto t : intersections)
 		{
 			DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
-			UE_LOG(LogTemp, Display, TEXT("Intersection at %f"), t);
+			LogDisplay(TEXT("Intersection at %f"), t);
 		}
-	UE_LOG(LogTemp, Display, TEXT("Now at %f"), last_path.t1+path_age);
-	
-	
+	LogDisplay(TEXT("Now at %f"), last_path.t1+path_age);
+
+
 	double intercept_time = intersections[0];
-	
+
 	double best_score = 1e69; // infinity
-	
+
 	if (intersections.size() >= 2)
 	{
 		if (!use_first_intersect)
@@ -422,36 +414,36 @@ void ARobotArm::TrackParabola(Position& position)
 			{
 				FVector target = last_path(target_time);
 				FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
-	
+
 				if ((target - ArmOrigin()).Z < 0)
 					continue;
-	
+
 				if ((target - ArmOrigin()).Length() < arm_range * 0.5)
 					// don't want to intercept too close, otherwise not enough freedom to play the ball back
 					continue;
-	
+
 				Position candidate;
 				TrackBall(target, impact_velocity, candidate);
-	
+
 				double est_move_time = candidate.diff(GetActualPosition());
-	
+
 				if (est_move_time * 1.5 > abs(target_time - (last_path.t1 + path_age)))
 					// discard paths that would take too long, mostly these are false detections
 					continue;
-	
+
 				if (est_move_time - target_time < best_score) // move time should be small and should intercept rather late in the path
-					{
+				{
 					intercept_time = target_time;
 					best_score = est_move_time - target_time;
-					}
+				}
 			}
 		}
 	}
-	
+
 	if (draw_debug)
 		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30,
 		                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
-	
+
 	// if (!ik_target)
 	// 	return;
 
@@ -464,7 +456,7 @@ void ARobotArm::TrackParabola(Position& position)
 	if ((target - ArmOrigin()).Length() < arm_range * 0.5)
 		// don't want to intercept too close, otherwise not enough freedom to play the ball back
 		return;
-	
+
 	if (tool == Bat)
 	{
 		FVector aim = aim_at - target;
@@ -476,13 +468,13 @@ void ARobotArm::TrackParabola(Position& position)
 
 		dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
 		dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
-		
+
 		dir *= outgoing_weight;
 
 		for (double t = 0; t < 1; t += 0.01)
 		{
 			DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-						  target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
+			              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
 		}
 		DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
 
@@ -496,15 +488,17 @@ void ARobotArm::TrackParabola(Position& position)
 		{
 			Position start{NaN, NaN, NaN, position.hand_rotation - 20, NaN};
 			Position end{NaN, NaN, NaN, position.hand_rotation + 10, NaN};
-	
-			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4, start, end, 0.1, true);
+
+			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,
+			                            start, end, 0.1, true);
 			path_age += path_to_follow.Length();
 		}
 		else
 		{
 			position.hand_rotation -= 20;
 		}
-	} else
+	}
+	else
 	{
 		TrackBall(target, impact_velocity, position);
 	}
@@ -513,7 +507,7 @@ void ARobotArm::TrackParabola(Position& position)
 void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset)
 {
 	impact_velocity.Normalize();
-	
+
 	FVector relative_position = target - ArmOrigin();
 
 	bool fixed = false;
@@ -564,46 +558,44 @@ again:
 
 void ARobotArm::ApplyPosition(Position position)
 {
-	if (base_component && lower_arm_component && upper_arm_component && hand_component && wrist_component)
+	int before = NumOverlaps();
 	{
-		int before = NumOverlaps();
-		{
-			if (isvalid(position.base_rotation))
-				base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, position.base_rotation)));
+		if (isvalid(position.base_rotation))
+			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, position.base_rotation)));
 
-			if (isvalid(position.lower_arm_rotation))
-				lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.lower_arm_rotation, 0, 0)));
+		if (isvalid(position.lower_arm_rotation))
+			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.lower_arm_rotation, 0, 0)));
 
-			if (isvalid(position.upper_arm_rotation))
-				upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.upper_arm_rotation, 0, 0)));
+		if (isvalid(position.upper_arm_rotation))
+			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.upper_arm_rotation, 0, 0)));
 
-			if (isvalid(position.hand_rotation))
-				hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.hand_rotation, 0, 0)));
+		if (isvalid(position.hand_rotation))
+			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.hand_rotation, 0, 0)));
 
-			if (isvalid(position.wrist_rotation))
-				wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, position.wrist_rotation, 0)));
-		}
-		int after = NumOverlaps();
-		
-		if (after > before && check_collision)
-		{
-			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
-			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
-			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
-			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(hand_rotation, 0, 0)));
-			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, wrist_rotation, 0)));
+		if (isvalid(position.wrist_rotation))
+			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, position.wrist_rotation, 0)));
+	}
+	int after = NumOverlaps();
 
-			UE_LOG(LogTemp, Warning, TEXT("Collision!!! %f %f %f %f %f"), position.base_rotation, position.lower_arm_rotation, position.upper_arm_rotation, position.hand_rotation, position.wrist_rotation);
-		}
-		else
-		{
-			if (isvalid(position.base_rotation)) base_rotation = position.base_rotation;
-			if (isvalid(position.lower_arm_rotation)) lower_arm_rotation = position.lower_arm_rotation;
-			if (isvalid(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
-			if (isvalid(position.hand_rotation)) hand_rotation = position.hand_rotation;
-			if (isvalid(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
-			last_valid_position = position;
-		}
+	if (after > before && check_collision)
+	{
+		base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
+		lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
+		upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
+		hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(hand_rotation, 0, 0)));
+		wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, wrist_rotation, 0)));
+
+		LogWarning(TEXT("Collision!!! %f %f %f %f %f"), position.base_rotation, position.lower_arm_rotation, position.upper_arm_rotation,
+		           position.hand_rotation, position.wrist_rotation);
+	}
+	else
+	{
+		if (isvalid(position.base_rotation)) base_rotation = position.base_rotation;
+		if (isvalid(position.lower_arm_rotation)) lower_arm_rotation = position.lower_arm_rotation;
+		if (isvalid(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
+		if (isvalid(position.hand_rotation)) hand_rotation = position.hand_rotation;
+		if (isvalid(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
+		last_valid_position = position;
 	}
 }
 
@@ -623,26 +615,69 @@ ARobotArm::Position ARobotArm::GetActualPosition()
 	return Position{actual_base_rotation, actual_lower_arm_rotation, actual_upper_arm_rotation, actual_hand_rotation, actual_wrist_rotation};
 }
 
-// Called every frame
-void ARobotArm::Tick(float DeltaTime)
+void ARobotArm::BallLoop()
+{
+	LogDisplay(TEXT("Started robot arm catch loop"));
+
+	float DeltaTime = 1. / 60.;
+	while (ball_loop_running)
+	{
+		auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+		Position new_position;
+
+		if (update_type == Ball)
+			TrackParabola(new_position);
+
+		ball_position = new_position;
+
+		auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+		if (show_profiling)
+			LogDisplay(TEXT("Took %f ms to update robot arm"), (after - before).count() / 1e6);
+
+		float actual_delta = (after - before).count() / 1e9;
+
+		usleep(max((DeltaTime - actual_delta) * 1e6, 0.));
+
+		if (missed_ticks++ >= 20)
+			ball_loop_running = false;
+	}
+
+	LogDisplay(TEXT("Stopped robot arm catch loop"));
+}
+
+bool ARobotArm::RobotArmValid()
 {
 	if (robot_arm)
 	{
-		base_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Base"));
-		lower_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Lower_Arm"));
-		upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
-		hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
-		wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
-		hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
-		bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
+		if (!base_component || !lower_arm_component || !upper_arm_component || !hand_component || !wrist_component || !hoop_component || !
+			bat_component)
+		{
+			base_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Base"));
+			lower_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Lower_Arm"));
+			upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
+			hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
+			wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
+			hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
+			bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
+		}
 
-		if (!base_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Base\""));
-		if (!lower_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
-		if (!upper_arm_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
-		if (!hand_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Hand\""));
-		if (!wrist_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Wrist\""));
-		if (!hoop_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Hoop\""));
-		if (!bat_component) UE_LOG(LogTemp, Error, TEXT("Robot arm has nothing with tag \"Bat\""));
+		if (!base_component) LogError(TEXT("Robot arm has nothing with tag \"Base\""));
+		if (!lower_arm_component) LogError(TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
+		if (!upper_arm_component) LogError(TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
+		if (!hand_component) LogError(TEXT("Robot arm has nothing with tag \"Hand\""));
+		if (!wrist_component) LogError(TEXT("Robot arm has nothing with tag \"Wrist\""));
+		if (!hoop_component) LogError(TEXT("Robot arm has nothing with tag \"Hoop\""));
+		if (!bat_component) LogError(TEXT("Robot arm has nothing with tag \"Bat\""));
+
+		if (!base_component) return false;
+		if (!lower_arm_component) return false;
+		if (!upper_arm_component) return false;
+		if (!hand_component) return false;
+		if (!wrist_component) return false;
+		if (!hoop_component) return false;
+		if (!bat_component) return false;
 
 		if (hoop_component)
 		{
@@ -659,14 +694,15 @@ void ARobotArm::Tick(float DeltaTime)
 			else
 				bat_component->SetRelativeScale3D(FVector(0.01));
 		}
+
+		return true;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Robot arm blueprint is not set"));
-	}
-	
-	auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
-	if (update_rotations)
+	return false;
+}
+
+void ARobotArm::UpdateArm(float DeltaTime)
+{
+	if (update_rotations && RobotArmValid())
 	{
 		Position new_position;
 
@@ -677,27 +713,21 @@ void ARobotArm::Tick(float DeltaTime)
 			replay_last_path = false;
 			path_to_follow.reset();
 		}
-		
+
 		if (!path_to_follow(now, new_position))
 		{
 			if (update_type == User)
 			{
 				new_position = {base_rotation, lower_arm_rotation, upper_arm_rotation, hand_rotation, wrist_rotation};
-				base_rotation = last_valid_position.base_rotation;
-				lower_arm_rotation = last_valid_position.lower_arm_rotation;
-				upper_arm_rotation = last_valid_position.upper_arm_rotation;
-				hand_rotation = last_valid_position.hand_rotation;
-				wrist_rotation = last_valid_position.wrist_rotation;
+				if (isvalid(last_valid_position.base_rotation)) base_rotation = last_valid_position.base_rotation;
+				if (isvalid(last_valid_position.lower_arm_rotation)) lower_arm_rotation = last_valid_position.lower_arm_rotation;
+				if (isvalid(last_valid_position.upper_arm_rotation)) upper_arm_rotation = last_valid_position.upper_arm_rotation;
+				if (isvalid(last_valid_position.hand_rotation)) hand_rotation = last_valid_position.hand_rotation;
+				if (isvalid(last_valid_position.wrist_rotation)) wrist_rotation = last_valid_position.wrist_rotation;
 			}
-			
+
 			if (update_type == Animation)
 				GetAnimation(new_position);
-
-			if (update_type == IK && ik_target)
-				InverseKinematics(ik_target->GetActorLocation(), new_position);
-
-			if (update_type == Ball)
-				TrackParabola(new_position);
 
 			if (update_type == LinearPath)
 			{
@@ -714,15 +744,35 @@ void ARobotArm::Tick(float DeltaTime)
 					}
 				}
 			}
-		} else
+
+			if (update_type == IK && ik_target)
+				InverseKinematics(ik_target->GetActorLocation(), new_position);
+
+			if (update_type == Ball)
+			{
+				if (!ball_loop_running)
+				{
+					StopLoop();
+					LogDisplay(TEXT("Started robot arm loop"));
+					ball_loop_running = true;
+					missed_ticks = 0;
+					Async(EAsyncExecution::Thread, [&] { BallLoop(); });
+				}
+
+				missed_ticks = 0;
+
+				new_position = ball_position;
+			}
+		}
+		else
 		{
 			if (draw_debug)
 			{
 				double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30,
-				FColor::Black, 0, -1);
+				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30, FColor::Black, 0, -1);
 			}
 		}
+
 		ApplyPosition(new_position);
 
 		actual_base_rotation = actual_base_rotation
@@ -740,10 +790,19 @@ void ARobotArm::Tick(float DeltaTime)
 		if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
 		if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
 	}
-	auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
+}
 
-	if (show_profiling)
-		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update robot arm"), (after - before).count() / 1e6);
+void ARobotArm::StopLoop()
+{
+	ball_loop_running = false;
+	if (ball_thread.IsValid())
+		ball_thread.Wait();
+}
+
+// Called every frame
+void ARobotArm::Tick(float DeltaTime)
+{
+	UpdateArm(DeltaTime);
 
 	Super::Tick(DeltaTime);
 }
@@ -760,6 +819,7 @@ bool ARobotArm::ShouldTickIfViewportsOnly() const
 }
 #endif
 
+
 void ARobotArm::BeginDestroy()
 {
 	Super::BeginDestroy();
@@ -767,4 +827,17 @@ void ARobotArm::BeginDestroy()
 	serial_loop_running = false;
 	if (serial_thread.IsValid())
 		serial_thread.Wait();
+
+	StopLoop();
+}
+
+void ARobotArm::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	serial_loop_running = false;
+	if (serial_thread.IsValid())
+		serial_thread.Wait();
+
+	StopLoop();
 }

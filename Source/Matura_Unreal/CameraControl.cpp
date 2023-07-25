@@ -5,6 +5,7 @@
 #include <Engine/UserInterfaceSettings.h>
 
 #include "FlyCharacter.h"
+#include "GlobalIncludes.h"
 #include "TrackingCamera.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Styling/SlateBrush.h"
@@ -165,21 +166,21 @@ void ACameraControl::Tick(float DeltaTime)
 				}
 				else
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Couldn't find widget with name: border"));
+					LogWarning(TEXT("Couldn't find widget with name: border"));
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Couldn't find widget with name: camera_preview"));
+				LogWarning(TEXT("Couldn't find widget with name: camera_preview"));
 			}
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hud instance is null : CameraControl"));
+		LogWarning(TEXT("Hud instance is null : CameraControl"));
 	}
 
 	auto time_after = std::chrono::high_resolution_clock::now();
 
-	// UE_LOG(LogTemp, Display, TEXT("CameraControl took %f ms to update"), (time_after - time_before).count() / 1e6);	
+	// LogDisplay(TEXT("CameraControl took %f ms to update"), (time_after - time_before).count() / 1e6);	
 }

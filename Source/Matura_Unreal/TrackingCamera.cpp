@@ -13,6 +13,7 @@
 
 // https://github.com/nothings/stb (Thanks for the suggestion ChatGPT)
 #define STB_IMAGE_IMPLEMENTATION // make sure not to include implementation anywhere else
+#include "GlobalIncludes.h"
 #include "stb_image.h"
 
 #include "turbojpeg.h"
@@ -58,43 +59,43 @@ void ATrackingCamera::InitCamera()
 	if (camera_path != "")
 		cv_cap.open(TCHAR_TO_UTF8(*camera_path));
 	else
-		UE_LOG(LogTemp, Error, TEXT("Invalid cmaera path!"));
+		LogError(TEXT("Invalid cmaera path!"));
 
 	if (cv_cap.isOpened())
 	{
 		if (!cv_cap.set(CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G')))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set MJPG format"));
+			LogWarning(TEXT("Could not set MJPG format"));
 
 		if (!cv_cap.set(CAP_PROP_CONVERT_RGB, 0)) // UE OpenCV plugin broken, can't decompress jpeg, must do manually
-			UE_LOG(LogTemp, Warning, TEXT("Could not enable raw output format"));
+			LogWarning(TEXT("Could not enable raw output format"));
 
 		if (!cv_cap.set(CAP_PROP_FRAME_WIDTH, resolution.X) || !cv_cap.set(
 			CAP_PROP_FRAME_HEIGHT, resolution.Y))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set size"));
+			LogWarning(TEXT("Could not set size"));
 
 		if (!cv_cap.set(CAP_PROP_FPS, 60))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set fps"));
+			LogWarning(TEXT("Could not set fps"));
 
 		if (!cv_cap.set(CAP_PROP_AUTOFOCUS, 0))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set autofocus"));
+			LogWarning(TEXT("Could not set autofocus"));
 
 		if (!cv_cap.set(CAP_PROP_FOCUS, 0))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set focus"));
+			LogWarning(TEXT("Could not set focus"));
 
 		if (!cv_cap.set(CAP_PROP_AUTO_EXPOSURE, 1)) // this means no auto exposure, ¯\_(ツ)_/¯
-			UE_LOG(LogTemp, Warning, TEXT("Could not turn off auto exposure"));
+			LogWarning(TEXT("Could not turn off auto exposure"));
 
 		if (!cv_cap.set(CAP_PROP_EXPOSURE, exposure))
-			UE_LOG(LogTemp, Warning, TEXT("Could not set exposure to %f"), exposure)
+			LogWarning(TEXT("Could not set exposure to %f"), exposure)
 
 
 		cv_size = Size(cv_cap.get(CAP_PROP_FRAME_WIDTH), cv_cap.get(CAP_PROP_FRAME_HEIGHT));
 
-		UE_LOG(LogTemp, Warning, TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path,
+		LogWarning(TEXT("Opened camera at %s with %dx%d at %d fps"), *camera_path,
 		       int(cv_cap.get(CAP_PROP_FRAME_WIDTH)), int(cv_cap.get(CAP_PROP_FRAME_HEIGHT)),
 		       int(cv_cap.get(CAP_PROP_FPS)));
 
-		UE_LOG(LogTemp, Display, TEXT("Camera GUID: %d"), int(cv_cap.get(CAP_PROP_GUID)));
+		LogDisplay(TEXT("Camera GUID: %d"), int(cv_cap.get(CAP_PROP_GUID)));
 
 		camera_texture_2d = UTexture2D::CreateTransient(cv_size.width, cv_size.height, PF_R8G8B8A8);
 #if WITH_EDITORONLY_DATA
@@ -116,7 +117,7 @@ void ATrackingCamera::InitCamera()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not open camera at path: %s"), *camera_path);
+		LogError(TEXT("Could not open camera at path: %s"), *camera_path);
 		return;
 	}
 	
@@ -209,7 +210,7 @@ double ATrackingCamera::SyncFrame()
 	double time_captured = cv_cap.get(CAP_PROP_POS_MSEC);
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Camera %s grabbed frame at %f ms"), *camera_path, time_captured);
+		LogDisplay(TEXT("Camera %s grabbed frame at %f ms"), *camera_path, time_captured);
 
 	return time_captured;
 }
@@ -220,6 +221,7 @@ void ATrackingCamera::GetFrame()
 		return;
 	
 	Mat cv_frame_raw, cv_frame_distorted;
+	cv_cap.retrieve(cv_frame_raw);
 	
 	auto time_start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
@@ -236,8 +238,7 @@ void ATrackingCamera::GetFrame()
 		                                         &Width, &Height, &NumComponents, STBI_rgb);
 		if (Width != cv_size.width || Height != cv_size.height || NumComponents != 3)
 		{
-			UE_LOG(LogTemp, Warning,
-			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
+			LogWarning(			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
 			return;
 		}
 		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData);
@@ -257,8 +258,7 @@ void ATrackingCamera::GetFrame()
 
 		if (width != cv_size.width || height != cv_size.height || result == -1)
 		{
-			UE_LOG(LogTemp, Warning,
-				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d %d raw size: %d %d"), width, height, result, cv_frame_raw.size().width, cv_frame_raw.size().height);
+			LogWarning(				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d %d raw size: %d %d"), width, height, result, cv_frame_raw.size().width, cv_frame_raw.size().height);
 			return;
 		}
 
@@ -270,7 +270,7 @@ void ATrackingCamera::GetFrame()
 	auto time_end_uncompress = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path,
+		LogDisplay(TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path,
 	       (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
 	       
 	      GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Took camera %s %f ms to decompress frame at %d x %d"),  *camera_path,
@@ -281,7 +281,7 @@ void ATrackingCamera::GetFrame()
 
 	if (cv_frame.empty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Frame is empty after decompression"))
+		LogWarning(TEXT("Frame is empty after decompression"))
 		return;
 	}
 }
@@ -293,7 +293,7 @@ Point2d ATrackingCamera::FindBall()
 
 	if (cv_frame.empty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot find ball"));
+		LogWarning(TEXT("cv_frame is empty, cannot find ball"));
 		return {};
 	}
 
@@ -333,7 +333,7 @@ Point2d ATrackingCamera::FindBall()
 
 	if (cv_threshold.empty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("threshold frame is empty!"));
+		LogWarning(TEXT("threshold frame is empty!"));
 		return {};
 	}
 
@@ -490,7 +490,7 @@ Point2d ATrackingCamera::FindBall()
 		ball_path.push_back(det);
 
 		if (debug_output)
-			UE_LOG(LogTemp, Warning, TEXT("Camera %s detected ball at: %f %f!"), *camera_path, det.x, det.y);
+			LogWarning(TEXT("Camera %s detected ball at: %f %f!"), *camera_path, det.x, det.y);
 	}
 	else if (ball_steps_skipped++ == 5)
 		ball_path.clear();
@@ -504,7 +504,7 @@ Point2d ATrackingCamera::FindBall()
 	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find ball"), *camera_path, (time_after - time_before).count() / 1e6);
+		LogDisplay(TEXT("Took camera %s %f ms to find ball"), *camera_path, (time_after - time_before).count() / 1e6);
 
 	cvtColor(cv_debug_frame_temp, cv_debug_frame, COLOR_RGB2RGBA);
 
@@ -585,13 +585,13 @@ std::pair<FTransform, std::map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat 
 {
 	if (frame.empty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot localize camera"));
+		LogWarning(TEXT("cv_frame is empty, cannot localize camera"));
 		return {FTransform::Identity, {}};
 	}
 
 	if (!at_td)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tag detector is null, cannot detect"));
+		LogWarning(TEXT("Tag detector is null, cannot detect"));
 		return {FTransform::Identity, {}};
 	}
 
@@ -610,7 +610,7 @@ std::pair<FTransform, std::map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat 
 
 	if (cv_frame_gray.empty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("cv_frame is empty, cannot localize camera"));
+		LogWarning(TEXT("cv_frame is empty, cannot localize camera"));
 		return {FTransform::Identity, {}};
 	}
 
@@ -693,7 +693,7 @@ std::pair<FTransform, std::map<ATag*, FMatrix>> ATrackingCamera::UpdateTags(Mat 
 	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
+		LogDisplay(TEXT("Took camera %s %f ms to find apriltags"), *camera_path, (time_after - time_before).count() / 1e6);
 
 	return {average_transform, local_tag_transforms};
 }
@@ -710,11 +710,11 @@ void ATrackingCamera::ReleaseTagDetector()
 	{
 		if (!tf)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not destroy tag family"));
+			LogWarning(TEXT("Could not destroy tag family"));
 			continue;
 		}
 
-		UE_LOG(LogTemp, Display, TEXT("Deleted %s"), *FString(tf->name));
+		LogDisplay(TEXT("Deleted %s"), *FString(tf->name));
 
 		if (!strcmp(tf->name, "tag36h11"))
 		{
@@ -796,7 +796,7 @@ void ATrackingCamera::UpdateDebugTexture()
 
 	if (!camera_texture_2d)
 	{
-		UE_LOG(LogTemp, Error, TEXT("camera texture pointer is null"));
+		LogError(TEXT("camera texture pointer is null"));
 		return;
 	}
 
@@ -812,13 +812,13 @@ void ATrackingCamera::UpdateDebugTexture()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("cv_debug_frame Mat is empty, could not update"));
+		LogWarning(TEXT("cv_debug_frame Mat is empty, could not update"));
 	}
 
 	auto time_after = std::chrono::high_resolution_clock::now();
 
 	if (debug_output)
-		UE_LOG(LogTemp, Display, TEXT("Took camera %s %f ms to update debug texture"), *camera_path, (time_after - time_before).count() / 1e6);
+		LogDisplay(TEXT("Took camera %s %f ms to update debug texture"), *camera_path, (time_after - time_before).count() / 1e6);
 }
 
 void ATrackingCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -840,7 +840,7 @@ void ATrackingCamera::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		if (plate_config.DynamicMaterial)
 			plate_config.DynamicMaterial->SetScalarParameterValue(FName("Opacity"), plate_opacity);
 		else
-			UE_LOG(LogTemp, Warning, TEXT("Error setting material parameter: TrackingCamera"));
+			LogWarning(TEXT("Error setting material parameter: TrackingCamera"));
 	}
 	image_plate->SetImagePlate(plate_config);
 
@@ -883,8 +883,8 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 void ATrackingCamera::BeginDestroy()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s is being destroyed"), *camera_path);
+	LogWarning(TEXT("%s is being destroyed"), *camera_path);
 	ReleaseCamera();
 	Super::BeginDestroy();
-	UE_LOG(LogTemp, Warning, TEXT("%s is done being destroyed"), *camera_path);
+	LogWarning(TEXT("%s is done being destroyed"), *camera_path);
 }

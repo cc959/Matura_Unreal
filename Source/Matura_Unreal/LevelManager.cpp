@@ -19,6 +19,8 @@
 #include <chrono>
 #include <thread>
 
+#include "GlobalIncludes.h"
+
 #define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(x));
 
 // Sets default values
@@ -48,7 +50,7 @@ void ALevelManager::BeginPlay()
 	for (FAssetData& AssetData : ObjectList)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
+		//LogWarning(TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
 	}
 
 	old_slide_texture = nullptr;
@@ -63,29 +65,39 @@ void ALevelManager::BeginPlay()
 
 void ALevelManager::ApplyFoliageVisibility()
 {
-	// if (current_level == "")
-	// 	foliage_visible = false;
-	// else
-	// {
-	// 	TActorIterator<ABall> ActorItr(GetWorld());
-	//
-	// 	if (ActorItr)
-	// 		foliage_visible = false;
-	// 	else
-	// 		foliage_visible = true;
-	// }
-	foliage_visible = true;
+	if (foliage_mode == Adaptive)
+	{
+		if (current_level == "")
+			foliage_visible = false;
+		else
+		{
+			TActorIterator<ABall> ActorItr(GetWorld());
+
+			if (ActorItr)
+				foliage_visible = false;
+			else
+				foliage_visible = true;
+		}
+	}
+	else if (foliage_mode == AlwaysEnabled)
+	{
+		foliage_visible = true;
+	}
+	else if (foliage_mode == AlwaysDisabled)
+	{
+		foliage_visible = false;
+	}
 
 	if (foliage_visible != foliage_level_loaded)
 	{
 		if (foliage_visible)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Foliage Level Loaded %d"), foliage_level_loaded);
+			LogDisplay(TEXT("Foliage Level Loaded %d"), foliage_level_loaded);
 			UGameplayStatics::LoadStreamLevel(this, "FoliageLevel", true, true, FLatentActionInfo());
 		}
 		else
 		{
-			UE_LOG(LogTemp, Display, TEXT("Foliage Level Unloaded %d"), foliage_level_loaded);
+			LogDisplay(TEXT("Foliage Level Unloaded %d"), foliage_level_loaded);
 			UGameplayStatics::UnloadStreamLevel(this, "FoliageLevel", FLatentActionInfo(), true);
 		}
 	}
@@ -99,12 +111,13 @@ void ALevelManager::ApplyFoliageVisibility()
 
 void ALevelManager::LoadCurrentLevel()
 {
-	UE_LOG(LogTemp, Display, TEXT("Unpaused game"));
+	LogDisplay(TEXT("Unpaused game"));
 
 	if (sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
 		if (!switch_direction && level - 1 >= 0)
-			fade_transition = sublevels[level].ToString()[0] == 's' && sublevels[level-1].ToString().ToLower().StartsWith("slide_"); // lower case means sub-slide
+			fade_transition = sublevels[level].ToString()[0] == 's' && sublevels[level - 1].ToString().ToLower().StartsWith("slide_");
+			// lower case means sub-slide
 		else if (level + 1 < sublevels.Num() && sublevels[level].ToString().ToLower().StartsWith("slide_"))
 			fade_transition = sublevels[level + 1].ToString()[0] == 's'; // lower case means sub-slide
 
@@ -112,17 +125,17 @@ void ALevelManager::LoadCurrentLevel()
 		if (slide_texture)
 		{
 			UpdateSlideTexture(slide_texture);
-			UE_LOG(LogTemp, Display, TEXT("Now displaying slide %s"), *sublevels[level].ToString());
+			LogDisplay(TEXT("Now displaying slide %s"), *sublevels[level].ToString());
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
+			LogError(TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
 		}
 		current_level = "";
 	}
 	else
 	{
-		UE_LOG(LogTemp, Display, TEXT("Loading level number %d: %s, current level: %s"), level, *sublevels[level].ToString(),
+		LogDisplay(TEXT("Loading level number %d: %s, current level: %s"), level, *sublevels[level].ToString(),
 		       *current_level.ToString());
 
 		FLatentActionInfo info;
@@ -138,7 +151,7 @@ void ALevelManager::LoadCurrentLevel()
 
 void ALevelManager::FinishLoading()
 {
-	UE_LOG(LogTemp, Display, TEXT("Done unloading"));
+	LogDisplay(TEXT("Done unloading"));
 	finished_loading = true;
 }
 
@@ -168,7 +181,8 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 
 	if (blubpointer.IsValid() && blubpointer->IsActive())
 	{
-		while (!blubpointer->HasLoadCompleted()) usleep(10);
+		while (!blubpointer->HasLoadCompleted())
+			usleep(10);
 		return Cast<UTexture2D>(blubpointer->GetLoadedAsset());
 	}
 	return nullptr;
@@ -187,7 +201,7 @@ void ALevelManager::ApplyViewportSize(int slide_width, int slide_height)
 			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
 				if (UImage* slide = Cast<UImage>(widget))
 				{
-					UE_LOG(LogTemp, Display, TEXT("BLUBBLUB"));
+					LogDisplay(TEXT("BLUBBLUB"));
 					if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
 					{
 						double slide_aspect = slide_width / double(slide_height);
@@ -232,14 +246,14 @@ bool ALevelManager::UpdateWidgets()
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * normal_target;
 					if (!instant_transition)
 						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
-						               viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+						                    viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - normal_opacity_target;
 					if (!instant_transition)
 						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
-						                       GetWorld()->DeltaTimeSeconds / transition_time);
+						                            GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
@@ -253,14 +267,14 @@ bool ALevelManager::UpdateWidgets()
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * old_target;
 					if (!instant_transition)
 						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
-						               viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+						                    viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - old_opacity_target;
 					if (!instant_transition)
 						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
-						                       GetWorld()->DeltaTimeSeconds / transition_time);
+						                            GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
@@ -282,7 +296,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 
 	if (switch_direction && !fade_transition)
 		swap(show_new, show_old);
-	
+
 
 	if (fade_transition)
 	{
@@ -295,14 +309,14 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 	{
 		normal_opacity_target = show_new;
 		old_opacity_target = show_old;
-		
+
 		normal_target = !switch_direction ? 0 : 1;
 		old_target = !switch_direction ? -1 : 0;
 	}
 
 	if (!slide_texture)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Slide texture is null!"));
+		LogError(TEXT("Slide texture is null!"));
 	}
 
 	if (!camera_control)
@@ -471,6 +485,6 @@ void ALevelManager::Tick(float DeltaTime)
 	else
 	{
 		level = level_loaded;
-		UE_LOG(LogTemp, Error, TEXT("Error loading level number %d"), level);
+		LogError(TEXT("Error loading level number %d"), level);
 	}
 }

@@ -5,6 +5,7 @@
 
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GlobalIncludes.h"
 
 // Sets default values
 ABall::ABall()
@@ -64,12 +65,12 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::BeginDestroy()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Ball is being destroyed"));
+	LogWarning(TEXT("Ball is being destroyed"));
 
 	if (manager)
 		delete manager;
 
-	UE_LOG(LogTemp, Warning, TEXT("Ball is done being destroyed"));
+	LogWarning(TEXT("Ball is done being destroyed"));
 
 	Super::BeginDestroy();
 }

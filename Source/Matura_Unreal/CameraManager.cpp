@@ -9,6 +9,8 @@
 #include <thread>
 #include <deque>
 
+#include "GlobalIncludes.h"
+
 #define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(x));
 
 CameraManager::CameraManager(class ABall* ball) : ball(ball)
@@ -74,7 +76,7 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 	{
 		if (!run_thread)
 			return;
-		UE_LOG(LogTemp, Error, TEXT("%s is not ready yet or null"), *camera->camera_path)
+		LogError(TEXT("%s is not ready yet or null"), *camera->camera_path)
 		usleep(10000); //wait 10 ms
 	}
 
@@ -84,7 +86,7 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 	while (camera->must_update_tags)
 		usleep(10000); //wait 10 ms
 	
-	UE_LOG(LogTemp, Error, TEXT("%s loop has started"), *camera->camera_path);
+	LogError(TEXT("%s loop has started"), *camera->camera_path);
 
 	camera->in_use = true;
 	
@@ -95,7 +97,7 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 		{
 			if (transform_future.IsValid())
 				transform_future.Wait();
-			UE_LOG(LogTemp, Error, TEXT("%s is not loaded anymore, exiting thread"), *camera->camera_path);
+			LogError(TEXT("%s is not loaded anymore, exiting thread"), *camera->camera_path);
 			camera->destroy_lock.unlock();
 			return;
 		}
@@ -176,7 +178,7 @@ uint32 CameraManager::Run()
 
 		for (int i = 0; i < cameras.Num(); i++)
 			if (ball_det_backup[i].size() && cameras[i]->debug_output)
-				UE_LOG(LogTemp, Warning, TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path,
+				LogWarning(TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path,
 			       ball_det_backup[i].back().time);
 
 		for (auto& ball_position : ball_det_backup)
@@ -195,7 +197,7 @@ uint32 CameraManager::Run()
 
 				if (j == 0)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Something seems wrong with the cameras, they seem very desyncronized! %d"), i);
+					LogWarning(TEXT("Something seems wrong with the cameras, they seem very desyncronized! %d"), i);
 					
 					ball_points.push_back({-1, -1});
 					continue;
@@ -342,10 +344,10 @@ uint32 CameraManager::Run()
 						}
 						parab_file.close();
 
-						UE_LOG(LogTemp, Display, TEXT("Saved path to file: %s"), *FString(path.c_str()));
+						LogDisplay(TEXT("Saved path to file: %s"), *FString(path.c_str()));
 					} else
 					{
-						UE_LOG(LogTemp, Display, TEXT("Could not open file: %s"), *FString(path.c_str()));
+						LogDisplay(TEXT("Could not open file: %s"), *FString(path.c_str()));
 					}
 				}
 
@@ -367,7 +369,7 @@ uint32 CameraManager::Run()
 
 		auto time_after = std::chrono::high_resolution_clock::now();
 
-		UE_LOG(LogTemp, Display, TEXT("Took %f ms to update tracking path"), float((time_after-time_before).count()) / 1e6);
+		LogDisplay(TEXT("Took %f ms to update tracking path"), float((time_after-time_before).count()) / 1e6);
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop
@@ -427,5 +429,5 @@ void CameraManager::DrawBallHistory()
 	//
 	// FString msg = ss.str().c_str();
 	//
-	// UE_LOG(LogTemp, Log, TEXT("%s"), *msg);
+	// LogDisplay(TEXT("%s"), *msg);
 }

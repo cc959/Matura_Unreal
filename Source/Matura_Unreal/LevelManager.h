@@ -13,6 +13,13 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "LevelManager.generated.h"
 
+UENUM()
+enum FoliageMode
+{
+	Adaptive = 0,
+	AlwaysEnabled = 1,
+	AlwaysDisabled = 2,
+};
 
 UCLASS()
 class MATURA_UNREAL_API ALevelManager : public AActor
@@ -71,6 +78,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<FoliageMode> foliage_mode;
+	
 	UPROPERTY(EditAnywhere)
 	double transition_time = 0.2;
 	
