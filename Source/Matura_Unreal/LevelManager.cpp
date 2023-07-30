@@ -21,8 +21,6 @@
 
 #include "GlobalIncludes.h"
 
-#define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(x));
-
 // Sets default values
 ALevelManager::ALevelManager()
 {

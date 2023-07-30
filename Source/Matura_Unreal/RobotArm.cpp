@@ -52,15 +52,7 @@ void ARobotArm::SetupSerial()
 	{
 		serial_port.open();
 	}
-	catch (std::invalid_argument e)
-	{
-		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
-		return;
-	} catch (SerialException e)
-	{
-		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
-		return;
-	} catch (IOException e)
+	catch (std::exception& e)
 	{
 		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
 		return;
@@ -202,15 +194,9 @@ void ARobotArm::SendRotations()
 		serial_port.write(msg);
 		serial_port.flush();
 	}
-	catch (SerialException e)
+	catch (std::exception& e)
 	{
-		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
-	} catch (IOException e)
-	{
-		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
-	} catch (PortNotOpenedException e)
-	{
-		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
+		LogError(TEXT("Could not send message over serial port: %s"), *FString(e.what()));
 	}
 }
 
