@@ -9,6 +9,8 @@
 #include <thread>
 #include <deque>
 
+#include "EventPasser.h"
+
 #include "GlobalIncludes.h"
 
 
@@ -19,12 +21,10 @@ CameraManager::CameraManager(class ABall* ball) : ball(ball)
 
 CameraManager::~CameraManager()
 {
+	Stahp();
+
 	if (Thread)
-	{
-		run_thread = false;
-		Thread->Kill();
 		delete Thread;
-	}
 }
 
 bool CameraManager::Init()
@@ -65,7 +65,7 @@ Mat ConvertToCameraMatrix(FTransform transform)
 	return RT.rowRange(0, 3);
 }
 
-void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* ball_2d_detections)
+void CameraManager::CameraLoop(ATrackingCamera* camera, int camera_id)
 {
 	TFuture<std::pair<FTransform, std::map<ATag*, FMatrix>>> transform_future;
 	int64_t last_now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -73,7 +73,7 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 
 	while (!camera || !camera->loaded)
 	{
-		if (!run_thread)
+		if (!run_threads)
 			return;
 		LogError(TEXT("%s is not ready yet or null"), *camera->camera_path)
 		usleep(10000); //wait 10 ms
@@ -84,12 +84,12 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 	camera->must_update_tags = true;
 	while (camera->must_update_tags)
 		usleep(10000); //wait 10 ms
-	
+
 	LogError(TEXT("%s loop has started"), *camera->camera_path);
 
 	camera->in_use = true;
-	
-	while (run_thread)
+
+	while (run_threads)
 	{
 		// camera wants to be released, but is waiting for this thread to finish
 		if (!camera->loaded)
@@ -100,25 +100,21 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 			camera->destroy_lock.unlock();
 			return;
 		}
-		
+
 		double time = camera->SyncFrame() / 1000.;
 		camera->GetFrame();
 
 		Point2d ball_position = camera->FindBall();
-		
 
-		ball_detection_2d_mut.lock();
 		camera->last_frame_time = time;
 		
-		while (ball_2d_detections->size() && abs(ball_2d_detections->front().time - time) > 0.1)
-			ball_2d_detections->pop_front();
-
-		if (ball_position != Point2d{-1, -1})
-			ball_2d_detections->push_back({ball_position, time});
-		ball_detection_2d_mut.unlock();
+		if (event_passer.push({ball_position, time, camera_id}))
+		{
+			LogWarning(TEXT("Dropped camera event on camera %s"), *camera->camera_path);
+		}
 
 		camera->DrawDetectedTags();
-		
+
 		if (transform_future.IsReady())
 		{
 			auto [camera_transform, local_tag_transforms] = transform_future.Get();
@@ -127,10 +123,11 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 				camera->next_update_time = last_now + static_cast<int64_t>(camera->UpdateTransform(camera_transform) * 1e9);
 				for (auto [tag, local_transform] : local_tag_transforms)
 				{
-					FMatrix world_transform = (local_transform * FQuat::MakeFromEuler(FVector(0, 0, 90)).ToMatrix() * FQuat::MakeFromEuler(FVector(0, 90, 0)).ToMatrix()) * camera->camera_transform.ToMatrixNoScale();
-					camera->next_update_time = min(	camera->next_update_time,
-													last_now + static_cast<int64_t>(tag->UpdateTransform(FTransform(world_transform)) * tag->update_rate * 1e9));
-
+					FMatrix world_transform = (local_transform * FQuat::MakeFromEuler(FVector(0, 0, 90)).ToMatrix() *
+						FQuat::MakeFromEuler(FVector(0, 90, 0)).ToMatrix()) * camera->camera_transform.ToMatrixNoScale();
+					camera->next_update_time = min(camera->next_update_time,
+					                               last_now + static_cast<int64_t>(tag->UpdateTransform(FTransform(world_transform)) * tag->
+						                               update_rate * 1e9));
 				}
 			}
 			transform_future = TFuture<std::pair<FTransform, std::map<ATag*, FMatrix>>>();
@@ -144,8 +141,16 @@ void CameraManager::CameraLoop(ATrackingCamera* camera, std::deque<Detection>* b
 		transform_future.Wait();
 
 	camera->in_use = false;
-	
+
 	camera->destroy_lock.unlock();
+}
+
+void CameraManager::Stahp()
+{
+	run_threads = false;
+	event_passer.stop();
+
+	Thread->WaitForCompletion();
 }
 
 uint32 CameraManager::Run()
@@ -153,63 +158,70 @@ uint32 CameraManager::Run()
 	TArray<ATrackingCamera*> cameras = ball->tracking_cameras;
 
 	std::vector<std::deque<Detection>> ball_2d_detections(cameras.Num());
-
-
+	
 	for (int i = 0; i < cameras.Num(); i++)
 		camera_threads.push_back(Async(EAsyncExecution::Thread, [&, i, cameras]
 		{
-			CameraLoop(cameras[i], &ball_2d_detections[i]);
+			CameraLoop(cameras[i], i);
 		}));
 
-	while (run_thread)
+	Detection det;
+	while (event_passer.pop(&det))
 	{
-		usleep(10000);
-		
 		auto time_before = std::chrono::high_resolution_clock::now();
-		
-		std::vector<Point2d> ball_points;
 
-		ball_detection_2d_mut.lock();
-		auto ball_det_backup = ball_2d_detections;
-		ball_detection_2d_mut.unlock();
+		if (det.position == Point2d{-1, -1})
+		{
+			ball->tracking_path.push({});
+			ball->started = true;
+			continue;
+		}
+		
+		ball_2d_detections[det.camera_id].push_back(det);
+
+		while (ball_2d_detections[det.camera_id].size() && abs(
+			ball_2d_detections[det.camera_id].front().time - ball_2d_detections[det.camera_id].back().time) > 0.1)
+			ball_2d_detections[det.camera_id].pop_front();
+
+		std::vector<Point2d> ball_points;
 
 		double time = 1e20;
 
 		for (int i = 0; i < cameras.Num(); i++)
-			if (ball_det_backup[i].size() && cameras[i]->debug_output)
+			if (ball_2d_detections[i].size() && cameras[i]->debug_output)
 				LogWarning(TEXT("Last frame time of %s: %f"), *cameras[i]->camera_path,
-			       ball_det_backup[i].back().time);
+			           ball_2d_detections[i].back().time);
 
-		for (auto& ball_position : ball_det_backup)
+		for (auto& ball_position : ball_2d_detections)
 			if (ball_position.size())
 				time = min(time, ball_position.back().time);
 
 		for (int i = 0; i < cameras.Num(); i++)
 		{
-			if (ball_det_backup[i].size() < 2)
+			if (ball_2d_detections[i].size() < 2)
 				ball_points.push_back({-1, -1});
 			else
 			{
 				int j = 0;
-				while (j < ball_det_backup[i].size() - 1 && ball_det_backup[i][j].time <= time)
+				while (j < ball_2d_detections[i].size() - 1 && ball_2d_detections[i][j].time <= time)
 					j++;
 
 				if (j == 0)
 				{
 					LogWarning(TEXT("Something seems wrong with the cameras, they seem very desyncronized! %d"), i);
-					
+
 					ball_points.push_back({-1, -1});
 					continue;
 				}
 
-				Vec2d velocity = ball_det_backup[i][j].position
-					- ball_det_backup[i][j - 1].position;
+				Vec2d velocity = ball_2d_detections[i][j].position
+					- ball_2d_detections[i][j - 1].position;
 
-				velocity /= ball_det_backup[i][j].time
-					- ball_det_backup[i][j - 1].time;
+				velocity /= ball_2d_detections[i][j].time
+					- ball_2d_detections[i][j - 1].time;
 
-				Vec2d current_position = Vec2d(ball_det_backup[i][j - 1].position)
-					+ velocity * (time - ball_det_backup[i][j - 1].time);
+				Vec2d current_position = Vec2d(ball_2d_detections[i][j - 1].position)
+					+ velocity * (time - ball_2d_detections[i][j - 1].time);
 				ball_points.push_back(current_position);
 			}
 		}
@@ -224,12 +236,16 @@ uint32 CameraManager::Run()
 
 		Vec4d average_position(0, 0, 0, 0);
 		double num = 0;
-		
+
 		for (int i = 0; i < cameras.Num(); i++)
 			for (int j = i + 1; j < cameras.Num(); j++)
 			{
 				if (ball_points[i] == Point2d{-1, -1} || ball_points[j] == Point2d{-1, -1})
+				{
+					ball->tracking_path.push({});
+					ball->started = true;
 					continue;
+				}
 
 				std::vector<Point2d> a{ball_points[i]}, b{ball_points[j]};
 				Vec4d position;
@@ -243,8 +259,12 @@ uint32 CameraManager::Run()
 				double error = pow(ball_points[i].x - reprojected_ball_point[0], 2) + pow(ball_points[i].y - reprojected_ball_point[1], 2);
 
 				if (error > 200)
+				{
+					ball->tracking_path.push({});
+					ball->started = true;
 					continue;
-				
+				}
+
 				average_position += position;
 				num++;
 			}
@@ -252,35 +272,27 @@ uint32 CameraManager::Run()
 		if (num > 0)
 			average_position /= num;
 
-		
-		ball_position_mut.lock();
+		double last_frame = 0;
+		for (auto camera : cameras)
+			last_frame = max(last_frame, camera->last_frame_time);
+		while (ball_positions.size() && abs(ball_positions.front().time - last_frame) > 1)
 		{
-			double last_frame = 0;
-			for (auto camera : cameras)
-				last_frame = max(last_frame, camera->last_frame_time);
-			while (ball_positions.size() && abs(ball_positions.front().time - last_frame) > 1)
-			{
-				// no point in recording more than 1 second
-				ball_positions.pop_front();
-			}
+			// no point in recording more than 1 second
+			ball_positions.pop_front();
 		}
-		ball_position_mut.unlock();
-		
+
 		if (num == 0)
 		{
-			ball->tracking_path = {};
+			ball->tracking_path.push({});
+			ball->started = true;
 			continue;
 		}
-		
+
 		FVector p(average_position.val[2], average_position.val[0], -average_position.val[1]);
 		ball->position = p;
 
-		ball_position_mut.lock();
-		{
-			ball_positions.push_back({p, time});
-		}
-		ball_position_mut.unlock();
-		
+		ball_positions.push_back({p, time});
+
 		if (ball_positions.size() >= 10)
 		{
 			auto last = ball_positions.back();
@@ -288,7 +300,8 @@ uint32 CameraManager::Run()
 
 			if (diff < 0.15)
 			{
-				ball_paths.push_back(tracking_path = ParabPath::fromNPoints(std::vector(ball_positions.end() - min(++num_points_in_path, min(int(ball_positions.size()), 30)), ball_positions.end())));
+				ball_paths.push_back(tracking_path = ParabPath::fromNPoints(
+					std::vector(ball_positions.end() - min(++num_points_in_path, min(int(ball_positions.size()), 30)), ball_positions.end())));
 			}
 			else
 			{
@@ -300,12 +313,12 @@ uint32 CameraManager::Run()
 					std::stringstream ss;
 					ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
 
-					std::string path = "/home/elias/Documents/ParabPaths/"+ ss.str() + ".txt";
-					
+					std::string path = "/home/elias/Documents/ParabPaths/" + ss.str() + ".txt";
+
 					std::ofstream parab_file(path);
 
 					auto t0 = ball_paths.begin()->t0;
-					
+
 					if (parab_file.is_open())
 					{
 						parab_file << "t, x = " + std::to_string(tracking_path.vx / 1e3) + " * x + " + std::to_string(tracking_path.px / 1e3) + "\n";
@@ -317,7 +330,7 @@ uint32 CameraManager::Run()
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-t0 << " " << position.X / 1e3 << "\n";
+							parab_file << t - t0 << " " << position.X / 1e3 << "\n";
 						}
 						parab_file << "t, y = " + std::to_string(tracking_path.vy / 1e3) + " * t + " + std::to_string(tracking_path.py / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
@@ -328,23 +341,26 @@ uint32 CameraManager::Run()
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-t0 << " " << position.Y / 1e3 << "\n";
+							parab_file << t - t0 << " " << position.Y / 1e3 << "\n";
 						}
-						parab_file << "t, z = " + std::to_string(tracking_path.a / 1e3) + " * t^2 + " + std::to_string(tracking_path.b / 1e3) + " * t + " + std::to_string(tracking_path.c / 1e3) + "\n";
+						parab_file << "t, z = " + std::to_string(tracking_path.a / 1e3) + " * t^2 + " + std::to_string(tracking_path.b / 1e3) +
+							" * t + " + std::to_string(tracking_path.c / 1e3) + "\n";
 						for (ParabPath output_path : ball_paths)
 						{
 							output_path += (t0 - output_path.t0);
-							parab_file << std::to_string(output_path.a / 1e3) + " * x * x + " + std::to_string(output_path.b / 1e3) + " * x + " + std::to_string(output_path.c / 1e3) + "\n";
+							parab_file << std::to_string(output_path.a / 1e3) + " * x * x + " + std::to_string(output_path.b / 1e3) + " * x + " +
+								std::to_string(output_path.c / 1e3) + "\n";
 						}
 						for (auto i = ball_positions.end() - min(num_points_in_path, int(ball_positions.size())); i < ball_positions.end(); ++i)
 						{
 							auto [position, t] = *i;
-							parab_file << t-t0 << " " << position.Z / 1e3 << "\n";
+							parab_file << t - t0 << " " << position.Z / 1e3 << "\n";
 						}
 						parab_file.close();
 
 						LogDisplay(TEXT("Saved path to file: %s"), *FString(path.c_str()));
-					} else
+					}
+					else
 					{
 						LogDisplay(TEXT("Could not open file: %s"), *FString(path.c_str()));
 					}
@@ -363,8 +379,9 @@ uint32 CameraManager::Run()
 		{
 			tracking_path = {};
 		}
-		
-		ball->tracking_path = tracking_path;
+
+		ball->tracking_path.push(tracking_path);
+		ball->started = true;
 
 		auto time_after = std::chrono::high_resolution_clock::now();
 
@@ -374,16 +391,14 @@ uint32 CameraManager::Run()
 	for (auto& f : camera_threads) // wait for all threads to stop
 		f.Wait();
 
-	thread_stopped = true;
-
+	ball->tracking_path.stop();
+	
 	return 0;
 }
 
 void CameraManager::Stop()
 {
-	run_thread = false;
-
-	while (!thread_stopped) { usleep(1); }
+	Stahp();
 
 	FRunnable::Stop();
 }
@@ -391,9 +406,8 @@ void CameraManager::Stop()
 void CameraManager::DrawBallHistory()
 {
 	std::vector<ParabPath> paths;
-	ball_position_mut.lock();
+
 	auto positions = ball_positions; // make a copy of the data so the camera thread is not held up too much
-	ball_position_mut.unlock();
 
 	if (positions.size() == 0)
 		return;

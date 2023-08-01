@@ -7,6 +7,9 @@
 #include "CameraManager.h"
 #include "TrackingCamera.h"
 #include "GameFramework/Actor.h"
+
+#include "EventPasser.h"
+
 #include "Ball.generated.h"
 
 UCLASS()
@@ -18,7 +21,8 @@ public:
 	// Sets default values for this actor's properties
 	ABall();
 	FVector position = FVector(0, 0, 0);
-	ParabPath tracking_path = {};
+	EventPasser<ParabPath> tracking_path = {false};
+	bool started = false;
 
 protected:
 	// Called when the game starts or when spawned

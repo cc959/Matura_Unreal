@@ -322,7 +322,10 @@ std::pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 
 void ARobotArm::TrackParabola(Position& position)
 {
-	if (!ball || !ball->tracking_path.IsValid() || !base_component || !wrist_component || !hand_component)
+	ParabPath tracking_path;
+	if (ball->started)
+		ball->tracking_path.pop(&tracking_path);
+	if (!ball || !tracking_path.IsValid() || !base_component || !wrist_component || !hand_component)
 	{
 		if (path_age > 0.25)
 		{
@@ -335,12 +338,11 @@ void ARobotArm::TrackParabola(Position& position)
 	else
 	{
 		path_age = 0;
-		last_path = ball->tracking_path;
+		last_path = tracking_path;
 	}
 
 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-
-
+	
 	std::vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
 
 	// only times in the future, not infinity and a number are valid - obviously
