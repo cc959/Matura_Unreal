@@ -55,13 +55,7 @@ void ARobotArm::SetupSerial()
 	catch (std::exception& e)
 	{
 		LogError(TEXT("Could not open serial port: %s"), *FString(e.what()));
-		return;
 	}
-
-	serial_thread = Async(EAsyncExecution::Thread, [&]
-	{
-		SerialLoop();
-	});
 }
 
 int ARobotArm::NumOverlaps()
@@ -186,7 +180,7 @@ void ARobotArm::SendRotations()
 	if (debug_serial)
 	{
 		FString blub = msg.c_str();
-		LogDisplay(TEXT("Serial port: %d Message: %s"), *FString(serial_port.getPort().c_str()), *blub);
+		LogDisplay(TEXT("Serial port: %s Message: %s"), *FString(serial_port.getPort().c_str()), *blub);
 	}
 
 	try
@@ -198,25 +192,6 @@ void ARobotArm::SendRotations()
 	{
 		LogError(TEXT("Could not send message over serial port: %s"), *FString(e.what()));
 	}
-}
-
-void ARobotArm::SerialLoop()
-{
-	while (serial_loop_running)
-	{
-		auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
-		SendRotations();
-		auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
-
-		if (show_profiling)
-			LogDisplay(TEXT("Took %f ms to send rotations"), (after - before).count() / 1e6);
-
-		float actual_delta = (after - before).count() / 1e9;
-
-		usleep(max(10000 - actual_delta * 1e6, 0.)); // sleep for 10ms
-	}
-
-	serial_port.close();
 }
 
 FVector ARobotArm::ArmOrigin() const
@@ -236,7 +211,8 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 	FVector relative_position = target - ArmOrigin();
 
-	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
+	if (draw_debug)
+		DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
 
 	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
 
@@ -385,6 +361,7 @@ void ARobotArm::TrackParabola(Position& position)
 			DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
 			LogDisplay(TEXT("Intersection at %f"), t);
 		}
+	
 	LogDisplay(TEXT("Now at %f"), last_path.t1+path_age);
 
 
@@ -457,20 +434,24 @@ void ARobotArm::TrackParabola(Position& position)
 
 		dir *= outgoing_weight;
 
-		for (double t = 0; t < 1; t += 0.01)
+		if (draw_debug)
 		{
-			DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-			              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
+			for (double t = 0; t < 1; t += 0.01)
+			{
+				DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
+							  target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
+			}
+			DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
 		}
-		DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
 
 		auto [normal, v_bat] = best_impact(impact_velocity, dir);
 
-		DrawDebugLine(GetWorld(), target, target + v_bat * 0.25, FColor::Green, false, -1, 2, 10);
+		if (draw_debug)
+			DrawDebugLine(GetWorld(), target, target + v_bat * 0.25, FColor::Green, false, -1, 2, 10);
 
 		TrackBall(target, -normal, position, {0, 0});
 
-		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.4)
+		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.35)
 		{
 			Position start{NaN, NaN, NaN, position.hand_rotation - 20, NaN};
 			Position end{NaN, NaN, NaN, position.hand_rotation + 10, NaN};
@@ -612,8 +593,7 @@ void ARobotArm::BallLoop()
 
 		Position new_position;
 
-		if (update_type == Ball)
-			TrackParabola(new_position);
+		
 
 		ball_position = new_position;
 
@@ -736,18 +716,19 @@ void ARobotArm::UpdateArm(float DeltaTime)
 
 			if (update_type == Ball)
 			{
-				if (!ball_loop_running)
-				{
-					StopLoop();
-					LogDisplay(TEXT("Started robot arm loop"));
-					ball_loop_running = true;
-					missed_ticks = 0;
-					Async(EAsyncExecution::Thread, [&] { BallLoop(); });
-				}
-
-				missed_ticks = 0;
-
-				new_position = ball_position;
+				TrackParabola(new_position);
+				// if (!ball_loop_running)
+				// {
+				// 	StopLoop();
+				// 	LogDisplay(TEXT("Started robot arm loop"));
+				// 	ball_loop_running = true;
+				// 	missed_ticks = 0;
+				// 	Async(EAsyncExecution::Thread, [&] { BallLoop(); });
+				// }
+				//
+				// missed_ticks = 0;
+				//
+				// new_position = ball_position;
 			}
 		}
 		else
@@ -775,6 +756,16 @@ void ARobotArm::UpdateArm(float DeltaTime)
 		if (upper_arm_component) upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
 		if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
 		if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
+
+		if (!visual_only && GetWorld()->IsGameWorld())
+		{
+			auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
+			SendRotations();
+			auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+			if (show_profiling)
+				LogDisplay(TEXT("Took %f ms to send rotations"), (after - before).count() / 1e6);
+		}
 	}
 }
 
@@ -809,10 +800,8 @@ bool ARobotArm::ShouldTickIfViewportsOnly() const
 void ARobotArm::BeginDestroy()
 {
 	Super::BeginDestroy();
-
-	serial_loop_running = false;
-	if (serial_thread.IsValid())
-		serial_thread.Wait();
+	
+	serial_port.close();
 
 	StopLoop();
 }
@@ -821,9 +810,7 @@ void ARobotArm::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	serial_loop_running = false;
-	if (serial_thread.IsValid())
-		serial_thread.Wait();
+	serial_port.close();
 
 	StopLoop();
 }

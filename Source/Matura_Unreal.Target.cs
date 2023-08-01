@@ -7,6 +7,9 @@ public class Matura_UnrealTarget : TargetRules
 {
 	public Matura_UnrealTarget(TargetInfo Target) : base(Target)
 	{
+		bForceEnableExceptions = true;
+		bOverrideBuildEnvironment = true;
+
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;

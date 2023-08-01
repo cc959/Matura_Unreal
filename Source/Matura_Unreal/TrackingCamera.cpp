@@ -234,8 +234,8 @@ void ATrackingCamera::GetFrame()
 		// this is also the reason why getting raw data from webcam instead of uncompressed -> setting CAP_PROP_CONVERT_RGB to false
 		int Width, Height, NumComponents;
 		UncompressedData = stbi_load_from_memory(cv_frame_raw.data,
-		                                         cv_frame_raw.size().area() * cv_frame_raw.elemSize(),
-		                                         &Width, &Height, &NumComponents, STBI_rgb);
+												 cv_frame_raw.size().area() * cv_frame_raw.elemSize(),
+												 &Width, &Height, &NumComponents, STBI_rgb);
 		if (Width != cv_size.width || Height != cv_size.height || NumComponents != 3)
 		{
 			LogWarning(			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
@@ -270,12 +270,14 @@ void ATrackingCamera::GetFrame()
 	auto time_end_uncompress = std::chrono::high_resolution_clock::now().time_since_epoch();
 
 	if (debug_output)
+	{
 		LogDisplay(TEXT("Took camera %s %f ms to decompress frame at %d x %d"), *camera_path,
-	       (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
+		   (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height);
 	       
-	      GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Took camera %s %f ms to decompress frame at %d x %d"),  *camera_path,
-          		   (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height));
-
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Took camera %s %f ms to decompress frame at %d x %d"),  *camera_path,
+				   (time_end_uncompress - time_start).count() / 1e6, cv_size.width, cv_size.height));
+	}
+	
 	remap(cv_frame_distorted, cv_frame, cv_undistort_map1, cv_undistort_map2, INTER_LINEAR);
 
 
