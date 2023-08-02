@@ -58,33 +58,6 @@ void ARobotArm::SetupSerial()
 	}
 }
 
-int ARobotArm::NumOverlaps()
-{
-	if (!robot_arm)
-		return 0;
-
-	int cnt = 0;
-
-	TArray<USphereComponent*> sphere_colliders;
-	robot_arm->GetComponents<USphereComponent>(sphere_colliders);
-
-	for (auto sphere : sphere_colliders)
-	{
-		TArray<UPrimitiveComponent*> overlaps;
-		TArray<AActor*> ignored;
-		if (ball)
-			ignored.Push(ball);
-		if (ik_target)
-			ignored.Push(ik_target);
-
-		UKismetSystemLibrary::SphereOverlapComponents(GetWorld(), sphere->GetComponentLocation(), sphere->GetScaledSphereRadius(), {}, {}, ignored,
-		                                              overlaps);
-		cnt += overlaps.Num();
-	}
-
-	return cnt;
-}
-
 double CircularClamp(double& val, double low, double high, double step = 360)
 {
 	if (high < low)
@@ -155,24 +128,9 @@ void ARobotArm::GetAnimation(Position position)
 }
 
 
-double interpolate(double x, double a, double b, double c, double d)
-{
-	double t = (x - a) / (b - a);
-	return c + (d - c) * t;
-}
-
 void ARobotArm::SendRotations()
 {
-	double base_servo =
-		interpolate(base_rotation, min_rotations[0], max_rotations[0], min_servo[0], max_servo[0]);
-	double lower_arm_servo =
-		interpolate(lower_arm_rotation, min_rotations[1], max_rotations[1], min_servo[1], max_servo[1]);
-	double upper_arm_servo =
-		interpolate(upper_arm_rotation, min_rotations[2], max_rotations[2], min_servo[2], max_servo[2]);
-	double hand_servo =
-		interpolate(hand_rotation, min_rotations[3], max_rotations[3], min_servo[3], max_servo[3]);
-	double wrist_servo =
-		interpolate(wrist_rotation, min_rotations[4], max_rotations[4], min_servo[4], max_servo[4]);
+	auto [base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo] = GetPosition().to_servo().to_angle().to_servo();
 
 	std::string msg = "> " + std::to_string(int(base_servo)) + " " + std::to_string(int(lower_arm_servo)) + " " +
 		std::to_string(int(upper_arm_servo)) + " " + std::to_string(int(hand_servo)) + " " + std::to_string(int(wrist_servo)) + "\n";
@@ -342,7 +300,7 @@ void ARobotArm::TrackParabola(Position& position)
 	}
 
 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-	
+
 	std::vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
 
 	// only times in the future, not infinity and a number are valid - obviously
@@ -363,7 +321,7 @@ void ARobotArm::TrackParabola(Position& position)
 			DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
 			LogDisplay(TEXT("Intersection at %f"), t);
 		}
-	
+
 	LogDisplay(TEXT("Now at %f"), last_path.t1+path_age);
 
 
@@ -441,7 +399,7 @@ void ARobotArm::TrackParabola(Position& position)
 			for (double t = 0; t < 1; t += 0.01)
 			{
 				DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-							  target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
+				              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
 			}
 			DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
 		}
@@ -525,47 +483,96 @@ again:
 	CircularClamp(position.wrist_rotation, min_rotations[4], max_rotations[4]);
 }
 
-void ARobotArm::ApplyPosition(Position position)
+bool ARobotArm::ApplyPosition(Position position)
 {
-	int before = NumOverlaps();
+	double base_angle = position.base_rotation / 180 * PI;
+	double lower_arm_angle = (position.lower_arm_rotation + 90) / 180 * PI;
+	double upper_arm_angle = (position.upper_arm_rotation + 90) / 180 * PI + lower_arm_angle;
+	double hand_angle = position.hand_rotation / 180 * PI + upper_arm_angle;
+	double wrist_angle = (position.wrist_rotation - 90) / 180 * PI;
+
+	double tool_length = hand_length + (tool == Bat ? 0.04 : 0.06);
+	double tool_width = (tool == Bat ? 0.07 : 0.05);
+
+	
+	auto is_invalid = [&](double t, double mult = 1)
 	{
-		if (isvalid(position.base_rotation))
-			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, position.base_rotation)));
+		double upper_arm_t = clamp(t, 0., 1.1);
+		double hand_t = clamp(t - 1.1, 0., 1.);
 
-		if (isvalid(position.lower_arm_rotation))
-			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.lower_arm_rotation, 0, 0)));
+		if (hand_t > 0)
+			upper_arm_t = 1, hand_t += 0.1;
 
-		if (isvalid(position.upper_arm_rotation))
-			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.upper_arm_rotation, 0, 0)));
+		double shift;
+		if (t <= 1.1)
+			shift = 0.05;
+		else
+			shift = sin(acos(clamp(2 * pow(hand_t,1.5) - 1, -1., 1.))) * tool_width;
 
-		if (isvalid(position.hand_rotation))
-			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(position.hand_rotation, 0, 0)));
+		shift *= mult;
+		
+		FVector eval = {shift, cos(lower_arm_angle) * lower_arm_length + cos(upper_arm_angle) * upper_arm_length * upper_arm_t,
+			sin(lower_arm_angle) * lower_arm_length + sin(upper_arm_angle) * upper_arm_length * upper_arm_t};
 
-		if (isvalid(position.wrist_rotation))
-			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, position.wrist_rotation, 0)));
-	}
-	int after = NumOverlaps();
+		if (t > 1.1)
+		{
+			eval.X = 0;
+			FVector tool_position = {shift, tool_length * hand_t, 0};
+		
+			FRotator wrist_rotator(wrist_angle / PI * 180, 0, 0);
+			tool_position = wrist_rotator.UnrotateVector(tool_position);
 
-	if (after > before && check_collision)
+			FRotator hand_rotator(0, 0, hand_angle / PI * 180);
+			tool_position = hand_rotator.UnrotateVector(tool_position);
+			eval += tool_position;
+		}
+		eval.Y *= -1;
+		eval.Z += ArmOrigin().Z / 1000;
+		
+		FRotator base_rotator(0, base_angle * 180 / PI, 0);
+
+		eval = base_rotator.RotateVector(eval);
+
+		DrawDebugSphere(GetWorld(), eval * 1000, 10, 2, FColor::Blue, false, -1, 2, 1);
+
+		LogDisplay(TEXT("%f %f"), t, hand_t);
+
+		
+		double delta = 0;
+		if (t <= 1)
+			delta = 0.025;
+		else if (t <= 2)
+			delta = 0.01;
+
+		double rad = sqrt(eval.X * eval.X + eval.Y * eval.Y);
+		
+		bool under_plate = eval.Z < base_plate_height + delta && abs(eval.X) < base_plate_x / 2 + delta && abs(eval.Y) < base_plate_y / 2 + delta;
+		bool inside_base = rad < base_radius + delta && eval.Z < base_height + base_plate_height + delta;
+
+		return under_plate || inside_base;
+	};
+
+	for (double t = 0; t <= 2.05; t += 0.1)
 	{
-		base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
-		lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
-		upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
-		hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(hand_rotation, 0, 0)));
-		wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, wrist_rotation, 0)));
-
-		LogWarning(TEXT("Collision!!! %f %f %f %f %f"), position.base_rotation, position.lower_arm_rotation, position.upper_arm_rotation,
-		           position.hand_rotation, position.wrist_rotation);
+		if (t > 1.1)
+		{
+			if (is_invalid(t, -1) || is_invalid(t, 1) || is_invalid(t, 0))
+				return false;
+		} else
+		{
+			if (is_invalid(t))
+				return false;
+		}
 	}
-	else
-	{
-		if (isvalid(position.base_rotation)) base_rotation = position.base_rotation;
-		if (isvalid(position.lower_arm_rotation)) lower_arm_rotation = position.lower_arm_rotation;
-		if (isvalid(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
-		if (isvalid(position.hand_rotation)) hand_rotation = position.hand_rotation;
-		if (isvalid(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
-		last_valid_position = position;
-	}
+	
+	if (isvalid(position.base_rotation)) base_rotation = position.base_rotation;
+	if (isvalid(position.lower_arm_rotation)) lower_arm_rotation = position.lower_arm_rotation;
+	if (isvalid(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
+	if (isvalid(position.hand_rotation)) hand_rotation = position.hand_rotation;
+	if (isvalid(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
+	last_valid_position = position;
+	
+	return true;
 }
 
 UActorComponent* FirstWithTag(AActor* actor, FName tag)
@@ -595,8 +602,6 @@ void ARobotArm::BallLoop()
 
 		Position new_position;
 
-		
-
 		ball_position = new_position;
 
 		auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
@@ -619,17 +624,13 @@ bool ARobotArm::RobotArmValid()
 {
 	if (robot_arm)
 	{
-		if (!base_component || !lower_arm_component || !upper_arm_component || !hand_component || !wrist_component || !hoop_component || !
-			bat_component)
-		{
-			base_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Base"));
-			lower_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Lower_Arm"));
-			upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
-			hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
-			wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
-			hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
-			bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
-		}
+		base_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Base"));
+		lower_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Lower_Arm"));
+		upper_arm_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Upper_Arm"));
+		hand_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hand"));
+		wrist_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Wrist"));
+		hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
+		bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
 
 		if (!base_component) LogError(TEXT("Robot arm has nothing with tag \"Base\""));
 		if (!lower_arm_component) LogError(TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
@@ -732,6 +733,39 @@ void ARobotArm::UpdateArm(float DeltaTime)
 				//
 				// new_position = ball_position;
 			}
+
+			// if (update_type == Bake)
+			// {
+			// 	int updates_per_frame = 10;
+			// 	for (int i = 0; i < updates_per_frame && bake_index < steps[0] * steps[1] * steps[2] * steps[3] * steps[4]; i++)
+			// 	{
+			// 		int base_index = bake_index / (steps[1] * steps[2] * steps[3] * steps[4]);
+			// 		int lower_arm_index = (bake_index / (steps[4] * steps[3] * steps[2])) % steps[1];
+			// 		int upper_arm_index = (bake_index / (steps[4] * steps[3])) % steps[2];
+			// 		int hand_index = (bake_index / steps[4]) % steps[3];
+			// 		int wrist_index = bake_index % 36;
+			//
+			// 		LogDisplay(TEXT("%d %d %d %d %d %d"), bake_index, base_index, lower_arm_index, upper_arm_index, hand_index, wrist_index);
+			//
+			// 		double base_servo = interpolate(base_index, 0, steps[0], min_servo[0], max_servo[0]);
+			// 		double lower_arm_servo = interpolate(lower_arm_index, 0, steps[1], min_servo[1], max_servo[1]);
+			// 		double upper_arm_servo = interpolate(upper_arm_index, 0, steps[2], min_servo[2], max_servo[2]);
+			// 		double hand_servo = interpolate(hand_index, 0, steps[3], min_servo[3], max_servo[3]);
+			// 		double wrist_servo = interpolate(wrist_index, 0, steps[4], min_servo[4], max_servo[4]);
+			//
+			// 		Position position = Position{base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo}.to_angle();
+			//
+			// 		bool result = ApplyPosition(position);
+			//
+			// 		if (result)
+			// 		{
+			// 			int inner_index = bake_index % 8;
+			// 			data[bake_index / 8] |= (1 << inner_index) * result;
+			// 		}
+			//
+			// 		bake_index++;
+			// 	}
+			// }
 		}
 		else
 		{
@@ -802,7 +836,7 @@ bool ARobotArm::ShouldTickIfViewportsOnly() const
 void ARobotArm::BeginDestroy()
 {
 	Super::BeginDestroy();
-	
+
 	serial_port.close();
 
 	StopLoop();

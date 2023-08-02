@@ -25,6 +25,7 @@ enum UpdateType
 	IK = 2,
 	Ball = 3,
 	LinearPath = 4,
+	//Bake = 5,
 };
 
 UENUM()
@@ -53,7 +54,7 @@ protected:
 	static constexpr double max_rotations[5] = {6, 90, 33, 95, 180};
 
 	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
-	static constexpr double max_servo[5] = {0, 3, 180, 0, 180};
+	static constexpr double max_servo[5] = {0, 2, 180, 0, 180};
 
 	struct Position
 	{
@@ -138,8 +139,46 @@ protected:
 
 			return copy;
 		}
+
+		Position to_servo()
+		{
+			double base_servo =
+				interpolate(base_rotation, min_rotations[0], max_rotations[0], min_servo[0], max_servo[0]);
+			double lower_arm_servo =
+				interpolate(lower_arm_rotation, min_rotations[1], max_rotations[1], min_servo[1], max_servo[1]);
+			double upper_arm_servo =
+				interpolate(upper_arm_rotation, min_rotations[2], max_rotations[2], min_servo[2], max_servo[2]);
+			double hand_servo =
+				interpolate(hand_rotation, min_rotations[3], max_rotations[3], min_servo[3], max_servo[3]);
+			double wrist_servo =
+				interpolate(wrist_rotation, min_rotations[4], max_rotations[4], min_servo[4], max_servo[4]);
+
+			return {base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo};
+		}
+
+		Position to_angle()
+		{
+			double base_servo =
+				interpolate(base_rotation, min_servo[0], max_servo[0], min_rotations[0], max_rotations[0]);
+			double lower_arm_servo =
+				interpolate(lower_arm_rotation, min_servo[1], max_servo[1], min_rotations[1], max_rotations[1]);
+			double upper_arm_servo =
+				interpolate(upper_arm_rotation, min_servo[2], max_servo[2], min_rotations[2], max_rotations[2]);
+			double hand_servo =
+				interpolate(hand_rotation, min_servo[3], max_servo[3], min_rotations[3], max_rotations[3]);
+			double wrist_servo =
+				interpolate(wrist_rotation, min_servo[4], max_servo[4], min_rotations[4], max_rotations[4]);
+
+			return {base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo};
+		}
 	};
 
+	static double interpolate(double x, double a, double b, double c, double d)
+	{
+		double t = (x - a) / (b - a);
+		return c + (d - c) * t;
+	}
+	
 	struct LinearMove
 	{
 		ARobotArm* robot_arm = nullptr;
@@ -228,7 +267,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SetupSerial();
-	int NumOverlaps();
 	void GetAnimation(Position position);
 	void SendRotations();
 
@@ -236,9 +274,8 @@ protected:
 	void TrackParabola(Position& position);
 	void TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset = {0,0});
 
-	void ApplyPosition(Position position);
+	bool ApplyPosition(Position position);
 
-	void SerialLoop();
 	FVector ArmOrigin() const;
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
@@ -248,6 +285,13 @@ protected:
 
 	Position last_valid_position;
 	Position ball_position;
+
+	// Position bake_servo_position;
+	// static constexpr int step[5] = {5, 2, 4, 5, 5};
+	// static constexpr int steps[5] = {36, 64, 45, 36, 36};
+	//
+	// vector<uint8_t> data;
+	// int bake_index = 0;
 	
 	Position GetPosition();
 	Position GetActualPosition();
@@ -338,18 +382,34 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	bool draw_debug = false;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Lower arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Lower arm length (m)")
 	double lower_arm_length = 0.35;
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Upper arm length (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Upper arm length (m)")
 	double upper_arm_length = 0.265;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Hand length (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Hand length (m)")
 	double hand_length = 0.08;
 
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
-	double end_offset = 0.01;
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base plate height (m)")
+	double base_plate_height = 0.02;
+
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base plate x (m)")
+	double base_plate_x = 0.6;
+
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base plate y (m)")
+	double base_plate_y = 0.8;
+
+		
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base height (m)")
+	double base_height = 0.1;
 	
-	UPROPERTY(EditAnywhere, Category = Motors, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base radius (m)")
+	double base_radius = 0.1;
+	
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	double end_offset = 0;
+	
+	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;
 
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
