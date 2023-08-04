@@ -55,7 +55,7 @@ protected:
 
 	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
 	static constexpr double max_servo[5] = {0, 2, 180, 0, 180};
-
+	
 	struct Position
 	{
 		double base_rotation;
@@ -172,7 +172,8 @@ protected:
 			return {base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo};
 		}
 	};
-
+	const Position rest_position = {-90, -30, -200, 0, 90};
+	
 	static double interpolate(double x, double a, double b, double c, double d)
 	{
 		double t = (x - a) / (b - a);
@@ -191,7 +192,7 @@ protected:
 		Position rotation_before, rotation_after;
 		double rotation_time = 0;
 
-		bool absolute_rotation;
+		bool absolute_rotation = false;
 
 	private:
 		double movement_time = 0;
@@ -284,7 +285,6 @@ protected:
 	LinearMove path_to_follow;
 
 	Position last_valid_position;
-	Position ball_position;
 
 	// Position bake_servo_position;
 	// static constexpr int step[5] = {5, 2, 4, 5, 5};
@@ -298,8 +298,8 @@ protected:
 
 	void BallLoop();
 	bool RobotArmValid();
-	void UpdateArm(float DeltaTime);
-	void StopLoop();
+	void UpdateArmSyncronous(float DeltaTime);
+	void StopBallLoop();
 
 	TFuture<void> ball_thread;
 

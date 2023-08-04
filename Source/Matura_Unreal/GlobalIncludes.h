@@ -7,3 +7,5 @@
 #include <thread>
 
 #define usleep(x) std::this_thread::sleep_for(std::chrono::microseconds(uint64_t(x)));
+
+#define NOW std::chrono::high_resolution_clock::now().time_since_epoch()

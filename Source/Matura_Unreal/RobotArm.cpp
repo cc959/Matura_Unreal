@@ -19,7 +19,7 @@ ARobotArm::ARobotArm()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	StopLoop();
+	StopBallLoop();
 
 	if (WITH_EDITOR)
 	{
@@ -31,7 +31,7 @@ ARobotArm::ARobotArm()
 // Called when the game starts or when spawned
 void ARobotArm::BeginPlay()
 {
-	StopLoop();
+	StopBallLoop();
 
 	LogDisplay(TEXT("Robot arm started playing"));
 
@@ -169,8 +169,8 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 	FVector relative_position = target - ArmOrigin();
 
-	if (draw_debug)
-		DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
+	//if (draw_debug)
+	//	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
 
 	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
 
@@ -288,7 +288,7 @@ void ARobotArm::TrackParabola(Position& position)
 		if (path_age > 0.25)
 		{
 			// if last flight was more than 2s ago, go back to home position
-			position = Position{-90, -30, -200, 0, 90};
+			position = rest_position;
 			return;
 		}
 		path_age += GetWorld()->GetDeltaSeconds();
@@ -315,12 +315,12 @@ void ARobotArm::TrackParabola(Position& position)
 		return;
 	}
 
-	if (draw_debug)
-		for (auto t : intersections)
-		{
-			DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
-			LogDisplay(TEXT("Intersection at %f"), t);
-		}
+	// if (draw_debug)
+	// 	for (auto t : intersections)
+	// 	{
+	// 		DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
+	// 		LogDisplay(TEXT("Intersection at %f"), t);
+	// 	}
 
 	LogDisplay(TEXT("Now at %f"), last_path.t1+path_age);
 
@@ -363,9 +363,9 @@ void ARobotArm::TrackParabola(Position& position)
 		}
 	}
 
-	if (draw_debug)
-		DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30,
-		                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
+	// if (draw_debug)
+	// 	DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30,
+	// 	                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
 
 	// if (!ik_target)
 	// 	return;
@@ -398,20 +398,20 @@ void ARobotArm::TrackParabola(Position& position)
 		{
 			for (double t = 0; t < 1; t += 0.01)
 			{
-				DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-				              target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
+				//DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
+				             // target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
 			}
-			DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
+			//DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
 		}
 
 		auto [normal, v_bat] = best_impact(impact_velocity, dir);
 
-		if (draw_debug)
-			DrawDebugLine(GetWorld(), target, target + v_bat * 0.25, FColor::Green, false, -1, 2, 10);
+		// if (draw_debug)
+		// 	DrawDebugLine(GetWorld(), target, target + v_bat * 0.25, FColor::Green, false, -1, 2, 10);
 
 		TrackBall(target, -normal, position, {0, 0});
 
-		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.35)
+		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.325)
 		{
 			Position start{NaN, NaN, NaN, position.hand_rotation - 20, NaN};
 			Position end{NaN, NaN, NaN, position.hand_rotation + 10, NaN};
@@ -533,10 +533,7 @@ bool ARobotArm::ApplyPosition(Position position)
 
 		eval = base_rotator.RotateVector(eval);
 
-		DrawDebugSphere(GetWorld(), eval * 1000, 10, 2, FColor::Blue, false, -1, 2, 1);
-
-		LogDisplay(TEXT("%f %f"), t, hand_t);
-
+//		DrawDebugSphere(GetWorld(), eval * 1000, 10, 2, FColor::Blue, false, -1, 2, 1);
 		
 		double delta = 0;
 		if (t <= 1)
@@ -595,29 +592,53 @@ void ARobotArm::BallLoop()
 {
 	LogDisplay(TEXT("Started robot arm catch loop"));
 
-	float DeltaTime = 1. / 60.;
+	auto last_tick = NOW;
+	auto start_tick = NOW;
+	
 	while (ball_loop_running)
 	{
-		auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
+		auto tick = NOW;
+		double DeltaTime = (tick - last_tick).count() / 1e9;
+		last_tick = tick;
+		
+		double now = (tick - start_tick).count() / 1e9;
+
+		if (replay_last_path)
+		{
+			replay_last_path = false;
+			path_to_follow.reset();
+		}
 
 		Position new_position;
+		if (!path_to_follow(now, new_position))
+			TrackParabola(new_position);
 
-		ball_position = new_position;
+		ApplyPosition(new_position);
 
-		auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
+		actual_base_rotation = actual_base_rotation
+			+ std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+		actual_lower_arm_rotation = actual_lower_arm_rotation
+			+ std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+		actual_upper_arm_rotation = actual_upper_arm_rotation
+			+ std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+		actual_hand_rotation = hand_rotation;
+		actual_wrist_rotation = wrist_rotation;
+
+		if (!visual_only)
+		{
+			SendRotations();
+		}
 
 		if (show_profiling)
-			LogDisplay(TEXT("Took %f ms to update robot arm"), (after - before).count() / 1e6);
+			LogDisplay(TEXT("Ball Loop running at %f fps, %f ms between update"), 1. / DeltaTime, DeltaTime * 1000.);
 
-		float actual_delta = (after - before).count() / 1e9;
-
-		usleep(max((DeltaTime - actual_delta) * 1e6, 0.));
-
-		if (missed_ticks++ >= 20)
-			ball_loop_running = false;
+		if (path_to_follow(now, new_position)) {
+			usleep(2000); // sleep 2ms
+		}
 	}
 
 	LogDisplay(TEXT("Stopped robot arm catch loop"));
+	path_to_follow = {};
 }
 
 bool ARobotArm::RobotArmValid()
@@ -669,7 +690,7 @@ bool ARobotArm::RobotArmValid()
 	return false;
 }
 
-void ARobotArm::UpdateArm(float DeltaTime)
+void ARobotArm::UpdateArmSyncronous(float DeltaTime)
 {
 	if (update_rotations && RobotArmValid())
 	{
@@ -716,64 +737,14 @@ void ARobotArm::UpdateArm(float DeltaTime)
 
 			if (update_type == IK && ik_target)
 				InverseKinematics(ik_target->GetActorLocation(), new_position);
-
-			if (update_type == Ball)
-			{
-				TrackParabola(new_position);
-				// if (!ball_loop_running)
-				// {
-				// 	StopLoop();
-				// 	LogDisplay(TEXT("Started robot arm loop"));
-				// 	ball_loop_running = true;
-				// 	missed_ticks = 0;
-				// 	Async(EAsyncExecution::Thread, [&] { BallLoop(); });
-				// }
-				//
-				// missed_ticks = 0;
-				//
-				// new_position = ball_position;
-			}
-
-			// if (update_type == Bake)
-			// {
-			// 	int updates_per_frame = 10;
-			// 	for (int i = 0; i < updates_per_frame && bake_index < steps[0] * steps[1] * steps[2] * steps[3] * steps[4]; i++)
-			// 	{
-			// 		int base_index = bake_index / (steps[1] * steps[2] * steps[3] * steps[4]);
-			// 		int lower_arm_index = (bake_index / (steps[4] * steps[3] * steps[2])) % steps[1];
-			// 		int upper_arm_index = (bake_index / (steps[4] * steps[3])) % steps[2];
-			// 		int hand_index = (bake_index / steps[4]) % steps[3];
-			// 		int wrist_index = bake_index % 36;
-			//
-			// 		LogDisplay(TEXT("%d %d %d %d %d %d"), bake_index, base_index, lower_arm_index, upper_arm_index, hand_index, wrist_index);
-			//
-			// 		double base_servo = interpolate(base_index, 0, steps[0], min_servo[0], max_servo[0]);
-			// 		double lower_arm_servo = interpolate(lower_arm_index, 0, steps[1], min_servo[1], max_servo[1]);
-			// 		double upper_arm_servo = interpolate(upper_arm_index, 0, steps[2], min_servo[2], max_servo[2]);
-			// 		double hand_servo = interpolate(hand_index, 0, steps[3], min_servo[3], max_servo[3]);
-			// 		double wrist_servo = interpolate(wrist_index, 0, steps[4], min_servo[4], max_servo[4]);
-			//
-			// 		Position position = Position{base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo}.to_angle();
-			//
-			// 		bool result = ApplyPosition(position);
-			//
-			// 		if (result)
-			// 		{
-			// 			int inner_index = bake_index % 8;
-			// 			data[bake_index / 8] |= (1 << inner_index) * result;
-			// 		}
-			//
-			// 		bake_index++;
-			// 	}
-			// }
 		}
 		else
 		{
-			if (draw_debug)
-			{
-				double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-				DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30, FColor::Black, 0, -1);
-			}
+			// if (draw_debug)
+			// {
+			// 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
+			// 	DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30, FColor::Black, 0, -1);
+			// }
 		}
 
 		ApplyPosition(new_position);
@@ -787,25 +758,14 @@ void ARobotArm::UpdateArm(float DeltaTime)
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 
-		if (base_component) base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, actual_base_rotation)));
-		if (lower_arm_component) lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_lower_arm_rotation, 0, 0)));
-		if (upper_arm_component) upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
-		if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
-		if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
-
 		if (!visual_only && GetWorld()->IsGameWorld())
 		{
-			auto before = std::chrono::high_resolution_clock::now().time_since_epoch();
 			SendRotations();
-			auto after = std::chrono::high_resolution_clock::now().time_since_epoch();
-
-			if (show_profiling)
-				LogDisplay(TEXT("Took %f ms to send rotations"), (after - before).count() / 1e6);
 		}
 	}
 }
 
-void ARobotArm::StopLoop()
+void ARobotArm::StopBallLoop()
 {
 	ball_loop_running = false;
 	if (ball_thread.IsValid())
@@ -815,7 +775,38 @@ void ARobotArm::StopLoop()
 // Called every frame
 void ARobotArm::Tick(float DeltaTime)
 {
-	UpdateArm(DeltaTime);
+	if (update_type != Ball)
+	{
+		StopBallLoop();
+		UpdateArmSyncronous(DeltaTime);
+	}
+	else if (RobotArmValid())
+	{
+		if (GetWorld()->IsGameWorld())
+		{
+			if (!ball_loop_running)
+			{
+				StopBallLoop();
+				LogDisplay(TEXT("Started robot arm loop"));
+				ball_loop_running = true;
+				Async(EAsyncExecution::Thread, [&] { BallLoop(); });
+			}
+		} else
+		{
+			ApplyPosition(rest_position);
+			actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			actual_lower_arm_rotation = actual_lower_arm_rotation + std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			actual_upper_arm_rotation = actual_upper_arm_rotation + std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+			actual_hand_rotation = hand_rotation;
+			actual_wrist_rotation = wrist_rotation;
+		}
+	}
+
+	if (base_component) base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, actual_base_rotation)));
+	if (lower_arm_component) lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_lower_arm_rotation, 0, 0)));
+	if (upper_arm_component) upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
+	if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
+	if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
 
 	Super::Tick(DeltaTime);
 }
@@ -839,7 +830,7 @@ void ARobotArm::BeginDestroy()
 
 	serial_port.close();
 
-	StopLoop();
+	StopBallLoop();
 }
 
 void ARobotArm::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -848,5 +839,5 @@ void ARobotArm::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	serial_port.close();
 
-	StopLoop();
+	StopBallLoop();
 }
