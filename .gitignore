@@ -78,3 +78,6 @@ DerivedDataCache/*
 
 # Packaged Game
 Package/*
+
+# Slides, may contain personal info
+Content/Slides/
