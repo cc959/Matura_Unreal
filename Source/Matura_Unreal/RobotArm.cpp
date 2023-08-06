@@ -2,10 +2,10 @@
 
 #include "RobotArm.h"
 
-//#include <fcntl.h>	 // Contains file controls like O_RDWR
-//#include <errno.h>	 // Error integer and strerror() function
-//#include <termios.h> // Contains POSIX terminal control definitions
-//#include <unistd.h>	 // write(), read(), close()
+// #include <fcntl.h>	 // Contains file controls like O_RDWR
+// #include <errno.h>	 // Error integer and strerror() function
+// #include <termios.h> // Contains POSIX terminal control definitions
+// #include <unistd.h>	 // write(), read(), close()
 #include <string>
 #include <vector>
 #include <cmath>
@@ -82,7 +82,6 @@ double CircularClamp(double& val, double low, double high, double step = 360)
 	return val;
 }
 
-
 void ARobotArm::GetAnimation(Position position)
 {
 	if (base_component && base_component->GetAttachParent())
@@ -127,7 +126,6 @@ void ARobotArm::GetAnimation(Position position)
 	CircularClamp(position.wrist_rotation, min_rotations[4], max_rotations[4]);
 }
 
-
 void ARobotArm::SendRotations()
 {
 	auto [base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo] = GetPosition().to_servo().to_angle().to_servo();
@@ -152,27 +150,14 @@ void ARobotArm::SendRotations()
 	}
 }
 
-FVector ARobotArm::ArmOrigin() const
-{
-	return FVector
-	{
-		base_component->GetComponentLocation().X,
-		base_component->GetComponentLocation().Y,
-		lower_arm_component->GetComponentLocation().Z
-	};
-}
-
 bool ARobotArm::InverseKinematics(FVector target, Position& position)
 {
-	if (!base_component || !lower_arm_component || !upper_arm_component)
-		return false;
+	FVector relative_position = target - arm_origin;
 
-	FVector relative_position = target - ArmOrigin();
-
-	//if (draw_debug)
+	// if (draw_debug)
 	//	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
 
-	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
+	double offset = asin(end_offset * 100 * world_scale / FVector2d{relative_position.X, relative_position.Y}.Length());
 
 	// UE Coordinate system is sus
 	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset + PI;
@@ -192,8 +177,8 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 	FVector2d plane_position = {relative_position.Dot(plane_right), relative_position.Dot(plane_up)};
 
-	double a = lower_arm_length * 100 * lower_arm_component->GetComponentScale().X;
-	double b = upper_arm_length * 100 * upper_arm_component->GetComponentScale().X;
+	double a = lower_arm_length * 100 * world_scale;
+	double b = upper_arm_length * 100 * world_scale;
 	double c = plane_position.Length();
 
 	double lower_arm_radians;
@@ -225,7 +210,6 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 	return must_flip;
 }
-
 
 // angle for the ball to fly to minimize the starting velocity but still reach the point (length,height)
 std::pair<double, double> best_angle(double length, double height, double g)
@@ -278,12 +262,12 @@ std::pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 	return {normal, v_bat};
 }
 
-void ARobotArm::TrackParabola(Position& position)
+void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 {
 	ParabPath tracking_path;
 	if (ball->started)
 		ball->tracking_path.pop(&tracking_path);
-	if (!ball || !tracking_path.IsValid() || !base_component || !wrist_component || !hand_component)
+	if (!ball || !tracking_path.IsValid())
 	{
 		if (path_age > 0.25)
 		{
@@ -291,7 +275,7 @@ void ARobotArm::TrackParabola(Position& position)
 			position = rest_position;
 			return;
 		}
-		path_age += GetWorld()->GetDeltaSeconds();
+		path_age += DeltaTime;
 	}
 	else
 	{
@@ -299,88 +283,22 @@ void ARobotArm::TrackParabola(Position& position)
 		last_path = tracking_path;
 	}
 
-	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
+	double intersection_radius = arm_range * 100 * world_scale;
 
-	std::vector<double> intersections = last_path.IntersectSphere(ArmOrigin(), intersection_radius);
+	std::vector<double> intersections = last_path.IntersectSphere(arm_origin, intersection_radius);
 
-	// only times in the future, not infinity and a number are valid - obviously
+	// only times in the future, not infinity and a number are valid
 	intersections.erase(std::remove_if(intersections.begin(), intersections.end(),
 	                                   [&](double p)
 	                                   {
 		                                   return p <= last_path.t1 + path_age || isnan(p) || isnan(-p) || isinf(p);
-	                                   }), intersections.end());
+	                                   }),
+	                    intersections.end());
 
 	if (intersections.size() == 0)
-	{
-		return;
-	}
-
-	// if (draw_debug)
-	// 	for (auto t : intersections)
-	// 	{
-	// 		DrawDebugSphere(GetWorld(), last_path(t), intersection_radius / 20, 10, FColor::Purple, 0, -1, 1, 3);
-	// 		LogDisplay(TEXT("Intersection at %f"), t);
-	// 	}
-
-	LogDisplay(TEXT("Now at %f"), last_path.t1+path_age);
-
-
-	double intercept_time = intersections[0];
-
-	double best_score = 1e69; // infinity
-
-	if (intersections.size() >= 2)
-	{
-		if (!use_first_intersect)
-		{
-			for (double target_time = intersections[0]; target_time < intersections[1]; target_time += (intersections[1] - intersections[0]) / 20.)
-			{
-				FVector target = last_path(target_time);
-				FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
-
-				if ((target - ArmOrigin()).Z < 0)
-					continue;
-
-				if ((target - ArmOrigin()).Length() < arm_range * 0.5)
-					// don't want to intercept too close, otherwise not enough freedom to play the ball back
-					continue;
-
-				Position candidate;
-				TrackBall(target, impact_velocity, candidate);
-
-				double est_move_time = candidate.diff(GetActualPosition());
-
-				if (est_move_time * 1.5 > abs(target_time - (last_path.t1 + path_age)))
-					// discard paths that would take too long, mostly these are false detections
-					continue;
-
-				if (est_move_time - target_time < best_score) // move time should be small and should intercept rather late in the path
-				{
-					intercept_time = target_time;
-					best_score = est_move_time - target_time;
-				}
-			}
-		}
-	}
-
-	// if (draw_debug)
-	// 	DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30,
-	// 	                (intercept_time - (last_path.t1 + path_age) < 0.3) ? FColor::Red : FColor::Blue, 0, -1);
-
-	// if (!ik_target)
-	// 	return;
-
-	FVector target = last_path(intercept_time);
-	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
-
-	if ((target - ArmOrigin()).Z < 0)
 		return;
 
-	if ((target - ArmOrigin()).Length() < arm_range * 0.5)
-		// don't want to intercept too close, otherwise not enough freedom to play the ball back
-		return;
-
-	if (tool == Bat)
+	auto calculate_bat = [&](FVector target, FVector impact_velocity)
 	{
 		FVector aim = aim_at - target;
 		double yaw_angle = atan2(aim.Y, -aim.X);
@@ -392,26 +310,76 @@ void ARobotArm::TrackParabola(Position& position)
 		dir = FQuat(FVector::RightVector, pitch_angle).Rotator().RotateVector(dir);
 		dir = FQuat(FVector::UpVector, -yaw_angle).Rotator().RotateVector(dir);
 
-		dir *= outgoing_weight;
+		return best_impact(impact_velocity, dir);
+	};
 
-		if (draw_debug)
+	if (intersections.size() == 1)
+	{
+		intersections.push_back(intersections[0]);
+	}
+
+	double intercept_time = -1;
+	double best_score = std::numeric_limits<double>::infinity();
+
+	for (double target_time = intersections[0]; target_time <= intersections[1]; target_time += max((intersections[1] - intersections[0]) / 20., 1e-2))
+	{
+		FVector target = last_path(target_time);
+		FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(target_time)};
+
+		if ((target - arm_origin).Z < 0)
+			continue;
+
+		if ((target - arm_origin).Length() < arm_range * 0.5)
+			// don't want to intercept too close, otherwise not enough freedom to play the ball back
+			continue;
+		
+		if (tool == Bat)
 		{
-			for (double t = 0; t < 1; t += 0.01)
-			{
-				//DrawDebugLine(GetWorld(), target + dir * t + FVector(0, 0, -9810) / 2. * t * t,
-				             // target + dir * (t + 0.05) + FVector(0, 0, -9810) / 2. * (t + 0.05) * (t + 0.05), FColor::Yellow, false, -1, 1, 10);
-			}
-			//DrawDebugLine(GetWorld(), target, target + dir * 0.1, FColor::Cyan, false, -1, 1, 10);
+			Position candidate;
+			auto [normal, v_bat] = calculate_bat(target, impact_velocity);
+			TrackBall(target, -normal, candidate);
+			candidate.hand_rotation -= 20;
+		
+			if (!CheckCollision(candidate)) // discard paths that result in a collision
+				continue;
 		}
 
-		auto [normal, v_bat] = best_impact(impact_velocity, dir);
+		Position candidate;
+		TrackBall(target, impact_velocity, candidate);
 
-		// if (draw_debug)
-		// 	DrawDebugLine(GetWorld(), target, target + v_bat * 0.25, FColor::Green, false, -1, 2, 10);
+		double est_move_time = candidate.diff(GetActualPosition());
 
-		TrackBall(target, -normal, position, {0, 0});
+		if (est_move_time * 1.5 > abs(target_time - (last_path.t1 + path_age)))
+			// discard paths that would take too long, mostly these are false detections
+			continue;
 
+		if (!CheckCollision(candidate)) // discard paths that result in a collision
+			continue;
+
+		if (est_move_time - target_time < best_score) // move time should be small and should intercept rather late in the path
+		{
+			intercept_time = target_time;
+			best_score = est_move_time - target_time;
+		}
+	}
+
+	if (intercept_time < 0)
+		return;
+	
+
+	FVector target = last_path(intercept_time);
+	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
+
+	if (tool == Bat)
+	{
+		auto [normal, v_bat] = calculate_bat(target, impact_velocity);
+		TrackBall(target, -normal, position);
+
+#if WITH_EDITOR // latency differs in in editor and in packaged/standalone build
 		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.325)
+#else
+		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.300)
+#endif
 		{
 			Position start{NaN, NaN, NaN, position.hand_rotation - 20, NaN};
 			Position end{NaN, NaN, NaN, position.hand_rotation + 10, NaN};
@@ -435,10 +403,10 @@ void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& pos
 {
 	impact_velocity.Normalize();
 
-	FVector relative_position = target - ArmOrigin();
+	FVector relative_position = target - arm_origin;
 
 	bool fixed = false;
-	double offset = asin(end_offset * 100 * base_component->GetComponentScale().X / FVector2d{relative_position.X, relative_position.Y}.Length());
+	double offset = asin(end_offset * 100 * world_scale / FVector2d{relative_position.X, relative_position.Y}.Length());
 
 	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset;
 
@@ -456,7 +424,7 @@ again:
 	roll_down.Normalize();
 	double roll_angle = atan2(roll_down.X, roll_down.Z);
 
-	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * hand_component->GetComponentScale().X);
+	FVector arm_offset = FVector{0, cos(pitch_angle), sin(pitch_angle)} * (hand_length * 100 * world_scale);
 
 	FVector paddle_y = base_rotator.RotateVector(arm_offset) / arm_offset.Length();
 	FVector paddle_x = paddle_y.Cross(impact_velocity / impact_velocity.Length());
@@ -483,9 +451,11 @@ again:
 	CircularClamp(position.wrist_rotation, min_rotations[4], max_rotations[4]);
 }
 
-bool ARobotArm::ApplyPosition(Position position)
+bool ARobotArm::CheckCollision(Position position)
 {
-	double base_angle = position.base_rotation / 180 * PI;
+	position = GetPosition() ^ position;
+
+	double base_angle = -position.base_rotation / 180 * PI;
 	double lower_arm_angle = (position.lower_arm_rotation + 90) / 180 * PI;
 	double upper_arm_angle = (position.upper_arm_rotation + 90) / 180 * PI + lower_arm_angle;
 	double hand_angle = position.hand_rotation / 180 * PI + upper_arm_angle;
@@ -494,7 +464,18 @@ bool ARobotArm::ApplyPosition(Position position)
 	double tool_length = hand_length + (tool == Bat ? 0.04 : 0.06);
 	double tool_width = (tool == Bat ? 0.07 : 0.05);
 
-	
+	FRotator base_rotator(0, base_angle * 180 / PI, 0);
+	FRotator wrist_rotator(-wrist_angle / PI * 180, 0, 0);
+	FRotator hand_rotator(0, 0, -hand_angle / PI * 180);
+
+	FVector lower_arm_dir = base_rotator.RotateVector({0, cos(lower_arm_angle) * lower_arm_length, sin(lower_arm_angle) * lower_arm_length});
+	FVector upper_arm_dir = base_rotator.RotateVector({0, cos(upper_arm_angle) * upper_arm_length, sin(upper_arm_angle) * upper_arm_length});
+
+	FVector hand_right = base_rotator.RotateVector(hand_rotator.RotateVector(wrist_rotator.RotateVector({1, 0, 0})));
+	FVector hand_forward = base_rotator.RotateVector(hand_rotator.RotateVector(wrist_rotator.RotateVector({0, 1, 0})));
+
+	FVector base_right = base_rotator.RotateVector(FVector{1, 0, 0});
+
 	auto is_invalid = [&](double t, double mult = 1)
 	{
 		double upper_arm_t = clamp(t, 0., 1.1);
@@ -503,48 +484,33 @@ bool ARobotArm::ApplyPosition(Position position)
 		if (hand_t > 0)
 			upper_arm_t = 1, hand_t += 0.1;
 
-		double shift;
-		if (t <= 1.1)
-			shift = 0.05;
-		else
-			shift = sin(acos(clamp(2 * pow(hand_t,1.5) - 1, -1., 1.))) * tool_width;
-
-		shift *= mult;
-		
-		FVector eval = {shift, cos(lower_arm_angle) * lower_arm_length + cos(upper_arm_angle) * upper_arm_length * upper_arm_t,
-			sin(lower_arm_angle) * lower_arm_length + sin(upper_arm_angle) * upper_arm_length * upper_arm_t};
+		FVector eval = lower_arm_dir + upper_arm_dir * upper_arm_t;
 
 		if (t > 1.1)
 		{
-			eval.X = 0;
-			FVector tool_position = {shift, tool_length * hand_t, 0};
-		
-			FRotator wrist_rotator(wrist_angle / PI * 180, 0, 0);
-			tool_position = wrist_rotator.UnrotateVector(tool_position);
-
-			FRotator hand_rotator(0, 0, hand_angle / PI * 180);
-			tool_position = hand_rotator.UnrotateVector(tool_position);
-			eval += tool_position;
+			eval += hand_right * sin(acos(clamp(2 * pow(hand_t, 1.5) - 1, -1., 1.))) * tool_width * mult;
+			eval += hand_forward * tool_length * hand_t;
 		}
+		else
+		{
+			eval += base_right * 0.05;
+		}
+
 		eval.Y *= -1;
-		eval.Z += ArmOrigin().Z / 1000;
-		
-		FRotator base_rotator(0, base_angle * 180 / PI, 0);
+		eval.Z += arm_origin.Z / 1000;
 
-		eval = base_rotator.RotateVector(eval);
+		//DrawDebugSphere(GetWorld(), eval * 1000, 10, 2, FColor::Blue, false, -1, 2, 1);
 
-//		DrawDebugSphere(GetWorld(), eval * 1000, 10, 2, FColor::Blue, false, -1, 2, 1);
-		
 		double delta = 0;
 		if (t <= 1)
 			delta = 0.025;
 		else if (t <= 2)
 			delta = 0.01;
 
-		double rad = sqrt(eval.X * eval.X + eval.Y * eval.Y);
-		
+		double rad = eval.X * eval.X + eval.Y * eval.Y;
+
 		bool under_plate = eval.Z < base_plate_height + delta && abs(eval.X) < base_plate_x / 2 + delta && abs(eval.Y) < base_plate_y / 2 + delta;
-		bool inside_base = rad < base_radius + delta && eval.Z < base_height + base_plate_height + delta;
+		bool inside_base = rad < pow(base_radius + delta, 2) && eval.Z < base_height + base_plate_height + delta;
 
 		return under_plate || inside_base;
 	};
@@ -555,21 +521,31 @@ bool ARobotArm::ApplyPosition(Position position)
 		{
 			if (is_invalid(t, -1) || is_invalid(t, 1) || is_invalid(t, 0))
 				return false;
-		} else
+		}
+		else
 		{
 			if (is_invalid(t))
 				return false;
 		}
 	}
-	
-	if (isvalid(position.base_rotation)) base_rotation = position.base_rotation;
-	if (isvalid(position.lower_arm_rotation)) lower_arm_rotation = position.lower_arm_rotation;
-	if (isvalid(position.upper_arm_rotation)) upper_arm_rotation = position.upper_arm_rotation;
-	if (isvalid(position.hand_rotation)) hand_rotation = position.hand_rotation;
-	if (isvalid(position.wrist_rotation)) wrist_rotation = position.wrist_rotation;
-	last_valid_position = position;
-	
 	return true;
+}
+
+bool ARobotArm::ApplyPosition(Position position)
+{
+	if (CheckCollision(position))
+	{
+		position = GetPosition() ^ position;
+		base_rotation = position.base_rotation;
+		lower_arm_rotation = position.lower_arm_rotation;
+		upper_arm_rotation = position.upper_arm_rotation;
+		hand_rotation = position.hand_rotation;
+		wrist_rotation = position.wrist_rotation;
+		last_valid_position = position;
+
+		return true;
+	}
+	return false;
 }
 
 UActorComponent* FirstWithTag(AActor* actor, FName tag)
@@ -594,13 +570,15 @@ void ARobotArm::BallLoop()
 
 	auto last_tick = NOW;
 	auto start_tick = NOW;
-	
+
+	bool using_path = false;
+
 	while (ball_loop_running)
 	{
 		auto tick = NOW;
 		double DeltaTime = (tick - last_tick).count() / 1e9;
 		last_tick = tick;
-		
+
 		double now = (tick - start_tick).count() / 1e9;
 
 		if (replay_last_path)
@@ -611,16 +589,21 @@ void ARobotArm::BallLoop()
 
 		Position new_position;
 		if (!path_to_follow(now, new_position))
-			TrackParabola(new_position);
+		{
+			TrackParabola(new_position, DeltaTime);
+			if (using_path)
+				new_position = rest_position ^ new_position;
+			using_path = false;
+		}
 
 		ApplyPosition(new_position);
 
-		actual_base_rotation = actual_base_rotation
-			+ std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-		actual_lower_arm_rotation = actual_lower_arm_rotation
-			+ std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-		actual_upper_arm_rotation = actual_upper_arm_rotation
-			+ std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+		actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime,
+		                                                         motor_speed * DeltaTime);
+		actual_lower_arm_rotation = actual_lower_arm_rotation + std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime,
+		                                                                   motor_speed * DeltaTime);
+		actual_upper_arm_rotation = actual_upper_arm_rotation + std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime,
+		                                                                   motor_speed * DeltaTime);
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 
@@ -632,8 +615,10 @@ void ARobotArm::BallLoop()
 		if (show_profiling)
 			LogDisplay(TEXT("Ball Loop running at %f fps, %f ms between update"), 1. / DeltaTime, DeltaTime * 1000.);
 
-		if (path_to_follow(now, new_position)) {
+		if (path_to_follow(now, new_position))
+		{
 			usleep(2000); // sleep 2ms
+			using_path = true;
 		}
 	}
 
@@ -653,21 +638,35 @@ bool ARobotArm::RobotArmValid()
 		hoop_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Hoop"));
 		bat_component = Cast<UStaticMeshComponent>(FirstWithTag(robot_arm, "Bat"));
 
-		if (!base_component) LogError(TEXT("Robot arm has nothing with tag \"Base\""));
-		if (!lower_arm_component) LogError(TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
-		if (!upper_arm_component) LogError(TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
-		if (!hand_component) LogError(TEXT("Robot arm has nothing with tag \"Hand\""));
-		if (!wrist_component) LogError(TEXT("Robot arm has nothing with tag \"Wrist\""));
-		if (!hoop_component) LogError(TEXT("Robot arm has nothing with tag \"Hoop\""));
-		if (!bat_component) LogError(TEXT("Robot arm has nothing with tag \"Bat\""));
+		if (!base_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Base\""));
+		if (!lower_arm_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Lower_Arm\""));
+		if (!upper_arm_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Upper_Arm\""));
+		if (!hand_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Hand\""));
+		if (!wrist_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Wrist\""));
+		if (!hoop_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Hoop\""));
+		if (!bat_component)
+			LogError(TEXT("Robot arm has nothing with tag \"Bat\""));
 
-		if (!base_component) return false;
-		if (!lower_arm_component) return false;
-		if (!upper_arm_component) return false;
-		if (!hand_component) return false;
-		if (!wrist_component) return false;
-		if (!hoop_component) return false;
-		if (!bat_component) return false;
+		if (!base_component)
+			return false;
+		if (!lower_arm_component)
+			return false;
+		if (!upper_arm_component)
+			return false;
+		if (!hand_component)
+			return false;
+		if (!wrist_component)
+			return false;
+		if (!hoop_component)
+			return false;
+		if (!bat_component)
+			return false;
 
 		if (hoop_component)
 		{
@@ -692,7 +691,7 @@ bool ARobotArm::RobotArmValid()
 
 void ARobotArm::UpdateArmSyncronous(float DeltaTime)
 {
-	if (update_rotations && RobotArmValid())
+	if (update_rotations)
 	{
 		Position new_position;
 
@@ -709,11 +708,16 @@ void ARobotArm::UpdateArmSyncronous(float DeltaTime)
 			if (update_type == User)
 			{
 				new_position = {base_rotation, lower_arm_rotation, upper_arm_rotation, hand_rotation, wrist_rotation};
-				if (isvalid(last_valid_position.base_rotation)) base_rotation = last_valid_position.base_rotation;
-				if (isvalid(last_valid_position.lower_arm_rotation)) lower_arm_rotation = last_valid_position.lower_arm_rotation;
-				if (isvalid(last_valid_position.upper_arm_rotation)) upper_arm_rotation = last_valid_position.upper_arm_rotation;
-				if (isvalid(last_valid_position.hand_rotation)) hand_rotation = last_valid_position.hand_rotation;
-				if (isvalid(last_valid_position.wrist_rotation)) wrist_rotation = last_valid_position.wrist_rotation;
+				if (isvalid(last_valid_position.base_rotation))
+					base_rotation = last_valid_position.base_rotation;
+				if (isvalid(last_valid_position.lower_arm_rotation))
+					lower_arm_rotation = last_valid_position.lower_arm_rotation;
+				if (isvalid(last_valid_position.upper_arm_rotation))
+					upper_arm_rotation = last_valid_position.upper_arm_rotation;
+				if (isvalid(last_valid_position.hand_rotation))
+					hand_rotation = last_valid_position.hand_rotation;
+				if (isvalid(last_valid_position.wrist_rotation))
+					wrist_rotation = last_valid_position.wrist_rotation;
 			}
 
 			if (update_type == Animation)
@@ -738,23 +742,15 @@ void ARobotArm::UpdateArmSyncronous(float DeltaTime)
 			if (update_type == IK && ik_target)
 				InverseKinematics(ik_target->GetActorLocation(), new_position);
 		}
-		else
-		{
-			// if (draw_debug)
-			// {
-			// 	double intersection_radius = arm_range * 100 * base_component->GetComponentScale().X;
-			// 	DrawDebugSphere(GetWorld(), ArmOrigin(), intersection_radius, 30, FColor::Black, 0, -1);
-			// }
-		}
 
 		ApplyPosition(new_position);
 
-		actual_base_rotation = actual_base_rotation
-			+ std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-		actual_lower_arm_rotation = actual_lower_arm_rotation
-			+ std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-		actual_upper_arm_rotation = actual_upper_arm_rotation
-			+ std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
+		actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime,
+		                                                         motor_speed * DeltaTime);
+		actual_lower_arm_rotation = actual_lower_arm_rotation + std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime,
+		                                                                   motor_speed * DeltaTime);
+		actual_upper_arm_rotation = actual_upper_arm_rotation + std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime,
+		                                                                   motor_speed * DeltaTime);
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 
@@ -775,44 +771,66 @@ void ARobotArm::StopBallLoop()
 // Called every frame
 void ARobotArm::Tick(float DeltaTime)
 {
-	if (update_type != Ball)
+	if (RobotArmValid())
 	{
-		StopBallLoop();
-		UpdateArmSyncronous(DeltaTime);
-	}
-	else if (RobotArmValid())
-	{
-		if (GetWorld()->IsGameWorld())
+		arm_origin = FVector{
+			base_component->GetComponentLocation().X,
+			base_component->GetComponentLocation().Y,
+			lower_arm_component->GetComponentLocation().Z
+		};
+
+		world_scale = base_component->GetComponentScale().X;
+		
+		if (update_type != Ball)
 		{
-			if (!ball_loop_running)
-			{
-				StopBallLoop();
-				LogDisplay(TEXT("Started robot arm loop"));
-				ball_loop_running = true;
-				Async(EAsyncExecution::Thread, [&] { BallLoop(); });
-			}
-		} else
-		{
-			ApplyPosition(rest_position);
-			actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-			actual_lower_arm_rotation = actual_lower_arm_rotation + std::clamp(lower_arm_rotation - actual_lower_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-			actual_upper_arm_rotation = actual_upper_arm_rotation + std::clamp(upper_arm_rotation - actual_upper_arm_rotation, -motor_speed * DeltaTime, motor_speed * DeltaTime);
-			actual_hand_rotation = hand_rotation;
-			actual_wrist_rotation = wrist_rotation;
+			StopBallLoop();
+			UpdateArmSyncronous(DeltaTime);
 		}
+		else
+		{
+			if (GetWorld()->IsGameWorld())
+			{
+				if (!ball_loop_running)
+				{
+					StopBallLoop();
+					LogDisplay(TEXT("Started robot arm loop"));
+					ball_loop_running = true;
+					Async(EAsyncExecution::Thread, [&]
+					{
+						BallLoop();
+					});
+				}
+			}
+			else
+			{
+				ApplyPosition(rest_position);
+				actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime,
+																		 motor_speed * DeltaTime);
+				actual_lower_arm_rotation = actual_lower_arm_rotation + std::clamp(lower_arm_rotation - actual_lower_arm_rotation,
+																				   -motor_speed * DeltaTime, motor_speed * DeltaTime);
+				actual_upper_arm_rotation = actual_upper_arm_rotation + std::clamp(upper_arm_rotation - actual_upper_arm_rotation,
+																				   -motor_speed * DeltaTime, motor_speed * DeltaTime);
+				actual_hand_rotation = hand_rotation;
+				actual_wrist_rotation = wrist_rotation;
+			}
+		}
+
+		if (base_component)
+			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, actual_base_rotation)));
+		if (lower_arm_component)
+			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_lower_arm_rotation, 0, 0)));
+		if (upper_arm_component)
+			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
+		if (hand_component)
+			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
+		if (wrist_component)
+			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
 	}
-
-	if (base_component) base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, actual_base_rotation)));
-	if (lower_arm_component) lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_lower_arm_rotation, 0, 0)));
-	if (upper_arm_component) upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
-	if (hand_component) hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
-	if (wrist_component) wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
-
 	Super::Tick(DeltaTime);
 }
 
 #if WITH_EDITOR
-void ARobotArm::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+void ARobotArm::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
@@ -822,7 +840,6 @@ bool ARobotArm::ShouldTickIfViewportsOnly() const
 	return true;
 }
 #endif
-
 
 void ARobotArm::BeginDestroy()
 {

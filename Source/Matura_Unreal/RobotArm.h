@@ -69,7 +69,7 @@ protected:
 			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = v;
 		}
 
-		double diff(Position other)
+		double diff(Position other) const
 		{
 			return max(max(
 				abs(base_rotation - other.base_rotation) / motor_speed, 
@@ -99,7 +99,7 @@ protected:
 			return out;
 		}
 
-		Position operator+(Position other)
+		Position operator+(Position other) const
 		{
 			Position copy = *this;
 			copy.base_rotation += isvalid(other.base_rotation) ? other.base_rotation : 0;
@@ -111,7 +111,7 @@ protected:
 			return copy;
 		}
 
-		Position operator-(Position other)
+		Position operator-(Position other) const
 		{
 			Position copy = *this;
 			copy.base_rotation -= isvalid(other.base_rotation) ? other.base_rotation : 0;
@@ -123,7 +123,7 @@ protected:
 			return copy;
 		}
 
-		Position operator^(Position other)
+		Position operator^(Position other) const
 		{
 			Position copy = *this;
 			if (isvalid(other.base_rotation))
@@ -131,7 +131,7 @@ protected:
 			if (isvalid(other.lower_arm_rotation))
 				copy.lower_arm_rotation = other.lower_arm_rotation;
 			if (isvalid(other.upper_arm_rotation))
-				copy.base_rotation = other.upper_arm_rotation;
+				copy.upper_arm_rotation = other.upper_arm_rotation;
 			if (isvalid(other.hand_rotation))
 				copy.hand_rotation = other.hand_rotation;
 			if (isvalid(other.wrist_rotation))
@@ -140,7 +140,7 @@ protected:
 			return copy;
 		}
 
-		Position to_servo()
+		Position to_servo() const
 		{
 			double base_servo =
 				interpolate(base_rotation, min_rotations[0], max_rotations[0], min_servo[0], max_servo[0]);
@@ -156,7 +156,7 @@ protected:
 			return {base_servo, lower_arm_servo, upper_arm_servo, hand_servo, wrist_servo};
 		}
 
-		Position to_angle()
+		Position to_angle() const
 		{
 			double base_servo =
 				interpolate(base_rotation, min_servo[0], max_servo[0], min_rotations[0], max_rotations[0]);
@@ -272,12 +272,12 @@ protected:
 	void SendRotations();
 
 	bool InverseKinematics(FVector target, Position& position);
-	void TrackParabola(Position& position);
+	void TrackParabola(Position& position, double DeltaTime);
 	void TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset = {0,0});
+	bool CheckCollision(Position position);
 
 	bool ApplyPosition(Position position);
 
-	FVector ArmOrigin() const;
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
 	double path_age = 10000000;
@@ -305,6 +305,9 @@ protected:
 
 	bool ball_loop_running = false;
 	int missed_ticks = 0;
+
+	FVector arm_origin;
+	double world_scale = 1;
 
 public:
 	// Called every frame
@@ -411,17 +414,11 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;
-
-	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
-	bool use_first_intersect = false;
 	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	FVector aim_at = {-1400, 0, 2000};
-
-	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
-	double outgoing_weight = 1;
 	
-	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	FVector impact;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0", EditCondition = "update_type == UpdateType::User"))
