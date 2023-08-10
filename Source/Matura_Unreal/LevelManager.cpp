@@ -103,6 +103,7 @@ void ALevelManager::ApplyFoliageVisibility()
 
 	if (!sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
+		fade_transition = false;
 		UpdateSlideTexture(nullptr);
 	}
 }
@@ -147,12 +148,6 @@ void ALevelManager::LoadCurrentLevel()
 	}
 }
 
-void ALevelManager::FinishLoading()
-{
-	LogDisplay(TEXT("Done unloading"));
-	finished_loading = true;
-}
-
 UTexture2D* ALevelManager::LoadSlide(FName name)
 {
 	auto name_string = name.ToString();
@@ -166,8 +161,6 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 	TArray<FSoftObjectPath> AssetPaths;
 	for (FAssetData& AssetData : AssetDatas)
 	{
-		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
-
 		if (AssetData.AssetName.ToString() == name_string)
 		{
 			AssetPaths.Push(AssetData.GetSoftObjectPath());
@@ -199,7 +192,6 @@ void ALevelManager::ApplyViewportSize(int slide_width, int slide_height)
 			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
 				if (UImage* slide = Cast<UImage>(widget))
 				{
-					LogDisplay(TEXT("BLUBBLUB"));
 					if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
 					{
 						double slide_aspect = slide_width / double(slide_height);
@@ -407,6 +399,7 @@ void ALevelManager::Tick(float DeltaTime)
 	{
 		return;
 	}
+	
 	if (level_to_unload != "")
 	{
 		UGameplayStatics::UnloadStreamLevel(this, level_to_unload, FLatentActionInfo(), true);
@@ -456,7 +449,6 @@ void ALevelManager::Tick(float DeltaTime)
 			switch_direction = level < level_loaded;
 			level_loaded = level;
 
-			// for some reason can't load and unload a level on the same frame, or perhaps I did it incorrectly
 			if (current_level != "")
 			{
 				if (sublevels[level].ToString().ToLower().StartsWith("slide_"))

@@ -46,7 +46,6 @@ protected:
 	void LoadCurrentLevel();
 
 	UFUNCTION(BlueprintCallable, Category = Game)
-	void FinishLoading();
 
 	UTexture2D* LoadSlide(FName name);
 	void ApplyViewportSize(int slide_width, int slide_height);
@@ -60,9 +59,7 @@ protected:
 
 	double normal_opacity_target = 0;
 	double old_opacity_target = 0;
-
-	bool finished_loading = false;
-
+	
 	bool switch_direction = false;
 	bool instant_transition = false;
 	bool fade_transition = false;
