@@ -81,3 +81,5 @@ Package/*
 
 # Slides, may contain personal info
 Content/Slides/
+
+*.blend1

@@ -8,6 +8,7 @@
 
 #include "serial/serial.h"
 
+#include "Math/Vector2D.h"
 #include "CoreMinimal.h"
 #include "Ball.h"
 #include "Engine/StaticMeshActor.h"
@@ -50,8 +51,8 @@ public:
 protected:
 	static constexpr double motor_speed = 220; // degrees per second
 	
-	static constexpr double min_rotations[5] = {-244, -90, -225, -75, 0};
-	static constexpr double max_rotations[5] = {6, 90, 33, 95, 180};
+	static constexpr double min_rotations[5] = {-246, -90, -250, -75, 0};
+	static constexpr double max_rotations[5] = {4, 90, 8, 95, 180};
 
 	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
 	static constexpr double max_servo[5] = {0, 2, 180, 0, 180};
@@ -193,6 +194,8 @@ protected:
 		double rotation_time = 0;
 
 		bool absolute_rotation = false;
+		
+		FVector2d offset;
 
 	private:
 		double movement_time = 0;
@@ -202,16 +205,16 @@ protected:
 
 		LinearMove() {}
 		
-		LinearMove(ARobotArm* robot_arm, FVector start, FVector target, FVector impact_velocity, double min_duration = 0, Position rotation_before = {0}, Position rotation_after = {0}, double rotation_time = 0, bool absolute_rotation = false)
-			: robot_arm(robot_arm), start(start), target(target), impact_velocity(impact_velocity), min_duration(min_duration), rotation_before(rotation_before), rotation_after(rotation_after), rotation_time(rotation_time), absolute_rotation(absolute_rotation)
+		LinearMove(ARobotArm* robot_arm, FVector start, FVector target, FVector impact_velocity, double min_duration = 0, Position rotation_before = {0}, Position rotation_after = {0}, double rotation_time = 0, bool absolute_rotation = false, FVector2d offset = {0, 0})
+			: robot_arm(robot_arm), start(start), target(target), impact_velocity(impact_velocity), min_duration(min_duration), rotation_before(rotation_before), rotation_after(rotation_after), rotation_time(rotation_time), absolute_rotation(absolute_rotation), offset(offset)
 		{
 			if (!robot_arm)
 				return;
 			
 			Position start_rotation, target_rotation;
 			
-			robot_arm->TrackBall(start, impact_velocity, start_rotation);
-			robot_arm->TrackBall(target, impact_velocity,  target_rotation);
+			robot_arm->TrackBall(start, impact_velocity, start_rotation, offset);
+			robot_arm->TrackBall(target, impact_velocity,  target_rotation, offset);
 			
 			movement_time = start_rotation.diff(target_rotation);
 		}
@@ -230,7 +233,7 @@ protected:
 			
 			double t = min(time / movement_time, 1.);
 
-			robot_arm->TrackBall(Lerp(start, target, t), impact_velocity, position);
+			robot_arm->TrackBall(Lerp(start, target, t), impact_velocity, position, offset);
 
 			if (absolute_rotation)
 			{
@@ -420,14 +423,17 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	FVector impact;
+
+	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
+	FVector bat_offset;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-246.0", UIMax = "4.0", EditCondition = "update_type == UpdateType::User"))
 	double base_rotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
 	double lower_arm_rotation;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-225", UIMax = "33", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-250", UIMax = "8", EditCondition = "update_type == UpdateType::User"))
 	double upper_arm_rotation;
     	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0", EditCondition = "update_type == UpdateType::User"))

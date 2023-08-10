@@ -740,7 +740,7 @@ void ARobotArm::UpdateArmSyncronous(float DeltaTime)
 			}
 
 			if (update_type == IK && ik_target)
-				InverseKinematics(ik_target->GetActorLocation(), new_position);
+				TrackBall(ik_target->GetActorLocation(), impact, new_position, {bat_offset.X, bat_offset.Y});
 		}
 
 		ApplyPosition(new_position);
