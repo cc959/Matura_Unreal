@@ -52,10 +52,10 @@ protected:
 	static constexpr double motor_speed = 220; // degrees per second
 	
 	static constexpr double min_rotations[5] = {-246, -90, -250, -75, 0};
-	static constexpr double max_rotations[5] = {4, 90, 8, 95, 180};
+	static constexpr double max_rotations[5] = {4, 83, 8, 95, 180};
 
-	static constexpr double min_servo[5] = {180, 130, 0, 180, 0};
-	static constexpr double max_servo[5] = {0, 2, 180, 0, 180};
+	static constexpr double min_servo[5] = {180, 175, 0, 180, 0};
+	static constexpr double max_servo[5] = {0, 0, 180, 0, 180};
 	
 	struct Position
 	{
@@ -284,6 +284,7 @@ protected:
 	bool serial_loop_running = true;
 	TFuture<void> serial_thread;
 	double path_age = 10000000;
+	double tracking_age = 10000000;
 	ParabPath last_path;
 	LinearMove path_to_follow;
 
@@ -411,9 +412,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Base radius (m)")
 	double base_radius = 0.1;
-	
-	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="End offset (m)", meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
-	double end_offset = 0;
 	
 	UPROPERTY(EditAnywhere, Category = Dimensions, DisplayName="Arm range (m)", meta=(EditCondition = "update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	double arm_range = 0.6;

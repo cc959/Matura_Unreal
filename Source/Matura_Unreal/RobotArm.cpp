@@ -156,19 +156,14 @@ bool ARobotArm::InverseKinematics(FVector target, Position& position)
 
 	// if (draw_debug)
 	//	DrawDebugSphere(GetWorld(), target, 10, 10, FColor::Purple, false, -1, 1, 2);
-
-	double offset = asin(end_offset * 100 * world_scale / FVector2d{relative_position.X, relative_position.Y}.Length());
-
+	
 	// UE Coordinate system is sus
-	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset + PI;
+	double plane_angle = atan2(relative_position.X, relative_position.Y) + PI;
 
 	bool must_flip = (plane_angle > max(-min_rotations[0], -max_rotations[0]) / 180 * PI || plane_angle < min(-min_rotations[0], -max_rotations[0]) /
 		180 * PI);
 
 	CircularClamp(plane_angle, -min_rotations[0] / 180 * PI, -max_rotations[0] / 180 * PI, PI);
-
-	if (must_flip)
-		plane_angle -= 2 * offset;
 
 	position.base_rotation = -plane_angle * 180 / PI;
 
@@ -267,20 +262,22 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 	ParabPath tracking_path;
 	if (ball->started)
 		ball->tracking_path.pop(&tracking_path);
+
+	path_age += DeltaTime;
+	tracking_age += DeltaTime;
+	
 	if (!ball || !tracking_path.IsValid())
 	{
-		if (path_age > 0.25)
+		if (tracking_age > 0.25)
 		{
-			// if last flight was more than 2s ago, go back to home position
 			position = rest_position;
 			return;
 		}
-		path_age += DeltaTime;
 	}
 	else
 	{
-		path_age = 0;
 		last_path = tracking_path;
+		path_age = 0;
 	}
 
 	double intersection_radius = arm_range * 100 * world_scale;
@@ -296,8 +293,13 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 	                    intersections.end());
 
 	if (intersections.size() == 0)
-		return;
+	{
+		if (tracking_age > 0.25)
+			position = rest_position;
 
+		return;
+	}
+	
 	auto calculate_bat = [&](FVector target, FVector impact_velocity)
 	{
 		FVector aim = aim_at - target;
@@ -364,8 +366,14 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 	}
 
 	if (intercept_time < 0)
+	{
+		if (tracking_age > 0.25)
+			position = rest_position;
+		
 		return;
-	
+	}
+
+	tracking_age = 0;
 
 	FVector target = last_path(intercept_time);
 	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
@@ -404,14 +412,9 @@ void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& pos
 	impact_velocity.Normalize();
 
 	FVector relative_position = target - arm_origin;
-
-	bool fixed = false;
-	double offset = asin(end_offset * 100 * world_scale / FVector2d{relative_position.X, relative_position.Y}.Length());
-
-	double plane_angle = atan2(relative_position.X, relative_position.Y) + offset;
-
-again:
-
+	
+	double plane_angle = atan2(relative_position.X, relative_position.Y);
+	
 	auto base_rotator = FQuat(FVector::UpVector, -plane_angle).Rotator();
 	FVector impact_velocity_plane = base_rotator.UnrotateVector(impact_velocity);
 
@@ -437,12 +440,6 @@ again:
 	}
 
 	bool flipped = InverseKinematics(target + base_rotator.RotateVector(arm_offset), position);
-	if (flipped && !fixed)
-	{
-		plane_angle -= 2 * offset;
-		fixed = true;
-		goto again;
-	}
 
 	position.hand_rotation = (flipped ? PI - pitch_angle : pitch_angle) / PI * 180 - position.lower_arm_rotation - position.upper_arm_rotation;
 	position.wrist_rotation = roll_angle / PI * 180 + 90;

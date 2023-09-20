@@ -17,7 +17,7 @@ void setup() {
 
   base.write(69);
   lower_arm.write(87);
-  upper_arm.write(17);
+  upper_arm.write(34);
   hand.write(100);
   wrist.write(90);
 }
