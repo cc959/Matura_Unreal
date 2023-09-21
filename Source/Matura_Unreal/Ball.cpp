@@ -56,9 +56,17 @@ void ABall::BeginPlay()
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
- 	if (!position.ContainsNaN())
-		SetActorLocation(position);
+
+	if (!position_overridden)
+	{
+		if (!position.ContainsNaN())
+			SetActorLocation(position);
+	}
+	else
+	{
+		if (!overridden_position.ContainsNaN())
+			SetActorLocation(overridden_position);
+	}
 
 	manager->DrawBallHistory();
 }

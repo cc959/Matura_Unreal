@@ -21,8 +21,10 @@ public:
 	// Sets default values for this actor's properties
 	ABall();
 	FVector position = FVector(0, 0, 0);
+	FVector overridden_position = FVector(0, 0, 0);
 	EventPasser<ParabPath> tracking_path = {false};
 	bool started = false;
+	bool position_overridden = false;
 
 protected:
 	// Called when the game starts or when spawned

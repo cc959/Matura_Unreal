@@ -257,7 +257,7 @@ std::pair<FVector, FVector> best_impact(FVector v0, FVector v1)
 	return {normal, v_bat};
 }
 
-void ARobotArm::TrackParabola(Position& position, double DeltaTime)
+bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 {
 	ParabPath tracking_path;
 	if (ball->started)
@@ -271,7 +271,7 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 		if (tracking_age > 0.25)
 		{
 			position = rest_position;
-			return;
+			return false;
 		}
 	}
 	else
@@ -297,7 +297,7 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 		if (tracking_age > 0.25)
 			position = rest_position;
 
-		return;
+		return false;
 	}
 	
 	auto calculate_bat = [&](FVector target, FVector impact_velocity)
@@ -370,7 +370,7 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 		if (tracking_age > 0.25)
 			position = rest_position;
 		
-		return;
+		return false;
 	}
 
 	tracking_age = 0;
@@ -383,28 +383,32 @@ void ARobotArm::TrackParabola(Position& position, double DeltaTime)
 		auto [normal, v_bat] = calculate_bat(target, impact_velocity);
 		TrackBall(target, -normal, position);
 
+		FVector end_target = target + normal * 150;
+		FVector middle_target = target + normal * 75;
+
+		Position middle_position;
+		TrackBall(middle_target, -normal, middle_position);
+
 #if WITH_EDITOR // latency differs in in editor and in packaged/standalone build
 		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.325)
 #else
 		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.300)
 #endif
 		{
-			Position start{NaN, NaN, NaN, position.hand_rotation - 20, NaN};
-			Position end{NaN, NaN, NaN, position.hand_rotation + 10, NaN};
+			Position start{NaN, NaN, NaN,  middle_position.hand_rotation - 15, NaN};
+			Position end{NaN, NaN, NaN,  middle_position.hand_rotation + 15, NaN};
 
-			path_to_follow = LinearMove(this, last_path(intercept_time), last_path(intercept_time) + v_bat * (150 / v_bat.Length()), -normal, 0.4,
+			path_to_follow = LinearMove(this, target, end_target, -normal, 0.4,
 			                            start, end, 0.1, true);
 			path_age += path_to_follow.Length();
 		}
-		else
-		{
-			position.hand_rotation -= 20;
-		}
+		position.hand_rotation = middle_position.hand_rotation - 15;
 	}
 	else
 	{
 		TrackBall(target, impact_velocity, position);
 	}
+	return true;
 }
 
 void ARobotArm::TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset)
@@ -577,23 +581,62 @@ void ARobotArm::BallLoop()
 		last_tick = tick;
 
 		double now = (tick - start_tick).count() / 1e9;
+		
+		
+		Position new_position;
+		bool is_update = false;
 
 		if (replay_last_path)
 		{
-			replay_last_path = false;
-			path_to_follow.reset();
-		}
+			
+			if (last_steps.size() != 0)
+			{
+				current_step = (current_step % int(last_steps.size()) + int(last_steps.size())) % int(last_steps.size());
+				ball->position_overridden = true;
+				ball->overridden_position = last_steps[current_step].ball_position;
+				new_position = last_steps[current_step].robot_arm_position;
 
-		Position new_position;
-		if (!path_to_follow(now, new_position))
+				if (move_forward)
+				{
+					current_step++;
+					move_forward = false;
+				}
+
+				if (move_backward)
+				{
+					current_step--;
+					move_backward = false;
+				}
+			}
+		}
+		else
 		{
-			TrackParabola(new_position, DeltaTime);
-			if (using_path)
-				new_position = rest_position ^ new_position;
-			using_path = false;
+			current_step = 0;
+			move_forward = move_backward = false;
+			ball->position_overridden = false;
+			if (!path_to_follow(now, new_position))
+			{
+				is_update = TrackParabola(new_position, DeltaTime);
+				if (using_path)
+				{
+					new_position = rest_position ^ new_position;
+				}
+				using_path = false;
+			} else
+			{
+				is_update = true;
+			}
 		}
 
 		ApplyPosition(new_position);
+		if (is_update)
+			current_steps.push_back({new_position, ball->position, DeltaTime});
+		else
+		{
+			if (current_steps.size())
+				swap(current_steps, last_steps);
+			current_steps.clear();
+		}
 
 		actual_base_rotation = actual_base_rotation + std::clamp(base_rotation - actual_base_rotation, -motor_speed * DeltaTime,
 		                                                         motor_speed * DeltaTime);
@@ -604,7 +647,7 @@ void ARobotArm::BallLoop()
 		actual_hand_rotation = hand_rotation;
 		actual_wrist_rotation = wrist_rotation;
 
-		if (!visual_only)
+		if (!visual_only && !replay_last_path)
 		{
 			SendRotations();
 		}
@@ -813,15 +856,15 @@ void ARobotArm::Tick(float DeltaTime)
 		}
 
 		if (base_component)
-			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, actual_base_rotation)));
+			base_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, 0, base_rotation)));
 		if (lower_arm_component)
-			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_lower_arm_rotation, 0, 0)));
+			lower_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(lower_arm_rotation, 0, 0)));
 		if (upper_arm_component)
-			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_upper_arm_rotation, 0, 0)));
+			upper_arm_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(upper_arm_rotation, 0, 0)));
 		if (hand_component)
-			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(actual_hand_rotation, 0, 0)));
+			hand_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(hand_rotation, 0, 0)));
 		if (wrist_component)
-			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, actual_wrist_rotation, 0)));
+			wrist_component->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0, wrist_rotation, 0)));
 	}
 	Super::Tick(DeltaTime);
 }

@@ -208,8 +208,6 @@ uint32 CameraManager::Run()
 
 				if (j == 0)
 				{
-					LogWarning(TEXT("Something seems wrong with the cameras, they seem very desyncronized! %d"), i);
-
 					ball_points.push_back({-1, -1});
 					continue;
 				}
@@ -384,8 +382,6 @@ uint32 CameraManager::Run()
 		ball->started = true;
 
 		auto time_after = std::chrono::high_resolution_clock::now();
-
-		LogDisplay(TEXT("Took %f ms to update tracking path"), float((time_after-time_before).count()) / 1e6);
 	}
 
 	for (auto& f : camera_threads) // wait for all threads to stop

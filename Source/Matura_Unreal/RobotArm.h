@@ -51,11 +51,11 @@ public:
 protected:
 	static constexpr double motor_speed = 220; // degrees per second
 	
-	static constexpr double min_rotations[5] = {-246, -90, -250, -75, 0};
-	static constexpr double max_rotations[5] = {4, 83, 8, 95, 180};
+	static constexpr double min_rotations[5] = {-180, -90, -250, -75, 0};
+	static constexpr double max_rotations[5] = {0, 83, 8, 95, 175};
 
-	static constexpr double min_servo[5] = {180, 175, 0, 180, 0};
-	static constexpr double max_servo[5] = {0, 0, 180, 0, 180};
+	static constexpr double min_servo[5] = {135, 175, 0, 180, 0};
+	static constexpr double max_servo[5] = {4, 0, 180, 0, 180};
 	
 	struct Position
 	{
@@ -267,6 +267,16 @@ protected:
 			return max(min_duration, movement_time);
 		}
 	};
+
+	struct TimeStep
+	{
+		Position robot_arm_position;
+		FVector ball_position;
+		double delta_time;
+	};
+
+	vector<TimeStep> current_steps;
+	vector<TimeStep> last_steps;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -275,7 +285,7 @@ protected:
 	void SendRotations();
 
 	bool InverseKinematics(FVector target, Position& position);
-	void TrackParabola(Position& position, double DeltaTime);
+	bool TrackParabola(Position& position, double DeltaTime);
 	void TrackBall(FVector target, FVector impact_velocity, Position& position, FVector2d paddle_offset = {0,0});
 	bool CheckCollision(Position position);
 
@@ -425,7 +435,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Motors, meta=(EditCondition = "update_type == UpdateType::IK || update_type == UpdateType::Ball || update_type == UpdateType::LinearPath", EditConditionHides))
 	FVector bat_offset;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-246.0", UIMax = "4.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-180.0", UIMax = "0.0", EditCondition = "update_type == UpdateType::User"))
 	double base_rotation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
@@ -437,11 +447,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-75.0", UIMax = "95.0", EditCondition = "update_type == UpdateType::User"))
 	double hand_rotation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "175.0", EditCondition = "update_type == UpdateType::User"))
 	double wrist_rotation;
 
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-244.0", UIMax = "6.0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-180.0", UIMax = "0.0"))
 	double actual_base_rotation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0"))
@@ -456,7 +466,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "0.0", UIMax = "180.0"))
 	double actual_wrist_rotation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "update_type == UpdateType::Ball", EditConditionHides))
 	bool replay_last_path;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "replay_last_path == true", EditConditionHides))
+	bool move_forward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "replay_last_path == true", EditConditionHides))
+	bool move_backward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "replay_last_path == true", EditConditionHides))
+	int current_step;
 
 };
