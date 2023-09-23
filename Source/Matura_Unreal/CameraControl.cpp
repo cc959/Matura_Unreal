@@ -19,6 +19,11 @@ ACameraControl::ACameraControl()
 	SetShowMouseCursor(true);
 }
 
+double ease(double t)
+{
+	return t * t * (3.0 - 2.0 * t);
+}
+
 void ACameraControl::Tick(float DeltaTime)
 {
 	auto time_before = std::chrono::high_resolution_clock::now();
@@ -33,8 +38,12 @@ void ACameraControl::Tick(float DeltaTime)
 		FIntPoint(viewport_size.X, viewport_size.Y));
 	viewport_size /= dpi;
 
+	
 	if (AFlyCharacter* fly = Cast<AFlyCharacter>(GetPawn()))
 	{
+		if (fly->GetMovementComponent() && PlayerCameraManager && fly->Controller)
+			PlayerCameraManager->SetFOV(60 + 5 * ease(max<double>(0,fly->GetMovementComponent()->Velocity.Dot(FRotationMatrix(fly->Controller->GetControlRotation()).GetScaledAxis(EAxis::X))) / fly->GetMovementComponent()->GetMaxSpeed()));
+		
 		if (fly->hud_instance)
 		{
 			if (UImage* camera_preview = Cast<UImage>(fly->hud_instance->GetWidgetFromName("camera_preview")))
