@@ -232,6 +232,9 @@ uint32 CameraManager::Run()
 			projection_matrices.push_back(projection);
 		}
 
+		for (int i = 0; i < cameras.Num(); i++)
+			cameras[i]->used_ball = ball_points[i];
+		
 		Vec4d average_position(0, 0, 0, 0);
 		double num = 0;
 
@@ -239,11 +242,7 @@ uint32 CameraManager::Run()
 			for (int j = i + 1; j < cameras.Num(); j++)
 			{
 				if (ball_points[i] == Point2d{-1, -1} || ball_points[j] == Point2d{-1, -1})
-				{
-					ball->tracking_path.push({});
-					ball->started = true;
 					continue;
-				}
 
 				std::vector<Point2d> a{ball_points[i]}, b{ball_points[j]};
 				Vec4d position;
@@ -257,11 +256,7 @@ uint32 CameraManager::Run()
 				double error = pow(ball_points[i].x - reprojected_ball_point[0], 2) + pow(ball_points[i].y - reprojected_ball_point[1], 2);
 
 				if (error > 200)
-				{
-					ball->tracking_path.push({});
-					ball->started = true;
 					continue;
-				}
 
 				average_position += position;
 				num++;
@@ -269,6 +264,12 @@ uint32 CameraManager::Run()
 
 		if (num > 0)
 			average_position /= num;
+		else
+		{
+			ball->tracking_path.push({});
+			ball->started = true;
+			continue;
+		}
 
 		double last_frame = 0;
 		for (auto camera : cameras)

@@ -70,6 +70,11 @@ protected:
 			base_rotation = lower_arm_rotation = upper_arm_rotation = hand_rotation = wrist_rotation = v;
 		}
 
+		bool IsValid()
+		{
+			return !isnan(base_rotation) && !isnan(lower_arm_rotation) && !isnan(upper_arm_rotation) && !isnan(wrist_rotation) && !isnan(hand_rotation);
+		}
+		
 		double diff(Position other) const
 		{
 			return max(max(
@@ -322,6 +327,8 @@ protected:
 
 	FVector arm_origin;
 	double world_scale = 1;
+
+	bool move_home = false;
 
 public:
 	// Called every frame

@@ -262,13 +262,13 @@ bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 	ParabPath tracking_path;
 	if (ball->started)
 		ball->tracking_path.pop(&tracking_path);
-
+	
 	path_age += DeltaTime;
 	tracking_age += DeltaTime;
 	
 	if (!ball || !tracking_path.IsValid())
 	{
-		if (tracking_age > 0.25)
+		if (tracking_age > 0.25 || move_home)
 		{
 			position = rest_position;
 			return false;
@@ -294,7 +294,7 @@ bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 
 	if (intersections.size() == 0)
 	{
-		if (tracking_age > 0.25)
+		if (tracking_age > 0.25 || move_home)
 			position = rest_position;
 
 		return false;
@@ -367,7 +367,7 @@ bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 
 	if (intercept_time < 0)
 	{
-		if (tracking_age > 0.25)
+		if (tracking_age > 0.25 || move_home)
 			position = rest_position;
 		
 		return false;
@@ -616,12 +616,14 @@ void ARobotArm::BallLoop()
 			ball->position_overridden = false;
 			if (!path_to_follow(now, new_position))
 			{
-				is_update = TrackParabola(new_position, DeltaTime);
 				if (using_path)
-				{
-					new_position = rest_position ^ new_position;
-				}
+					move_home = true;
 				using_path = false;
+				
+				is_update = TrackParabola(new_position, DeltaTime);
+
+				if (!is_update && new_position.IsValid())
+					new_position = Position::Lerp(GetPosition(), new_position, 0.05);
 			} else
 			{
 				is_update = true;
@@ -630,7 +632,10 @@ void ARobotArm::BallLoop()
 
 		ApplyPosition(new_position);
 		if (is_update)
+		{
 			current_steps.push_back({new_position, ball->position, DeltaTime});
+			move_home = false;
+		}
 		else
 		{
 			if (current_steps.size())

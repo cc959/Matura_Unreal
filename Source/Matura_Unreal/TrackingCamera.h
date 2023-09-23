@@ -108,6 +108,7 @@ public:
 	bool in_use = false;
 
 	Point2d ball = {-1, -1};
+	Point2d used_ball = {-1, -1};
 
 	FTransform camera_transform;
 	std::deque<FTransform> april_transforms;

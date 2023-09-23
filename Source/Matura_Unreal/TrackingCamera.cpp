@@ -863,6 +863,20 @@ void ATrackingCamera::Tick(float DeltaTime)
 
 	UpdateDebugTexture();
 
+	if (used_ball != Point2d{-1, -1} && in_use)
+	{
+		std::vector ball_point = {used_ball};
+		std::vector<Point2d> output_points;
+		undistortPoints(ball_point, output_points, K(), {});
+		FVector homo_ball = {1, output_points[0].x, -output_points[0].y};
+
+
+		FVector origin = GetActorTransform().TransformPosition({0, 0, 0});
+		FVector dir = GetActorTransform().TransformVector(homo_ball / homo_ball.Length());
+
+		DrawDebugLine(GetWorld(), origin, origin + dir * 100000, FColor::Red, false, -1, 1, 3);
+	}
+
 	if (ball != Point2d{-1, -1} && in_use)
 	{
 		std::vector ball_point = {ball};
