@@ -238,7 +238,7 @@ void ATrackingCamera::GetFrame()
 												 &Width, &Height, &NumComponents, STBI_rgb);
 		if (Width != cv_size.width || Height != cv_size.height || NumComponents != 3)
 		{
-			LogWarning(			       TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
+			LogWarning(TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d"), Width, Height);
 			return;
 		}
 		cv_frame_distorted = Mat(cv_size, CV_8UC3, UncompressedData);
@@ -258,7 +258,7 @@ void ATrackingCamera::GetFrame()
 
 		if (width != cv_size.width || height != cv_size.height || result == -1)
 		{
-			LogWarning(				   TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d %d raw size: %d %d"), width, height, result, cv_frame_raw.size().width, cv_frame_raw.size().height);
+			LogWarning(TEXT("The frame wasn't decompressed properly (dimensions or number of components is incorrect) %d %d %d raw size: %d %d"), width, height, result, cv_frame_raw.size().width, cv_frame_raw.size().height);
 			return;
 		}
 
@@ -424,7 +424,6 @@ Point2d ATrackingCamera::FindBall()
 	{
 		std::vector<KeyPoint> points;
 		cv_blob_detector->detect(cv_threshold, points);
-
 
 		sort(points.begin(), points.end(), [](const KeyPoint& a, const KeyPoint& b)
 		{

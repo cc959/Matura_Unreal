@@ -277,6 +277,7 @@ protected:
 	{
 		Position robot_arm_position;
 		FVector ball_position;
+		FVector intercept_position;
 		double delta_time;
 	};
 
@@ -302,6 +303,7 @@ protected:
 	double tracking_age = 10000000;
 	ParabPath last_path;
 	LinearMove path_to_follow;
+	FVector last_intercept;
 
 	Position last_valid_position;
 

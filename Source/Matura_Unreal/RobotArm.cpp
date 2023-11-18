@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <fstream>
 #include <Components/SphereComponent.h>
 
 #include "Core/Public/Misc/AssertionMacros.h"
@@ -378,6 +379,8 @@ bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 	FVector target = last_path(intercept_time);
 	FVector impact_velocity = {last_path.vx, last_path.vy, last_path.derivative(intercept_time)};
 
+	last_intercept = target;
+	
 	if (tool == Bat)
 	{
 		auto [normal, v_bat] = calculate_bat(target, impact_velocity);
@@ -633,13 +636,55 @@ void ARobotArm::BallLoop()
 		ApplyPosition(new_position);
 		if (is_update)
 		{
-			current_steps.push_back({new_position, ball->position, DeltaTime});
+			current_steps.push_back({new_position, ball->position, last_intercept, DeltaTime});
 			move_home = false;
 		}
 		else
 		{
 			if (current_steps.size())
+			{
 				swap(current_steps, last_steps);
+
+				if (ball->save_paths)
+				{
+					auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+				
+					std::stringstream ss;
+					ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+
+					std::string path = "/home/elias/Documents/ParabPaths/Arm-" + ss.str() + ".txt";
+
+					std::ofstream arm_file(path);
+
+					if (arm_file.is_open())
+					{
+						arm_file << "X Y Z color" << "\n";
+						
+						double total_time = 0;
+						auto last_intercept_position = last_steps.back().intercept_position;
+
+						for (auto [robot_arm_position, ball_position, intercept_position, dt] : last_steps)
+							total_time += dt;
+						
+						for (auto [robot_arm_position, ball_position, intercept_position, dt] : last_steps)
+						{
+							arm_file	<< to_string((intercept_position.X - last_intercept_position.X) / 1e3) << " "
+										<< to_string((intercept_position.Y - last_intercept_position.Y) / 1e3) << " "
+										<< to_string((intercept_position.Z - last_intercept_position.Z) / 1e3) << " "
+										<< total_time << "\n";
+
+							total_time -= dt;
+						}
+						
+						arm_file.close();
+							
+						LogDisplay(TEXT("Saved arm movement to file: %s"), *FString(path.c_str()));
+					} else
+					{
+						LogDisplay(TEXT("Could not open file: %s"), *FString(path.c_str()));
+					}
+				}
+			}
 			current_steps.clear();
 		}
 

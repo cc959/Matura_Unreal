@@ -312,7 +312,7 @@ uint32 CameraManager::Run()
 					std::stringstream ss;
 					ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
 
-					std::string path = "/home/elias/Documents/ParabPaths/" + ss.str() + ".txt";
+					std::string path = "/home/elias/Documents/ParabPaths/Path-" + ss.str() + ".txt";
 
 					std::ofstream parab_file(path);
 
