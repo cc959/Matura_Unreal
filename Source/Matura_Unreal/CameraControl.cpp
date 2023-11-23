@@ -42,7 +42,7 @@ void ACameraControl::Tick(float DeltaTime)
 	if (AFlyCharacter* fly = Cast<AFlyCharacter>(GetPawn()))
 	{
 		if (fly->GetMovementComponent() && PlayerCameraManager && fly->Controller)
-			PlayerCameraManager->SetFOV(60 + 5 * ease(max<double>(0,fly->GetMovementComponent()->Velocity.Dot(FRotationMatrix(fly->Controller->GetControlRotation()).GetScaledAxis(EAxis::X))) / fly->GetMovementComponent()->GetMaxSpeed()));
+			PlayerCameraManager->SetFOV(60 + 1 * ease(max<double>(0,fly->GetMovementComponent()->Velocity.Dot(FRotationMatrix(fly->Controller->GetControlRotation()).GetScaledAxis(EAxis::X))) / fly->GetMovementComponent()->GetMaxSpeed()));
 		
 		if (fly->hud_instance)
 		{

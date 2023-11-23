@@ -140,14 +140,17 @@ void ARobotArm::SendRotations()
 		LogDisplay(TEXT("Serial port: %s Message: %s"), *FString(serial_port.getPort().c_str()), *blub);
 	}
 
-	try
+	if (serial_port.isOpen())
 	{
-		serial_port.write(msg);
-		serial_port.flush();
-	}
-	catch (std::exception& e)
-	{
-		LogError(TEXT("Could not send message over serial port: %s"), *FString(e.what()));
+		try
+		{
+			serial_port.write(msg);
+			serial_port.flush();
+		}
+		catch (std::exception& e)
+		{
+			LogError(TEXT("Could not send message over serial port: %s"), *FString(e.what()));
+		}
 	}
 }
 
