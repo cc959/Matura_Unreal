@@ -21,6 +21,14 @@ enum FoliageMode
 	AlwaysDisabled = 2,
 };
 
+UENUM()
+enum TransitionType
+{
+	Instant = 0,
+	Fade = 1,
+	Slide = 2
+};
+
 UCLASS()
 class MATURA_UNREAL_API ALevelManager : public AActor
 {
@@ -74,12 +82,21 @@ public:
 	TSharedPtr<FStreamableHandle> blubpointer;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<FoliageMode> foliage_mode;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category=Transitions)
 	double transition_time = 0.2;
+
+	UPROPERTY(EditAnywhere, Category=Transitions)
+	TEnumAsByte<TransitionType> normal = Instant;
+	
+	UPROPERTY(EditAnywhere, Category=Transitions)
+	TEnumAsByte<TransitionType> subslide = Fade;
+
+	UPROPERTY(EditAnywhere, Category=Transitions)
+	TEnumAsByte<TransitionType> scene = Slide;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FName> sublevels;

@@ -103,7 +103,6 @@ void ALevelManager::ApplyFoliageVisibility()
 
 	if (!sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
-		fade_transition = false;
 		UpdateSlideTexture(nullptr);
 	}
 }
@@ -112,14 +111,57 @@ void ALevelManager::LoadCurrentLevel()
 {
 	LogDisplay(TEXT("Unpaused game"));
 
+	int old_level = level + (switch_direction ? 1 : -1);
+
+	if (old_level >= 0 && old_level < sublevels.Num())
+	{
+
+		auto get_type = [](FString name)
+		{
+			if (name.Len() == 0)
+				return 2;
+			if (name.ToLower().StartsWith("slide_"))
+			{
+				if (name[0] == 's')
+					return 1;
+				else
+					return 0;
+			} else
+			{
+				return 2;
+			}
+		};
+		
+		int old_type = get_type(sublevels[old_level].ToString());
+		int new_type = get_type(sublevels[level].ToString());
+
+		static const TransitionType transition_matrix[3][3] = {
+			{normal, subslide, scene},
+			{subslide, subslide, scene},
+			{scene, scene, scene},
+		};
+
+		TransitionType to_use = transition_matrix[old_type][new_type];
+		
+		switch (to_use)
+		{
+		case Fade:
+			fade_transition = true;
+			instant_transition = false;
+			break;
+		case Instant:
+			fade_transition = false;
+			instant_transition = true;
+			break;
+		case Slide:
+			fade_transition = false;
+			instant_transition = false;
+			break;
+		}
+	}
+	
 	if (sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
-		if (!switch_direction && level - 1 >= 0)
-			fade_transition = sublevels[level].ToString()[0] == 's' && sublevels[level - 1].ToString().ToLower().StartsWith("slide_");
-			// lower case means sub-slide
-		else if (level + 1 < sublevels.Num() && sublevels[level].ToString().ToLower().StartsWith("slide_"))
-			fade_transition = sublevels[level + 1].ToString()[0] == 's'; // lower case means sub-slide
-
 		auto slide_texture = LoadSlide(sublevels[level]);
 		if (slide_texture)
 		{
