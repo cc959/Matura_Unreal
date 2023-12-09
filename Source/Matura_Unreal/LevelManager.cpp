@@ -135,9 +135,12 @@ void ALevelManager::LoadCurrentLevel()
 		int old_type = get_type(sublevels[old_level].ToString());
 		int new_type = get_type(sublevels[level].ToString());
 
-		static const TransitionType transition_matrix[3][3] = {
+		if (switch_direction)
+			swap(old_type, new_type);
+
+		TransitionType transition_matrix[3][3] = {
 			{normal, subslide, scene},
-			{subslide, subslide, scene},
+			{normal, subslide, scene},
 			{scene, scene, scene},
 		};
 
