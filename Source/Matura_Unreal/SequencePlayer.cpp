@@ -3,7 +3,9 @@
 
 #include "SequencePlayer.h"
 
+#include <EngineUtils.h>
 #include <Kismet/GameplayStatics.h>
+
 
 // Sets default values
 ASequencePlayer::ASequencePlayer()
@@ -27,6 +29,62 @@ void ASequencePlayer::Pause()
 		player_object->GetSequencePlayer()->Pause();
 }
 
+bool ASequencePlayer::MoveForward()
+{
+	if (player_object && player_object->GetSequencePlayer())
+	{
+		auto player = player_object->GetSequencePlayer();
+
+		int32 current_frame = player->GetCurrentTime().Time.FrameNumber.Value;
+
+		if (current_frame < 0)
+			player->SetPlaybackPosition({FFrameTime(0), {}}), player->Pause();
+
+		if (abs(player->GetCurrentTime().Time.AsDecimal() - player->GetEndTime().Time.AsDecimal()) < 0.1)
+		{
+			return true;
+		}
+				
+		player->SetPlaybackPosition({FFrameTime(current_frame + 1), {}});
+		player->SetPlayRate(1);
+		player->Play();
+	}
+	else
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool ASequencePlayer::MoveBackward()
+{
+	if (player_object && player_object->GetSequencePlayer())
+	{
+		auto player = player_object->GetSequencePlayer();
+
+		int32 current_frame = player->GetCurrentTime().Time.FrameNumber.Value;
+
+		if (current_frame < 0)
+			player->SetPlaybackPosition({FFrameTime(0), {}}), player->Pause();
+
+		if (player->GetCurrentTime().Time == player->GetStartTime().Time)
+		{
+			return true;
+		}
+				
+		player->SetPlaybackPosition({FFrameTime(current_frame - 1), {}});
+		player->SetPlayRate(-1);
+		player->Play();
+	}
+	else
+	{
+		return true;
+	}
+
+	return false;
+}
+
 // Called every frame
 void ASequencePlayer::Tick(float DeltaTime)
 {
@@ -40,30 +98,6 @@ void ASequencePlayer::Tick(float DeltaTime)
 
 		if (current_frame < 0)
 			player->SetPlaybackPosition({FFrameTime(0), {}}), player->Pause();
-		
-		if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right))
-		{
-			if (!key_pressed)
-			{
-				player->SetPlaybackPosition({FFrameTime(current_frame + 1), {}});
-				player->SetPlayRate(1);
-				player->Play();
-	
-				key_pressed = true;
-			}
-		} else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left))
-		{
-			if (!key_pressed)
-			{
-				player->SetPlaybackPosition({FFrameTime(current_frame - 1), {}});
-				player->SetPlayRate(-1);
-				player->Play();
-				key_pressed = true;
-			}
-		} else
-		{
-			key_pressed = false;
-		}
 	}
 }
 

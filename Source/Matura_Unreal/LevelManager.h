@@ -103,6 +103,8 @@ public:
 
 	FVector2d viewport_size = {};
 
+	int public_level = 0;
+	
 	int level = 0;
 	int level_loaded = -1;
 	bool foliage_level_loaded = false;

@@ -453,27 +453,59 @@ void ALevelManager::Tick(float DeltaTime)
 		return;
 	}
 
-	if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
+	TActorIterator<ASequencePlayer> player(GetWorld());
+	
+	if (public_level != level)
 	{
-		if (key_pressed == false)
-		{
-			level++;
-		}
-		key_pressed = true;
-	}
-	else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp))
-	{
-		if (key_pressed == false)
-		{
-			level--;
-		}
-		key_pressed = true;
+		level = public_level;
 	}
 	else
 	{
-		key_pressed = false;
+		if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
+		{
+			if (key_pressed == false)
+			{
+				level++;
+				public_level = level;
+			}
+			key_pressed = true;
+		}
+		else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp))
+		{
+			if (key_pressed == false)
+			{
+				level--;
+				public_level = level;
+			}
+			key_pressed = true;
+		} else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right))
+		{
+			if (key_pressed == false)
+			{
+				if (!player || player->MoveForward())
+				{
+					level++;
+					public_level = level;
+				}
+			}
+			key_pressed = true;
+		} else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left))
+		{
+			if (key_pressed == false)
+			{
+				if (!player || player->MoveBackward())
+				{
+					level--;
+					public_level = level;
+				}
+			}
+			key_pressed = true;
+		}
+		else
+		{
+			key_pressed = false;
+		}
 	}
-
 
 	if (level >= 0 && level < sublevels.Num() && !sublevels[level].IsNone())
 	{
@@ -519,7 +551,7 @@ void ALevelManager::Tick(float DeltaTime)
 	}
 	else
 	{
-		level = level_loaded;
+		level = public_level = level_loaded;
 		LogError(TEXT("Error loading level number %d"), level);
 	}
 }

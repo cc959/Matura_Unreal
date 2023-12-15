@@ -4,6 +4,9 @@
 
 #include <LevelSequencePlayer.h>
 
+#include "GlobalIncludes.h"
+#include "LevelManager.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LevelSequenceActor.h"
@@ -33,5 +36,6 @@ public:
 	ALevelSequenceActor* player_object;
 
 	void Pause();
-
+	bool MoveForward();
+	bool MoveBackward();
 };
