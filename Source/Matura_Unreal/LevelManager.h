@@ -97,9 +97,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category=Transitions)
 	TEnumAsByte<TransitionType> scene = Slide;
+
+	UPROPERTY(EditAnywhere, Category=Transitions)
+	bool inverted_controls = false;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FName> sublevels;
+
+	
 
 	FVector2d viewport_size = {};
 

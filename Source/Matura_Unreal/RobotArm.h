@@ -51,10 +51,10 @@ public:
 protected:
 	static constexpr double motor_speed = 220; // degrees per second
 	
-	static constexpr double min_rotations[5] = {-180, -90, -250, -75, 0};
-	static constexpr double max_rotations[5] = {0, 83, 8, 95, 175};
+	static constexpr double min_rotations[5] = {-180, -84, -250, -75, 0};
+	static constexpr double max_rotations[5] = {0, 90, 8, 95, 175};
 
-	static constexpr double min_servo[5] = {135, 175, 0, 180, 0};
+	static constexpr double min_servo[5] = {135, 180, 0, 180, 0};
 	static constexpr double max_servo[5] = {4, 0, 180, 0, 180};
 	
 	struct Position
@@ -447,7 +447,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-180.0", UIMax = "0.0", EditCondition = "update_type == UpdateType::User"))
 	double base_rotation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-90.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-84.0", UIMax = "90.0", EditCondition = "update_type == UpdateType::User"))
 	double lower_arm_rotation;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motors, meta=(UIMin = "-250", UIMax = "8", EditCondition = "update_type == UpdateType::User"))

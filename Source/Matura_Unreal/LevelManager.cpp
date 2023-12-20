@@ -461,7 +461,8 @@ void ALevelManager::Tick(float DeltaTime)
 	}
 	else
 	{
-		if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown))
+		if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right) && inverted_controls) ||
+			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown) && !inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -470,7 +471,8 @@ void ALevelManager::Tick(float DeltaTime)
 			}
 			key_pressed = true;
 		}
-		else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp))
+		else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left) && inverted_controls) ||
+			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && !inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -478,7 +480,8 @@ void ALevelManager::Tick(float DeltaTime)
 				public_level = level;
 			}
 			key_pressed = true;
-		} else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right))
+		} else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right) && !inverted_controls) ||
+			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown) && inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -489,7 +492,8 @@ void ALevelManager::Tick(float DeltaTime)
 				}
 			}
 			key_pressed = true;
-		} else if (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left))
+		} else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left) && !inverted_controls) ||
+			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && inverted_controls))
 		{
 			if (key_pressed == false)
 			{
