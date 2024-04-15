@@ -2,7 +2,7 @@
 # *DO NOT EDIT*
 
 UNREALROOTPATH = /opt/unreal-engine
-GAMEPROJECTFILE =/home/elias/Documents/Unreal Projects/Matura_Unreal/Matura_Unreal.uproject
+GAMEPROJECTFILE =/home/elias/Documents/GitHub/Matura_Unreal/Matura_Unreal.uproject
 
 TARGETS = \
 	Matura_Unreal-Linux-DebugGame  \
