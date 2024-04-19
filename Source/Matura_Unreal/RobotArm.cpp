@@ -395,11 +395,7 @@ bool ARobotArm::TrackParabola(Position& position, double DeltaTime)
 		Position middle_position;
 		TrackBall(middle_target, -normal, middle_position);
 
-#if WITH_EDITOR // latency differs in in editor and in packaged/standalone build
-		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.325)
-#else
-		if (abs(intercept_time - (last_path.t1 + path_age)) < 0.300)
-#endif
+		if (abs(intercept_time - (last_path.t1 + path_age)) < timing)
 		{
 			Position start{NaN, NaN, NaN,  middle_position.hand_rotation - 15, NaN};
 			Position end{NaN, NaN, NaN,  middle_position.hand_rotation + 15, NaN};

@@ -368,6 +368,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = SerialSettings, meta = (EditCondition = "visual_only == false", EditConditionHides))
 	bool debug_serial = false;
 
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "update_type == UpdateType::Ball && tool == Tool::Bat", EditConditionHides))
+	float timing = 0.325;
+	
 	UPROPERTY(EditAnywhere)
 	AActor* robot_arm;
 	
