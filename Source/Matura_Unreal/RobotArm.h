@@ -51,8 +51,8 @@ public:
 protected:
 	static constexpr double motor_speed = 220; // degrees per second
 	
-	static constexpr double min_rotations[5] = {-180, -84, -250, -75, 0};
-	static constexpr double max_rotations[5] = {0, 90, 8, 95, 175};
+	static constexpr double min_rotations[5] = {-180, -90, -250, -75, 0};
+	static constexpr double max_rotations[5] = {0, 85, 8, 95, 175};
 
 	static constexpr double min_servo[5] = {135, 180, 0, 180, 0};
 	static constexpr double max_servo[5] = {4, 0, 180, 0, 180};
