@@ -9,7 +9,6 @@
 #include "CameraControl.h"
 #include "GameFramework/Actor.h"
 #include "Engine/ObjectLibrary.h"
-#include "Engine/Classes/Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "LevelManager.generated.h"
 

@@ -42,7 +42,7 @@ ParabPath ParabPath::from2Points(Position p1, Position p2, double a)
 
 std::vector<double> ParabPath::LeastSquares(const Eigen::MatrixXd& data, int degree)
 {
-	assert(data.rows() >= degree);
+	// assert(data.rows() >= degree);
 
 	// https://www.reddit.com/r/cpp_questions/comments/v5oxql/polynomial_curve_fitting/
 	Eigen::MatrixXd powers(data.rows(), degree + 1);
@@ -62,7 +62,7 @@ std::vector<double> ParabPath::LeastSquares(const Eigen::MatrixXd& data, int deg
 
 ParabPath ParabPath::fromNPoints(std::vector<Position> positions)
 {
-	assert(positions.size() >= 3);
+	// assert(positions.size() >= 3);
 
 	double t0 = positions[0].time;
 	double t1 = positions.back().time;

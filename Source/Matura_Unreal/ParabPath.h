@@ -8,7 +8,10 @@
 
 #include "CoreMinimal.h"
 
-#include <Eigen/Dense>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshadow"
+#include "Eigen/Dense"
+#pragma clang diagnostic pop
 
 struct Position
 {
