@@ -1,0 +1,410 @@
+[
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/main.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/main.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/main.cpp",
+  "output": "CMakeFiles/ServerApp.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/TrackingCamera.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/TrackingCamera.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/TrackingCamera.cpp",
+  "output": "CMakeFiles/ServerApp.dir/src/TrackingCamera.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/CameraManager.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/CameraManager.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/CameraManager.cpp",
+  "output": "CMakeFiles/ServerApp.dir/src/CameraManager.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/apriltag.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/apriltag.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/apriltag_pose.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_pose.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_pose.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/apriltag_pose.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/apriltag_quad_thresh.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_quad_thresh.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_quad_thresh.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/apriltag_quad_thresh.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tag16h5.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag16h5.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag16h5.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tag16h5.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tag25h9.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag25h9.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag25h9.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tag25h9.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tag36h10.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h10.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h10.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tag36h10.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tag36h11.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h11.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h11.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tag36h11.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tagCircle21h7.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle21h7.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle21h7.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tagCircle21h7.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tagCircle49h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle49h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle49h12.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tagCircle49h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tagCustom48h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCustom48h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCustom48h12.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tagCustom48h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tagStandard41h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard41h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard41h12.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tagStandard41h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/tagStandard52h13.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard52h13.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard52h13.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/tagStandard52h13.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/g2d.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/g2d.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/g2d.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/g2d.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/getopt.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/getopt.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/getopt.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/getopt.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/homography.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/homography.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/homography.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/homography.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8x3.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x3.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x3.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8x3.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8x4.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x4.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x4.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/image_u8x4.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/matd.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/matd.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/matd.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/matd.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/pam.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pam.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pam.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/pam.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/pjpeg-idct.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg-idct.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg-idct.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/pjpeg-idct.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/pjpeg.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/pjpeg.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/pnm.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pnm.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pnm.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/pnm.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/string_util.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/string_util.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/string_util.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/string_util.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/svd22.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/svd22.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/svd22.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/svd22.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/time_util.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/time_util.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/time_util.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/time_util.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/unionfind.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/unionfind.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/unionfind.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/unionfind.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/workerpool.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/workerpool.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/workerpool.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/workerpool.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/zarray.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zarray.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zarray.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/zarray.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/zhash.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zhash.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zhash.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/zhash.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ServerApp.dir/src/apriltag/common/zmaxheap.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zmaxheap.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zmaxheap.c",
+  "output": "CMakeFiles/ServerApp.dir/src/apriltag/common/zmaxheap.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/client_example.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/client_example.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/client_example.cpp",
+  "output": "CMakeFiles/ClientApp.dir/src/client_example.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/TrackingCamera.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/TrackingCamera.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/TrackingCamera.cpp",
+  "output": "CMakeFiles/ClientApp.dir/src/TrackingCamera.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu++20 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/CameraManager.cpp.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/CameraManager.cpp",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/CameraManager.cpp",
+  "output": "CMakeFiles/ClientApp.dir/src/CameraManager.cpp.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/apriltag.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/apriltag.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/apriltag_pose.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_pose.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_pose.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/apriltag_pose.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/apriltag_quad_thresh.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_quad_thresh.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_quad_thresh.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/apriltag_quad_thresh.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tag16h5.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag16h5.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag16h5.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tag16h5.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tag25h9.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag25h9.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag25h9.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tag25h9.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tag36h10.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h10.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h10.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tag36h10.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tag36h11.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h11.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h11.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tag36h11.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tagCircle21h7.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle21h7.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle21h7.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tagCircle21h7.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tagCircle49h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle49h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle49h12.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tagCircle49h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tagCustom48h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCustom48h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCustom48h12.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tagCustom48h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tagStandard41h12.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard41h12.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard41h12.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tagStandard41h12.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/tagStandard52h13.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard52h13.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard52h13.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/tagStandard52h13.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/g2d.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/g2d.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/g2d.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/g2d.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/getopt.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/getopt.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/getopt.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/getopt.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/homography.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/homography.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/homography.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/homography.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8x3.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x3.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x3.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8x3.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8x4.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x4.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x4.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/image_u8x4.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/matd.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/matd.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/matd.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/matd.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/pam.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pam.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pam.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/pam.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/pjpeg-idct.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg-idct.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg-idct.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/pjpeg-idct.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/pjpeg.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/pjpeg.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/pnm.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pnm.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pnm.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/pnm.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/string_util.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/string_util.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/string_util.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/string_util.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/svd22.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/svd22.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/svd22.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/svd22.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/time_util.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/time_util.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/time_util.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/time_util.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/unionfind.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/unionfind.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/unionfind.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/unionfind.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/workerpool.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/workerpool.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/workerpool.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/workerpool.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/zarray.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zarray.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zarray.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/zarray.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/zhash.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zhash.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zhash.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/zhash.c.o"
+},
+{
+  "directory": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+  "command": "/usr/bin/clang -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/. -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./include -I/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/./src -isystem /usr/include/opencv4 -isystem /usr/include/eigen3 -g -std=gnu11 -O3 -march=native -o CMakeFiles/ClientApp.dir/src/apriltag/common/zmaxheap.c.o -c /home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zmaxheap.c",
+  "file": "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zmaxheap.c",
+  "output": "CMakeFiles/ClientApp.dir/src/apriltag/common/zmaxheap.c.o"
+}
+]

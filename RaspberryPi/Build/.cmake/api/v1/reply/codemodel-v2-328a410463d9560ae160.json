@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Matura",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ClientApp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ClientApp-Debug-a9bdf0d2612d9c0f1068.json",
+					"name" : "ClientApp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ServerApp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ServerApp-Debug-0ae2225f4c20a0a05957.json",
+					"name" : "ServerApp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+		"source" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

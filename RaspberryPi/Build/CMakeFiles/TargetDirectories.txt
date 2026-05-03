@@ -1,0 +1,4 @@
+/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build/CMakeFiles/ServerApp.dir
+/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build/CMakeFiles/ClientApp.dir
+/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build/CMakeFiles/edit_cache.dir
+/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build/CMakeFiles/rebuild_cache.dir

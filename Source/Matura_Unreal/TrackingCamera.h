@@ -4,12 +4,12 @@
 
 #include <map>
 #include <queue>
+#include <mutex>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
 #include "ImagePlateComponent.h"
-#include "MyUserWidget.h"
 #include "IntVectorTypes.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -19,7 +19,7 @@
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
 
-
+#include "TCPMessages.h"
 #include "Tag.h"
 
 #include "PreOpenCVHeaders.h"
@@ -72,6 +72,14 @@ enum DebugFrameType
 	HueOnly = 2 UMETA(DisplayName = "Hue Only"),
 	SatOnly = 3 UMETA(DisplayName = "Saturation Only"),
 	ValOnly = 4 UMETA(DisplayName = "Value Only"),
+	Preview = 5 UMETA(DisplayName = "Preview"),
+};
+
+UENUM()
+enum CameraType
+{
+	Local = 0 UMETA(DisplayName = "Local"),
+	Remote = 1 UMETA(DisplayName = "Remote"),
 };
 
 UCLASS()
@@ -84,14 +92,16 @@ public:
 	ATrackingCamera();
 
 	void InitCamera();
+	void SetupDebugTexture(int width, int height);
 	void CreateTagDetector();
 
 	double SyncFrame();
 	void GetFrame();
 	Point2d FindBall();
 	double UpdateTransform(FTransform update);
-	void DrawDetectedTags();
-	std::pair<UE::Math::TTransform<double>, std::map<ATag*, UE::Math::TMatrix<double>>> UpdateTags(Mat frame);
+	void DrawDetectedTags(Mat &cv_debug_frame_temp);
+	std::vector<TCPMessages::_TagDetection> ExtractTags(Mat frame);
+	std::pair<UE::Math::TTransform<double>, std::map<ATag *, UE::Math::TMatrix<double>>> ApplyTagPoses(std::vector<TCPMessages::_TagDetection> detections);
 	void ReleaseTagDetector();
 	void FindTags();
 
@@ -103,7 +113,7 @@ public:
 
 	Mat K() const;
 	Mat p() const;
-	Mutex destroy_lock;
+	std::mutex destroy_lock;
 	bool loaded = false;
 	bool in_use = false;
 
@@ -121,6 +131,9 @@ public:
 	// the camera manager want to update tags, can't as is in other thread
 	bool must_update_tags = false;
 
+	std::mutex debug_frame_mutex;
+	Mat cv_debug_frame;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -128,7 +141,6 @@ protected:
 
 	VideoCapture cv_cap;
 	
-	Mat cv_debug_frame;
 	Ptr<BackgroundSubtractor> cv_bg_subtractor;
 	Ptr<SimpleBlobDetector> cv_blob_detector;
 	apriltag_detector* at_td = nullptr;
@@ -142,10 +154,8 @@ protected:
 	std::vector<Point2f> ball_path;
 	int ball_steps_skipped = 0;
 
-	Mutex last_tags_mut;
+	std::mutex last_tags_mut;
 	std::vector<apriltag_detection_t> last_tags;
-
-
 	
 public:
 	// Called every frame
@@ -166,6 +176,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent *camera_mesh;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<CameraType> camera_type = CameraType::Local;
 
 	UPROPERTY(EditAnywhere)
 	bool debug_output = false;
@@ -230,7 +243,7 @@ public:
 	int min_blob_size = 300;
 
 	UPROPERTY(EditAnywhere, Category = BlobParams)
-	TEnumAsByte<DebugFrameType> debug_frame_type = None;
+	TEnumAsByte<DebugFrameType> debug_frame_type = DebugFrameType::None;
 
 	UPROPERTY(EditAnywhere, Category = BlobParams, meta = (EditCondition = "debug_frame_type != 0", EditConditionHides))
 	bool apply_threshold_to_debug_frame = false;

@@ -7,7 +7,7 @@
 #include "EventPasser.h"
 #include "MatrixTypes.h"
 #include "TrackingCamera.h"
-
+#include "TCPMessages.h"
 #include "ParabPath.h"
 
 class MATURA_UNREAL_API CameraManager : public FRunnable
@@ -38,9 +38,9 @@ public:
 		int camera_id;
 	};
 
-private:
-
 	EventPasser<Detection> event_passer;
+
+private:
 	
 	std::deque<Position> ball_positions;
 	std::deque<ParabPath> ball_paths;

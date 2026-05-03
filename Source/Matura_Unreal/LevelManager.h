@@ -6,6 +6,7 @@
 #include <vector>
 #include <Engine/StreamableManager.h>
 
+#include "MyUserWidget.h"
 #include "CameraControl.h"
 #include "GameFramework/Actor.h"
 #include "Engine/ObjectLibrary.h"

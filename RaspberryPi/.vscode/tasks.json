@@ -1,0 +1,59 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-server",
+			"type": "shell",
+			"command": "cmake --build ${workspaceFolder}/Build --config Debug --target ServerApp -- -j 12",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"CMAKE_EXE_LINKER_FLAGS": "-fuse-ld=mold",
+					"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+				}
+			},
+			"group": "build"
+		},
+		{
+			"label": "build-client",
+			"type": "shell",
+			"command": "cmake --build ${workspaceFolder}/Build --config Debug --target ClientApp -- -j 12",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"CMAKE_EXE_LINKER_FLAGS": "-fuse-ld=mold",
+					"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+				}
+			},
+			"group": "build"
+		},
+		{
+			"label": "build-all",
+			"type": "shell",
+			"command": "cmake --build ${workspaceFolder}/Build --config Debug -- -j 12",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"CMAKE_EXE_LINKER_FLAGS": "-fuse-ld=mold",
+					"CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+				}
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"cmake-configure"
+			]
+		},
+		{
+			"label": "cmake-configure",
+			"type": "shell",
+			"command": "mkdir -p ${workspaceFolder}/Build && cd ${workspaceFolder}/Build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		}
+	]
+}

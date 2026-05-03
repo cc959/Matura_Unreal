@@ -11,6 +11,8 @@
 #include "Styling/SlateBrush.h"
 #include "Components/BackgroundBlur.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/Image.h"
+#include "MyUserWidget.h"
 
 ACameraControl::ACameraControl()
 {
@@ -57,6 +59,7 @@ void ACameraControl::Tick(float DeltaTime)
 						if (camera)
 						{
 							selected = camera;
+							selected->debug_frame_type = Preview;
 
 							std::pair<double, int> largest = max(std::pair((mouse_position - FVector2D{0, 0}).Size(), 0), std::pair((mouse_position - FVector2D{viewport_size.X, 0}).Size(), 1));
 							largest = max(largest, std::pair((mouse_position - FVector2D{0, viewport_size.Y}).Size(), 2));
@@ -93,6 +96,8 @@ void ACameraControl::Tick(float DeltaTime)
 						brush.SetResourceObject(selected->camera_texture_2d);
 						camera_preview->SetBrush(brush);
 						camera_preview->SetVisibility(ESlateVisibility::Visible);
+
+						LogDisplay(TEXT("Camera preview visibility"));
 
 						if (auto slot = Cast<UCanvasPanelSlot>(camera_preview->Slot))
 						{
@@ -131,7 +136,7 @@ void ACameraControl::Tick(float DeltaTime)
 						{
 							if (WasInputKeyJustPressed(FKey("LeftMouseButton")))
 							{
-								if (selected->debug_frame_type == None)
+								if (selected->debug_frame_type == Preview)
 									selected->debug_frame_type = Threshold;
 								else if (selected->debug_frame_type == Threshold)
 									selected->debug_frame_type = HueOnly;
@@ -139,10 +144,10 @@ void ACameraControl::Tick(float DeltaTime)
 									selected->debug_frame_type = SatOnly;
 								else if (selected->debug_frame_type == SatOnly)
 									selected->debug_frame_type = ValOnly;
-								else if (selected->debug_frame_type == ValOnly)
-									selected->debug_frame_type = None;
+								else if (selected->debug_frame_type == ValOnly || selected->debug_frame_type == None)
+									selected->debug_frame_type = Preview;
 
-								selected->draw_debug_overlay = selected->debug_frame_type == None;
+								selected->draw_debug_overlay = true;
 							}
 
 							if (WasInputKeyJustPressed(FKey("RightMouseButton")))

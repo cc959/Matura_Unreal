@@ -52,6 +52,10 @@ void ATag::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
 	
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
+	auto matrix = mesh->GetComponentTransform().ToMatrixNoScale();
+
+	LogDisplay(TEXT("Matrix: %s"), *matrix.ToString());
+
 }
 #endif
 

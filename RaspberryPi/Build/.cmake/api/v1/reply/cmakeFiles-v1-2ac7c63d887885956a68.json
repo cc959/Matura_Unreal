@@ -1,0 +1,404 @@
+{
+	"globsDependent" : 
+	[
+		{
+			"expression" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/*.c",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_pose.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/apriltag_quad_thresh.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag16h5.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag25h9.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h10.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tag36h11.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle21h7.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCircle49h12.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagCustom48h12.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard41h12.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/tagStandard52h13.c"
+			]
+		},
+		{
+			"expression" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/*.c",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/g2d.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/getopt.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/homography.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x3.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/image_u8x4.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/matd.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pam.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg-idct.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pjpeg.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/pnm.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/string_util.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/svd22.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/time_util.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/unionfind.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/workerpool.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zarray.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zhash.c",
+				"/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/apriltag/common/zmaxheap.c"
+			]
+		},
+		{
+			"expression" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/src/serial/*.cc",
+			"listDirectories" : true,
+			"paths" : []
+		}
+	],
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "Build/CMakeFiles/3.31.6/CMakeSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "Build/CMakeFiles/3.31.6/CMakeCCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "Build/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/UnixPaths.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/Clang-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/Clang.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-Clang-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Internal/CMakeCLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Linker/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Linker/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linker/Linux-GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linker/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/Clang-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Compiler/Clang.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-Clang-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linux-GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Linker/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Linker/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/opencv4/OpenCVConfig-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/opencv4/OpenCVConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/opencv4/OpenCVModules.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/opencv4/OpenCVModules-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/share/eigen3/cmake/Eigen3ConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/share/eigen3/cmake/Eigen3Config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/share/eigen3/cmake/Eigen3Targets.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/FindBoost.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/Boost-1.87.0/BoostConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/Boost-1.87.0/BoostConfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_system-1.87.0/boost_system-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_system-1.87.0/boost_system-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/BoostDetectToolset-1.87.0.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_system-1.87.0/libboost_system-variant-shared.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_system-1.87.0/libboost_system-variant-static.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_serialization-1.87.0/boost_serialization-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_serialization-1.87.0/boost_serialization-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/BoostDetectToolset-1.87.0.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_serialization-1.87.0/libboost_serialization-variant-shared.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_serialization-1.87.0/libboost_serialization-variant-static.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/usr/lib/cmake/boost_headers-1.87.0/boost_headers-config.cmake"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi/Build",
+		"source" : "/home/elias/Documents/GitHub/Matura_Unreal/RaspberryPi"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "LevelManager.h"
 
 #include <EngineUtils.h>
@@ -40,15 +39,15 @@ void ALevelManager::BeginPlay()
 	object_library->LoadAssetDataFromPath(TEXT("/Game/Slides/"));
 	object_library->LoadAssetsFromAssetData();
 
-	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
+	FAssetRegistryModule &AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
 	TArray<FAssetData> ObjectList;
 
 	AssetRegistryModule.Get().GetAllAssets(ObjectList);
 
-	for (FAssetData& AssetData : ObjectList)
+	for (FAssetData &AssetData : ObjectList)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
-		//LogWarning(TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
+		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *AssetData.GetSoftObjectPath().ToString());
+		// LogWarning(TEXT("%s"), *AssetData.GetSoftObjectPath().ToString());
 	}
 
 	old_slide_texture = nullptr;
@@ -126,12 +125,13 @@ void ALevelManager::LoadCurrentLevel()
 					return 1;
 				else
 					return 0;
-			} else
+			}
+			else
 			{
 				return 2;
 			}
 		};
-		
+
 		int old_type = get_type(sublevels[old_level].ToString());
 		int new_type = get_type(sublevels[level].ToString());
 
@@ -145,7 +145,7 @@ void ALevelManager::LoadCurrentLevel()
 		};
 
 		TransitionType to_use = transition_matrix[old_type][new_type];
-		
+
 		switch (to_use)
 		{
 		case Fade:
@@ -162,7 +162,7 @@ void ALevelManager::LoadCurrentLevel()
 			break;
 		}
 	}
-	
+
 	if (sublevels[level].ToString().ToLower().StartsWith("slide_"))
 	{
 		auto slide_texture = LoadSlide(sublevels[level]);
@@ -173,14 +173,14 @@ void ALevelManager::LoadCurrentLevel()
 		}
 		else
 		{
-			LogError(TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
+			LogErr(TEXT("Could not load slide texture of slide %s"), *sublevels[level].ToString());
 		}
 		current_level = "";
 	}
 	else
 	{
 		LogDisplay(TEXT("Loading level number %d: %s, current level: %s"), level, *sublevels[level].ToString(),
-		       *current_level.ToString());
+				   *current_level.ToString());
 
 		FLatentActionInfo info;
 		info.CallbackTarget = this;
@@ -193,7 +193,7 @@ void ALevelManager::LoadCurrentLevel()
 	}
 }
 
-UTexture2D* ALevelManager::LoadSlide(FName name)
+UTexture2D *ALevelManager::LoadSlide(FName name)
 {
 	auto name_string = name.ToString();
 	if (name_string.StartsWith("slide_"))
@@ -204,7 +204,7 @@ UTexture2D* ALevelManager::LoadSlide(FName name)
 	object_library->GetAssetDataList(AssetDatas);
 
 	TArray<FSoftObjectPath> AssetPaths;
-	for (FAssetData& AssetData : AssetDatas)
+	for (FAssetData &AssetData : AssetDatas)
 	{
 		if (AssetData.AssetName.ToString() == name_string)
 		{
@@ -235,7 +235,7 @@ void ALevelManager::ApplyViewportSize(int slide_width, int slide_height)
 		if (fly->hud_instance)
 		{
 			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("old_slide")})
-				if (UImage* slide = Cast<UImage>(widget))
+				if (UImage *slide = Cast<UImage>(widget))
 				{
 					if (auto slot = Cast<UCanvasPanelSlot>(slide->Slot))
 					{
@@ -275,20 +275,20 @@ bool ALevelManager::UpdateWidgets()
 		if (fly->hud_instance)
 		{
 			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("slide"), fly->hud_instance->GetWidgetFromName("slide_bg")})
-				if (UImage* slide = Cast<UImage>(widget))
+				if (UImage *slide = Cast<UImage>(widget))
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * normal_target;
 					if (!instant_transition)
 						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
-						                    viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+											viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - normal_opacity_target;
 					if (!instant_transition)
 						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
-						                            GetWorld()->DeltaTimeSeconds / transition_time);
+													GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
@@ -296,20 +296,20 @@ bool ALevelManager::UpdateWidgets()
 				}
 
 			for (auto widget : std::vector{fly->hud_instance->GetWidgetFromName("old_slide"), fly->hud_instance->GetWidgetFromName("old_slide_bg")})
-				if (UImage* slide = Cast<UImage>(widget))
+				if (UImage *slide = Cast<UImage>(widget))
 				{
 					auto render_transform = slide->GetRenderTransform();
 					double offset = slide->GetRenderTransform().Translation.Y - viewport_size.Y * old_target;
 					if (!instant_transition)
 						offset = std::clamp(offset, -viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time,
-						                    viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
+											viewport_size.Y * GetWorld()->DeltaTimeSeconds / transition_time);
 					render_transform.Translation.Y -= offset;
 					slide->SetRenderTransform(render_transform);
 
 					double opacity_offset = slide->GetRenderOpacity() - old_opacity_target;
 					if (!instant_transition)
 						opacity_offset = std::clamp(opacity_offset, -GetWorld()->DeltaTimeSeconds / transition_time,
-						                            GetWorld()->DeltaTimeSeconds / transition_time);
+													GetWorld()->DeltaTimeSeconds / transition_time);
 					slide->SetRenderOpacity(slide->GetRenderOpacity() - opacity_offset);
 
 					transition_is_done &= abs(opacity_offset) < 1e-5;
@@ -324,14 +324,13 @@ bool ALevelManager::UpdateWidgets()
 	return transition_is_done;
 }
 
-void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
+void ALevelManager::UpdateSlideTexture(UTexture *slide_texture)
 {
 	bool show_new = bool(slide_texture);
 	bool show_old = bool(old_slide_texture);
 
 	if (switch_direction && !fade_transition)
 		swap(show_new, show_old);
-
 
 	if (fade_transition)
 	{
@@ -351,7 +350,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 
 	if (!slide_texture)
 	{
-		LogError(TEXT("Slide texture is null!"));
+		LogErr(TEXT("Slide texture is null!"));
 	}
 
 	if (!camera_control)
@@ -362,7 +361,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 		auto fly = Cast<AFlyCharacter>(camera_control->GetPawn());
 		if (fly->hud_instance)
 		{
-			if (UImage* slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide")))
+			if (UImage *slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide")))
 			{
 				if (show_new)
 				{
@@ -381,7 +380,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 				slide->SetRenderTransform(render_transform);
 			}
 
-			if (UImage* old_slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide")))
+			if (UImage *old_slide = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide")))
 			{
 				if (show_old)
 				{
@@ -400,7 +399,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 				old_slide->SetRenderTransform(render_transform);
 			}
 
-			if (UImage* slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide_bg")))
+			if (UImage *slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("slide_bg")))
 			{
 				slide_bg->SetVisibility(ESlateVisibility::Visible);
 				slide_bg->SetRenderOpacity(!fade_transition ? show_new : false);
@@ -413,7 +412,7 @@ void ALevelManager::UpdateSlideTexture(UTexture* slide_texture)
 				slide_bg->SetRenderTransform(render_transform);
 			}
 
-			if (UImage* old_slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide_bg")))
+			if (UImage *old_slide_bg = Cast<UImage>(fly->hud_instance->GetWidgetFromName("old_slide_bg")))
 			{
 				old_slide_bg->SetVisibility(ESlateVisibility::Visible);
 				old_slide_bg->SetRenderOpacity(!fade_transition ? show_old : show_new);
@@ -444,7 +443,7 @@ void ALevelManager::Tick(float DeltaTime)
 	{
 		return;
 	}
-	
+
 	if (level_to_unload != "")
 	{
 		UGameplayStatics::UnloadStreamLevel(this, level_to_unload, FLatentActionInfo(), true);
@@ -454,7 +453,7 @@ void ALevelManager::Tick(float DeltaTime)
 	}
 
 	TActorIterator<ASequencePlayer> player(GetWorld());
-	
+
 	if (public_level != level)
 	{
 		level = public_level;
@@ -472,7 +471,7 @@ void ALevelManager::Tick(float DeltaTime)
 			key_pressed = true;
 		}
 		else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left) && inverted_controls) ||
-			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && !inverted_controls))
+				 (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && !inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -480,8 +479,9 @@ void ALevelManager::Tick(float DeltaTime)
 				public_level = level;
 			}
 			key_pressed = true;
-		} else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right) && !inverted_controls) ||
-			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown) && inverted_controls))
+		}
+		else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Right) && !inverted_controls) ||
+				 (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageDown) && inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -492,8 +492,9 @@ void ALevelManager::Tick(float DeltaTime)
 				}
 			}
 			key_pressed = true;
-		} else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left) && !inverted_controls) ||
-			(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && inverted_controls))
+		}
+		else if ((GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::Left) && !inverted_controls) ||
+				 (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::PageUp) && inverted_controls))
 		{
 			if (key_pressed == false)
 			{
@@ -515,8 +516,7 @@ void ALevelManager::Tick(float DeltaTime)
 	{
 		FVector2d new_viewport_size;
 		GetWorld()->GetGameViewport()->GetViewportSize(new_viewport_size);
-		float dpi = GetDefault<UUserInterfaceSettings>(UUserInterfaceSettings::StaticClass())->GetDPIScaleBasedOnSize(
-			FIntPoint(new_viewport_size.X, new_viewport_size.Y));
+		float dpi = GetDefault<UUserInterfaceSettings>(UUserInterfaceSettings::StaticClass())->GetDPIScaleBasedOnSize(FIntPoint(new_viewport_size.X, new_viewport_size.Y));
 		new_viewport_size /= dpi;
 		if (new_viewport_size != viewport_size && sublevels[level].ToString().ToLower().StartsWith("slide_"))
 		{
@@ -556,6 +556,6 @@ void ALevelManager::Tick(float DeltaTime)
 	else
 	{
 		level = public_level = level_loaded;
-		LogError(TEXT("Error loading level number %d"), level);
+		LogErr(TEXT("Error loading level number %d"), level);
 	}
 }

@@ -6,6 +6,8 @@
 #include "ParabPath.h"
 #include "CameraManager.h"
 #include "TrackingCamera.h"
+#include "TCPMessages.h"
+#include "RPLink.h"
 #include "GameFramework/Actor.h"
 
 #include "EventPasser.h"
@@ -61,4 +63,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, meta=(EditCondition="!autodetect_cameras", EditConditionHides))
 	TArray<ATrackingCamera*> tracking_cameras;
+
+	UPROPERTY(EditAnywhere)
+	class ARPLink *rp_link;
 };
